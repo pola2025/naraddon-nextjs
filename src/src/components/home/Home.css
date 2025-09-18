@@ -1,0 +1,160 @@
+/* Home 페이지 전체 스타일 */
+.home-page {
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  background: #f8fdf9; /* 따뜻한 연한 녹색 배경 */
+}
+
+/* 메인 콘텐츠 영역 - 그리드 효과 */
+.main-content-area {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(248, 253, 249, 0) 0%,
+    rgba(248, 253, 249, 0.95) 20%,
+    rgba(248, 253, 249, 1) 40%
+  );
+}
+
+/* 비디오 섹션 래퍼 */
+.video-section-wrapper {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 100px); /* 높이 100px 감소 */
+  min-height: 600px; /* 최소 높이 조정 */
+  overflow: hidden;
+  background: #000;
+}
+
+/* 배경 비디오 */
+.video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.video-background video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+}
+
+/* 비디오 오버레이 */
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  z-index: 1;
+}
+
+/* 그리드 효과 오버레이 */
+.main-content-area::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(76, 175, 80, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(76, 175, 80, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+}
+
+/* 섹션별 그리드 효과 */
+.main-content-area > section {
+  position: relative;
+  z-index: 2;
+  background: rgba(248, 253, 249, 0.98); /* 연한 녹색 배경 */
+  backdrop-filter: blur(10px);
+  /* border-bottom 제거 */
+}
+
+/* 애니메이션 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.animate-on-scroll.animated {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 섹션 공통 스타일 */
+section {
+  padding: 100px 0;
+  position: relative;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-title {
+  font-size: 42px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.section-subtitle {
+  font-size: 18px;
+  text-align: center;
+  color: #666;
+  margin-bottom: 60px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  section {
+    padding: 60px 0;
+  }
+
+  .section-title {
+    font-size: 32px;
+  }
+
+  .section-subtitle {
+    font-size: 16px;
+    margin-bottom: 40px;
+  }
+}

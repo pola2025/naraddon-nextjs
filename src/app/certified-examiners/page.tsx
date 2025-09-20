@@ -1,447 +1,317 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
+
+import '@/styles/cta-shared.css';
 import './page.css';
 
-export default function CertifiedExaminersPage() {
-  const [currentVideo, setCurrentVideo] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState('all');
+import { ExaminerAdminPanel } from '@/components/examiners/ExaminerAdminPanel';
+import type { ExaminerAdminPanelHandle, ExaminerProfile } from '@/components/examiners/examinerTypes';
 
-  // 전문영역 카테고리
-  const categories = [
-    { id: 'all', name: '전체', count: 152 },
-    { id: 'funding', name: '정책자금', count: 45 },
-    { id: 'manufacturing', name: '제조업특화', count: 38 },
-    { id: 'certification', name: '기업인증', count: 32 },
-    { id: 'export', name: '수출지원', count: 21 },
-    { id: 'startup', name: '창업지원', count: 16 },
-  ];
+const INITIAL_VISIBLE_COUNT = 9;
 
-  // 임의의 회사명 배열 (대기업 이름 제외)
-  const companyNames = [
-    '한국기업지원센터',
-    '글로벌비즈파트너스',
-    '스마트경영파트너스',
-    'K-비즈니스센터',
-    '미래기업컨설팅',
-    '원스톱비즈파트너',
-    '프리미엄경영지원센터',
-    '비즈니스플러스',
-    '기업성장파트너스',
-    '성공기업지원센터',
-    '리더스컨설팅그룹',
-    '비전경영파트너스',
-    '탑비즈니스센터',
-    '엑스퍼트컨설팅',
-  ];
-
-  // 인터뷰 영상 데이터 - YouTube 링크 연결
-  const interviewVideos = [
-    {
-      id: 1,
-      title: '정책자금 승인의 핵심 포인트',
-      examinerName: '김성진',
-      position: '정책자금 전문가',
-      company: '나라똔 인증 기업심사관',
-      companyName: companyNames[0],
-      videoUrl: 'https://youtu.be/P60GUAk8RCY?si=ySVc0MQIFzEUZGWc',
-      embedUrl: 'https://www.youtube.com/embed/P60GUAk8RCY',
-      thumbnail: '/assets/images/people/people (1).jpg',
-      duration: '12:35',
-      views: '15,234회',
-      description: '정책자금 전문가가 알려주는 승인 비결',
-    },
-    {
-      id: 2,
-      title: '벤처기업 인증, 이것만 알면 된다',
-      examinerName: '이미경',
-      position: '기업인증 전문가',
-      company: '나라똔 인증 기업심사관',
-      companyName: companyNames[1],
-      videoUrl: 'https://youtu.be/zsJtl_-_LhM?si=T4hFGnPFnCTt0_7H',
-      embedUrl: 'https://www.youtube.com/embed/zsJtl_-_LhM',
-      thumbnail: '/assets/images/people/people (2).jpg',
-      duration: '18:42',
-      views: '23,567회',
-      description: '벤처기업 인증의 모든 것을 한 번에 정리',
-    },
-    {
-      id: 3,
-      title: '제조업 지원사업의 모든 것',
-      examinerName: '박준호',
-      position: '제조업 컨설턴트',
-      company: '나라똔 인증 기업심사관',
-      companyName: companyNames[2],
-      videoUrl: 'https://youtu.be/qfjTLCMdUPE?si=fqrovZbqCqQL5OXI',
-      embedUrl: 'https://www.youtube.com/embed/qfjTLCMdUPE',
-      thumbnail: '/assets/images/people/people (3).jpg',
-      duration: '15:28',
-      views: '19,832회',
-      description: '제조업 전문가가 직접 밝히는 지원 전략',
-    },
-    {
-      id: 4,
-      title: '수출 지원사업 완벽 가이드',
-      examinerName: '최지훈',
-      position: '수출지원 전문가',
-      company: '나라똔 인증 기업심사관',
-      companyName: companyNames[3],
-      videoUrl: 'https://youtu.be/ohVmBFj2mk0?si=gWi5NR7zGF8YL7M5',
-      embedUrl: 'https://www.youtube.com/embed/ohVmBFj2mk0',
-      thumbnail: '/assets/images/people/people (4).jpg',
-      duration: '20:15',
-      views: '12,456회',
-      description: '해외 진출을 위한 정부 지원 프로그램 총정리',
-    },
-  ];
-
-  // 전문영역 라벨
-  const expertiseLabels = [
-    '정책자금',
-    '제조업특화',
-    '기업인증',
-    '수출지원',
-    '창업지원',
-    '기술사업화',
-    '벤처투자',
-    '정부과제',
-    '세제혜택',
-    '고용지원',
-    '시설자금',
-    '운전자금',
-    '기술평가',
-    '신용보증',
-    '특허전략',
-  ];
-
-  // 랜덤 전문영역 선택 함수
-  function getRandomExpertise(count) {
-    const shuffled = [...expertiseLabels].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
+const shuffleArray = <T,>(items: T[]): T[] => {
+  const array = [...items];
+  for (let i = array.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
+  return array;
+};
 
-  // 브랜드 아이콘 배열
-  const brandIcons = [
-    'fas fa-building',
-    'fas fa-briefcase',
-    'fas fa-chart-line',
-    'fas fa-lightbulb',
-    'fas fa-rocket',
-    'fas fa-shield-alt',
-    'fas fa-award',
-  ];
+const CATEGORY_ORDER = ['funding', 'certification', 'export', 'manufacturing', 'startup', 'general'] as const;
+const CATEGORY_LABELS: Record<string, string> = {
+  all: '전체',
+  funding: '정책자금',
+  certification: '인증',
+  export: '수출',
+  manufacturing: '제조혁신',
+  startup: '창업',
+  general: '기타',
+};
 
-  // 기업심사관 프로필 데이터
-  const examinerProfiles = [
-    {
-      id: 1,
-      name: '김성진',
-      company: '나라똔 인증 기업심사관',
-      companyName: companyNames[0],
-      brandIcon: brandIcons[0],
-      position: '정책자금 전문가',
-      successRate: '92%',
-      consultCount: '1,234',
-      image: '/assets/images/people/people (5).jpg',
-      expertise: getRandomExpertise(5),
-      category: 'funding',
-      rating: 4.9,
-      description: '중소기업 정책자금 전문가',
-    },
-    {
-      id: 2,
-      name: '이미경',
-      company: '나라똔 인증 기업심사관',
-      companyName: companyNames[1],
-      brandIcon: brandIcons[1],
-      position: '기업인증 전문가',
-      successRate: '89%',
-      consultCount: '987',
-      image: '/assets/images/people/people (6).jpg',
-      expertise: getRandomExpertise(5),
-      category: 'certification',
-      rating: 4.8,
-      description: '벤처기업 인증 전문가',
-    },
-    {
-      id: 3,
-      name: '박준호',
-      company: '나라똔 인증 기업심사관',
-      companyName: companyNames[2],
-      brandIcon: brandIcons[2],
-      position: '제조업 컨설턴트',
-      successRate: '94%',
-      consultCount: '856',
-      image: '/assets/images/people/people (7).jpg',
-      expertise: getRandomExpertise(5),
-      category: 'manufacturing',
-      rating: 4.9,
-      description: '제조업 지원사업 전문가',
-    },
-    {
-      id: 4,
-      name: '정수연',
-      company: '나라똔 인증 기업심사관',
-      companyName: companyNames[4],
-      brandIcon: brandIcons[3],
-      position: '금융컨설턴트',
-      successRate: '91%',
-      consultCount: '723',
-      image: '/assets/images/people/people (8).jpg',
-      expertise: getRandomExpertise(5),
-      category: 'funding',
-      rating: 4.7,
-      description: '신용보증 및 금융지원 전문가',
-    },
-    {
-      id: 5,
-      name: '최재훈',
-      company: '나라똔 인증 기업심사관',
-      companyName: companyNames[5],
-      brandIcon: brandIcons[4],
-      position: '기술금융 전문가',
-      successRate: '88%',
-      consultCount: '1,102',
-      image: '/assets/images/people/people (9).jpg',
-      expertise: getRandomExpertise(5),
-      category: 'funding',
-      rating: 4.8,
-      description: '기술금융 평가 전문가',
-    },
-    {
-      id: 6,
-      name: '한지원',
-      company: '나라똔 인증 기업심사관',
-      companyName: companyNames[6],
-      brandIcon: brandIcons[5],
-      position: '수출지원 전문가',
-      successRate: '90%',
-      consultCount: '645',
-      image: '/assets/images/people/people (10).jpg',
-      expertise: getRandomExpertise(5),
-      category: 'export',
-      rating: 4.9,
-      description: '수출지원사업 전문가',
-    },
-  ];
+const GENERAL_CATEGORY = 'general';
 
-  // 필터링된 프로필
-  const filteredProfiles =
-    selectedCategory === 'all'
-      ? examinerProfiles
-      : examinerProfiles.filter((profile) => profile.category === selectedCategory);
+const getCategoryValue = (rawCategory?: string | null) => {
+  if (typeof rawCategory === 'string' && rawCategory.trim()) {
+    return rawCategory.trim();
+  }
+  return GENERAL_CATEGORY;
+};
 
-  // 비디오 네비게이션
-  const handlePrevVideo = () => {
-    setCurrentVideo((prev) => (prev === 0 ? interviewVideos.length - 1 : prev - 1));
+export default function CertifiedExaminersPage() {
+  const adminPanelRef = useRef<ExaminerAdminPanelHandle | null>(null);
+  const [examiners, setExaminers] = useState<ExaminerProfile[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
+  const fetchExaminers = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setFetchError(null);
+      const response = await fetch('/api/expert-services/examiners', { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error('인증 기업심사관 정보를 불러오지 못했습니다.');
+      }
+      const data = await response.json().catch(() => null);
+      const list = Array.isArray(data?.examiners) ? (data.examiners as ExaminerProfile[]) : [];
+      setExaminers(list);
+    } catch (error) {
+      console.error('[CertifiedExaminers] fetch', error);
+      setExaminers([]);
+      setFetchError(error instanceof Error ? error.message : '인증 기업심사관 정보를 불러오지 못했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void fetchExaminers();
+  }, [fetchExaminers]);
+
+  const randomizedExaminers = useMemo(() => shuffleArray(examiners), [examiners]);
+
+  const categories = useMemo(() => {
+    const dataset = Array.from(
+      new Set(randomizedExaminers.map((examiner) => getCategoryValue(examiner.category)))
+    );
+    const ordered = CATEGORY_ORDER.filter((category) => dataset.includes(category));
+    const fallback = dataset.filter(
+      (category) => !CATEGORY_ORDER.includes(category as (typeof CATEGORY_ORDER)[number])
+    );
+    return ['all', ...ordered, ...fallback];
+  }, [randomizedExaminers]);
+
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    if (activeCategory !== 'all' && !categories.includes(activeCategory)) {
+      setActiveCategory('all');
+      setExpanded(false);
+    }
+  }, [activeCategory, categories]);
+
+  const filteredExaminers = useMemo(() => {
+    if (activeCategory === 'all') {
+      return randomizedExaminers;
+    }
+    return randomizedExaminers.filter(
+      (examiner) => getCategoryValue(examiner.category) === activeCategory
+    );
+  }, [activeCategory, randomizedExaminers]);
+
+  const visibleExaminers =
+    activeCategory === 'all' && !expanded
+      ? filteredExaminers.slice(0, INITIAL_VISIBLE_COUNT)
+      : filteredExaminers;
+
+  const remainingCount =
+    activeCategory === 'all' ? Math.max(filteredExaminers.length - visibleExaminers.length, 0) : 0;
+
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+    setExpanded(false);
   };
 
-  const handleNextVideo = () => {
-    setCurrentVideo((prev) => (prev === interviewVideos.length - 1 ? 0 : prev + 1));
-  };
+  const handleRefreshPublished = useCallback(async () => {
+    await fetchExaminers();
+  }, [fetchExaminers]);
+
+  const handleOpenAdminPanel = useCallback(() => {
+    adminPanelRef.current?.openModal();
+  }, []);
 
   return (
-    <div className="certified-examiners-page">
-      {/* 히어로 섹션 - 가로 배너 */}
-      <section className="examiner-hero">
-        <div className="hero-background"></div>
-        <div className="hero-content">
-          <h1 className="hero-title">
-            나라똔 인증 기업심사관
-            <span className="highlight">정부정책을 가장 잘 이해하는 전문가와 함께</span>
-          </h1>
-          <p className="hero-description">
-            나라똔에서는 인증 기업심사관과 업무 진행시 문제 발생하면{' '}
-            <strong style={{ color: '#FFD700' }}>100% 보증</strong>해드립니다
-          </p>
-          <div className="hero-stats">
-            <div className="stat-item">
-              <span className="stat-number">152</span>
-              <span className="stat-label">인증 심사관</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">92%</span>
-              <span className="stat-label">평균 승인율</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">100%</span>
-              <span className="stat-label">나라똔 보증</span>
+    <div className="certified-examiners">
+      <section className="expert-hero layout-hero relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-sky-100">
+        <div className="layout-container">
+          <div className="max-w-3xl">
+            <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-sm font-semibold text-blue-600">인증 기업심사관</span>
+            <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+              인증 기업심사관과 함께하는
+              <span className="block text-blue-600">맞춤형 정책자금 전략</span>
+            </h1>
+            <p className="mt-6 text-lg leading-7 text-slate-600">
+              나라똔에서 100% 보증하는 인증 정책전문가 인증기업심사관이
+              <span className="block sm:inline">대표님들의 맞춤 솔루션을 완성합니다.</span>
+            </p>
+            <div className="mt-10 flex flex-wrap items-center gap-6">
+              <Link
+                href="/consultation-request#form-section"
+                className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:bg-emerald-600"
+              >
+                <i className="fas fa-headset" aria-hidden="true" /> 상담 요청하기
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 인터뷰 영상 섹션 */}
-      <section className="interview-section">
-        <div className="container">
-          <h2 className="section-title">나라똔 인증기업심사관이 이야기하는 정책자금 장점</h2>
-          <p className="section-subtitle">전문가가 직접 전하는 성공 노하우</p>
+      <ExaminerAdminPanel ref={adminPanelRef} onRefreshPublished={handleRefreshPublished} />
 
-          <div className="video-slider">
-            <button className="slider-arrow prev" onClick={handlePrevVideo}>
-              <i className="fas fa-chevron-left"></i>
-            </button>
-
-            <div className="video-main">
-              <div
-                className="video-player"
-                onClick={() => window.open(interviewVideos[currentVideo].videoUrl, '_blank')}
-                style={{ cursor: 'pointer' }}
-              >
-                <img
-                  src={interviewVideos[currentVideo].thumbnail}
-                  alt={interviewVideos[currentVideo].title}
-                />
-                <div className="play-overlay">
-                  <i className="fas fa-play-circle"></i>
-                </div>
-              </div>
-
-              <div className="video-info">
-                <div className="video-details">
-                  <div className="video-profile-inline">
-                    <img
-                      src={interviewVideos[currentVideo].thumbnail}
-                      alt={interviewVideos[currentVideo].examinerName}
-                    />
-                    <div className="profile-info">
-                      <p className="company-name">{interviewVideos[currentVideo].companyName}</p>
-                      <h4 className="examiner-name">
-                        {interviewVideos[currentVideo].examinerName}
-                      </h4>
-                    </div>
-                  </div>
-                  <h3>{interviewVideos[currentVideo].title}</h3>
-                  <p className="video-description">{interviewVideos[currentVideo].description}</p>
-                  <div className="video-meta">
-                    <span className="position">{interviewVideos[currentVideo].position}</span>
-                    <span className="company">{interviewVideos[currentVideo].company}</span>
-                  </div>
-                  <div className="video-stats">
-                    <span>
-                      <i className="far fa-clock"></i> {interviewVideos[currentVideo].duration}
-                    </span>
-                    <span>
-                      <i className="far fa-eye"></i> {interviewVideos[currentVideo].views}
-                    </span>
-                  </div>
-                </div>
-              </div>
+      <section className="certified-examiners__directory">
+        <div className="certified-examiners__section-container">
+          <div className="certified-examiners__directory-header">
+            <div className="certified-examiners__directory-intro">
+              <p className="certified-examiners__directory-eyebrow">인증기업심사관 네트워크</p>
+              <h2 className="certified-examiners__directory-title">인증 기업심사관</h2>
+              <p className="certified-examiners__directory-subtitle">
+                정책자금·인증·스마트공장 등 분야별 전문가를 확인하세요.
+              </p>
             </div>
-
-            <button className="slider-arrow next" onClick={handleNextVideo}>
-              <i className="fas fa-chevron-right"></i>
-            </button>
-          </div>
-
-          {/* 비디오 썸네일 리스트 */}
-          <div className="video-thumbnails">
-            {interviewVideos.map((video, index) => (
-              <div
-                key={video.id}
-                className={`thumbnail-item ${index === currentVideo ? 'active' : ''}`}
-                onClick={() => {
-                  setCurrentVideo(index);
-                  window.open(video.videoUrl, '_blank');
-                }}
-                style={{ cursor: 'pointer' }}
-              >
-                <img src={video.thumbnail} alt={video.title} />
-                <div className="thumbnail-info">
-                  <span className="duration">{video.duration}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 심사관 프로필 섹션 */}
-      <section className="profiles-section">
-        <div className="container">
-          <h2 className="section-title">나라똔 인증 기업심사관</h2>
-          <p className="section-subtitle">
-            각 분야 최고의 전문가를 만나보세요
-            <br />
-            <strong style={{ color: '#667eea', fontSize: '18px' }}>
-              나라똔에서 100% 보증하는 인증 기업심사관
-            </strong>
-          </p>
-
-          {/* 카테고리 필터 */}
-          <div className="category-filter">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                className={`category-btn ${selectedCategory === category.id ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(category.id)}
-              >
-                {category.name}
-                <span className="count">{category.count}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* 프로필 그리드 */}
-          <div className="profiles-grid">
-            {filteredProfiles.map((profile) => (
-              <div key={profile.id} className="profile-card">
-                <div className="profile-image">
-                  <img src={profile.image} alt={profile.name} />
-                  <div className="success-badge">나라똔 보증</div>
-                </div>
-
-                <div className="profile-content">
-                  <div className="profile-header">
-                    <h3>{profile.name}</h3>
-                    <div className="brand-logo">
-                      <i className={profile.brandIcon || 'fas fa-building'}></i>
-                      <span>{profile.companyName}</span>
-                    </div>
-                  </div>
-                  <p className="company">{profile.company}</p>
-                  <p className="position">{profile.position}</p>
-
-                  <div className="expertise-tags">
-                    {profile.expertise.map((tag, index) => (
-                      <span key={index} className="tag">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <p className="description">{profile.description}</p>
-
-                  <div className="profile-stats">
-                    <div className="stat">
-                      <i className="fas fa-star"></i>
-                      <span>{profile.rating}</span>
-                    </div>
-                    <div className="stat">
-                      <i className="fas fa-chart-line"></i>
-                      <span>승인율 {profile.successRate}</span>
-                    </div>
-                    <div className="stat">
-                      <i className="fas fa-briefcase"></i>
-                      <span>{profile.consultCount}건</span>
-                    </div>
-                  </div>
-
-                  <button className="consult-btn">
-                    <i className="fas fa-comment"></i>
-                    상담 신청
+            <div className="certified-examiners__category-list">
+              {categories.map((category) => {
+                const isActive = activeCategory === category;
+                const label = CATEGORY_LABELS[category] ?? category;
+                return (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => handleCategoryChange(category)}
+                    className={
+                      isActive
+                        ? 'certified-examiners__category-button is-active'
+                        : 'certified-examiners__category-button'
+                    }
+                    aria-pressed={isActive}
+                  >
+                    {label}
                   </button>
-                </div>
-              </div>
-            ))}
+                );
+              })}
+            </div>
           </div>
 
-          <button className="load-more-btn">
-            더 많은 심사관 보기
-            <i className="fas fa-chevron-down"></i>
-          </button>
+          {isLoading ? (
+            <p className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-white/60 px-4 py-3 text-sm text-slate-500">
+              인증 기업심사관을 불러오는 중입니다...
+            </p>
+          ) : null}
+          {fetchError ? (
+            <p className="mt-6 rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-600">
+              {fetchError}
+            </p>
+          ) : null}
+          {!isLoading && !fetchError && filteredExaminers.length === 0 ? (
+            <p className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-white/60 px-4 py-3 text-sm text-slate-500">
+              등록된 인증 기업심사관이 없습니다.
+            </p>
+          ) : null}
+
+          <div className="certified-examiners__directory-grid">
+            {visibleExaminers.map((examiner) => {
+              const companyLabel = examiner.companyName?.trim();
+              const imageUrl = examiner.imageUrl?.trim();
+              const hasImage = Boolean(imageUrl);
+              const cardKey = examiner._id ?? `${examiner.name}-${companyLabel ?? 'unknown'}`;
+              const roleLabel = examiner.position?.trim() || '인증 기업심사관';
+
+              return (
+                <article key={cardKey} className="certified-examiners-card">
+                  <div className="certified-examiners-card__media">
+                    <span className="certified-examiners-card__badge">
+                      <i className="fas fa-check" aria-hidden="true" /> 인증된 전문가
+                    </span>
+                    <div
+                      className={
+                        hasImage
+                          ? 'certified-examiners-card__image'
+                          : 'certified-examiners-card__image certified-examiners-card__image--placeholder'
+                      }
+                    >
+                      {hasImage ? (
+                        <img
+                          src={imageUrl}
+                          alt={examiner.imageAlt?.trim() || `${examiner.name} 프로필`}
+                          width={220}
+                          height={260}
+                          className="certified-examiners-card__photo"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <i className="fas fa-user-tie" aria-hidden="true" />
+                      )}
+                    </div>
+                  </div>
+                  <div className="certified-examiners-card__body">
+                    <h3 className="certified-examiners-card__name">
+                      {examiner.name}
+                      {companyLabel ? (
+                        <span className="certified-examiners-card__company"> | {companyLabel}</span>
+                      ) : null}
+                    </h3>
+                    <p className="certified-examiners-card__role">{roleLabel}</p>
+                    <Link href="/consultation-request#form-section" className="certified-examiners-card__action">
+                      상담 신청하기
+                      <i className="fas fa-arrow-right" aria-hidden="true" />
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          <div className="certified-examiners__admin-action">
+            <button
+              type="button"
+              onClick={handleOpenAdminPanel}
+              className="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow transition hover:bg-blue-700"
+            >
+              인증기업심사관 등록하기
+            </button>
+          </div>
+
+          {activeCategory === 'all' && !expanded && remainingCount > 0 ? (
+            <div className="certified-examiners__load-more">
+              <button
+                type="button"
+                onClick={() => setExpanded(true)}
+                className="certified-examiners__load-more-button"
+              >
+                더 많은 심사관 보기 ({remainingCount})
+              </button>
+            </div>
+          ) : null}
+
+          <div className="certified-examiners__cta">
+            <div className="certified-examiners__cta-banner">
+              <div className="certified-examiners__cta-content">
+                <p className="certified-examiners__cta-eyebrow">상담 준비 완료</p>
+                <h3 className="certified-examiners__cta-title">나라똔 100% 인증 기업심사관<br />사업성장의 맞춤 전략을 제안합니다.</h3>
+                <p className="certified-examiners__cta-subtitle">상담을 신청하시면 인증 기업심사관이 24시간 이내 연락드립니다.<br />나라똔에서 100% 보증으로 안심하고 상담할 수 있습니다.</p>
+              </div>
+              <Link href="/consultation-request#form-section" className="certified-examiners__cta-button">
+                컨설팅 신청하기
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

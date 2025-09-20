@@ -9,7 +9,8 @@
       "Bash(taskkill:*)",
       "Bash(vercel:*)",
       "Read(//h/Naraddon/naraddon-latest/**)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []

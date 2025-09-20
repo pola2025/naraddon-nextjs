@@ -49,8 +49,16 @@ H:\Naraddon\homepage\
   - 사용자가 명시적으로 수정 요청하기 전까지 절대 수정 불가
 - ✅ **작업 전 백업 필수**
   - 모든 데이터 변경 작업 전 백업 실행
+- ✅ **TDD 프로세스로 업무 진행**
+  - 테스트 작성 → 실패 확인 → 구현 → 리팩터링 단계를 반복하며 기능을 개발
 - ✅ **컴포넌트 수정 시 버전 관리**
   - 원본 유지 + 날짜별 백업 생성
+- ✅ **오류 복구 시 기존 연결 유지**
+  - 서버/실행 오류로 재연결 설정할 때 기존 파일이나 경로를 임의로 삭제하거나 재생성하지 말 것
+- ✅ **소통 시 한국어 사용**
+  - 작업 지침 공유 및 사용자 응답은 항상 한국어로 작성하며, 모든 응답은 한국어로 말한다
+- ❌ **승인되지 않은 전역 교체 금지**
+  - 전역 치환이 필요할 경우 사전 승인 후 진행
 
 ### 2. 권장 규칙 (SHOULD)
 
@@ -65,6 +73,38 @@ H:\Naraddon\homepage\
 - ❌ fix/ 폴더 직접 수정
 - ❌ 확정된 컴포넌트의 구조 변경
 - ❌ 프로덕션 환경 변수 노출
+
+## 🏷️ 네이밍 규칙
+
+- 정책분석 페이지는 루트 클래스 `policy-analysis`를 기준으로 BEM 스타일 네이밍을 적용한다.
+- 사업자 목소리 페이지는 루트 클래스 `business-voice`를 기준으로 동일한 규칙을 적용한다.
+- 인증 기업심사관 페이지는 루트 클래스 `certified-examiners`를 기준으로 동일한 규칙을 적용한다.
+- 모든 커스텀 클래스는 영역별 루트 접두사(`policy-analysis__`, `business-voice__`, `certified-examiners__`)와 요소명을 조합하고 상태 값은 `is-*` 접두사로 구분한다.
+- Font Awesome 등 외부 라이브러리 클래스를 제외하고, 범용 명칭(`category`, `tag` 등) 단독 사용을 금지한다.
+- 스코프 유지를 위해 정책분석 스타일은 `src/components/policy/PolicyAnalysis.css`, 사업자 목소리 스타일은 `src/app/business-voice/` 내 CSS 파일, 인증 기업심사관 스타일은 `src/app/certified-examiners/page.css`에서만 관리한다.
+- 모든 하단 CTA는 `src/app/certified-examiners/page.tsx`와 `page.css`에 정의된 `certified-examiners__cta-*` 구조·스타일을 표준으로 삼아 동일 토큰으로 적용한다.
+
+```tsx
+<div className="policy-analysis">
+  <section className="policy-analysis__hero">
+    <div className="policy-analysis__hero-stat-card is-active">...</div>
+  </section>
+</div>
+
+<div className="business-voice">
+  <section className="business-voice__ttontok-section">
+    <div className="business-voice__ttontok-card business-voice__ttontok-category--창업">...</div>
+  </section>
+</div>
+
+<div className="certified-examiners">
+  <section className="certified-examiners__hero">
+    <div className="certified-examiners__hero-stat-card is-active">...</div>
+  </section>
+</div>
+```
+
+- 신규 요소 추가 시에도 동일한 접두사 규칙을 유지하고, 상태/변형은 `is-*`, `--modifier` 조합으로 작성한다.
 
 ---
 
@@ -261,6 +301,13 @@ npm run status                     # 프로젝트 상태
 npm run status:fixed              # 확정 컴포넌트 목록
 ```
 
+### 빌드/실행 타임아웃 대응
+
+- `npm run build`, `npm run dev` 명령이 3분 이상 응답 없이 지속되면 `Ctrl+C`로 종료한다.
+- 종료 즉시 터미널 출력과 경고 메시지를 기록하고, 최근 코드/의존성 변경 내역을 확인한다.
+- `npm run lint` 또는 `npm run build --verbose` 등 진단 명령으로 원인을 추적하고, 시스템 자원(CPU/메모리) 과다 사용 여부를 점검한다.
+- 원인 분석 없이 동일 명령을 재시작하지 말고, 해결이 어려우면 담당자에게 상황과 재현 절차를 공유한다.
+
 ---
 
 ## 📌 중요 연락처
@@ -273,3 +320,5 @@ npm run status:fixed              # 확정 컴포넌트 목록
 
 _최종 업데이트: 2025년 1월 18일_
 _버전: 1.0.0_
+
+

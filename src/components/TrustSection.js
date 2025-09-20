@@ -30,7 +30,7 @@ function TrustSection() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const section = document.querySelector('.trust-section');
+      const section = document.querySelector('.home-trust-section');
       if (!section) return;
 
       const rect = section.getBoundingClientRect();
@@ -52,12 +52,12 @@ function TrustSection() {
   }, []);
 
   return (
-    <section className="trust-section horizontal">
+    <section className="home-trust-section horizontal">
       <div className="container">
         {/* 가로 레이아웃 */}
-        <div className="trust-content-horizontal">
+        <div className="home-trust-content">
           {/* 왼쪽: 타이틀과 방패 */}
-          <div className="trust-left">
+          <div className="home-trust-left">
             <div className="shield-title-group">
               <div className={`shield-icon-large ${shieldAnimation ? 'animate' : ''}`}>
                 <i className="fas fa-shield-alt"></i>
@@ -66,9 +66,15 @@ function TrustSection() {
               </div>
               <div className="title-group">
                 <h2 className="guarantee-title-compact">
-                  나라똔이 보증하는 전문 기업심사관이
+                  나라똔이 보증하는
                   <br />
-                  <span className="highlight">최대한도 자금 끝까지 책임집니다</span>
+                  인증 기업심사관이
+                  <br />
+                  <span className="highlight">
+                    최대한도 자금 끝까지
+                    <br />
+                    책임집니다.
+                  </span>
                 </h2>
                 <p className="guarantee-subtitle-compact">
                   <span className="brand-name">나라똔</span>{' '}
@@ -79,7 +85,7 @@ function TrustSection() {
           </div>
 
           {/* 중앙: 3개 특징 */}
-          <div className="trust-center">
+          <div className="home-trust-center">
             <div className="guarantee-features-horizontal">
               <div className="feature-item-horizontal">
                 <i className="fas fa-users"></i>
@@ -97,7 +103,7 @@ function TrustSection() {
           </div>
 
           {/* 오른쪽: 4개 배지 */}
-          <div className="trust-right">
+          <div className="home-trust-right">
             <div className="guarantee-items-horizontal">
               {guaranteeItems.map((item, index) => (
                 <div key={index} className="guarantee-item-horizontal">
@@ -118,3 +124,4 @@ function TrustSection() {
 }
 
 export default TrustSection;
+

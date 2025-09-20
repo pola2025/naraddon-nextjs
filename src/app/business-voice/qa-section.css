@@ -15,7 +15,7 @@
   position: absolute;
   top: -12px;
   left: 20px;
-  background: linear-gradient(135deg, #ffd700, #ffa500);
+  background: linear-gradient(135deg, #FFD700, #FFA500);
   color: white;
   padding: 6px 16px;
   border-radius: 20px;
@@ -60,30 +60,14 @@
   color: white;
 }
 
-.qa-category-badge.category-수수료 {
-  background: #e85d75;
-}
-.qa-category-badge.category-창업 {
-  background: #00c896;
-}
-.qa-category-badge.category-운영 {
-  background: #4a90e2;
-}
-.qa-category-badge.category-세무 {
-  background: #9b59b6;
-}
-.qa-category-badge.category-인사 {
-  background: #f39c12;
-}
-.qa-category-badge.category-마케팅 {
-  background: #27ae60;
-}
-.qa-category-badge.category-지원금 {
-  background: #e74c3c;
-}
-.qa-category-badge.category-기타 {
-  background: #34495e;
-}
+.qa-category-badge.category-수수료 { background: #E85D75; }
+.qa-category-badge.category-창업 { background: #00C896; }
+.qa-category-badge.category-운영 { background: #4A90E2; }
+.qa-category-badge.category-세무 { background: #9B59B6; }
+.qa-category-badge.category-인사 { background: #F39C12; }
+.qa-category-badge.category-마케팅 { background: #27AE60; }
+.qa-category-badge.category-지원금 { background: #E74C3C; }
+.qa-category-badge.category-기타 { background: #34495E; }
 
 /* 모든 답변 표시 */
 .all-answers {
@@ -100,7 +84,7 @@
 }
 
 .answer-item {
-  background: #fafffe;
+  background: #FAFFFE;
   border-radius: 6px;
   padding: 12px;
   margin-bottom: 10px;
@@ -109,7 +93,7 @@
 
 .answer-item.best-answer {
   border-left: 3px solid var(--naraddon-primary);
-  background: #f5fffb;
+  background: #F5FFFB;
 }
 
 .answer-footer {
@@ -332,8 +316,106 @@
     grid-template-columns: 1fr;
     gap: 12px;
   }
-
+  
   .question-meta {
     flex-wrap: wrap;
   }
+}
+/* Answer hierarchy enhancements */
+.answer-author {
+  margin-bottom: 8px;
+}
+
+.answer-identity {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.answer-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #00e5a8 0%, #00c896 100%);
+  color: #0f172a;
+  box-shadow: 0 8px 16px rgba(0, 200, 150, 0.18);
+}
+
+.answer-identity.role-certified-examiner .answer-role-badge {
+  background: linear-gradient(135deg, #1d4ed8 0%, #22d3ee 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 10px 18px rgba(29, 78, 216, 0.2);
+}
+
+.answer-identity.role-expert .answer-role-badge {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  color: #ffffff;
+}
+
+.answer-name {
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+.helpful-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.helpful-btn.is-active {
+  background: var(--naraddon-primary);
+  color: #ffffff;
+  border-color: var(--naraddon-primary);
+  box-shadow: 0 10px 22px rgba(0, 200, 150, 0.22);
+}
+
+.helpful-btn.is-active:hover {
+  background: var(--naraddon-primary-dark);
+  border-color: var(--naraddon-primary-dark);
+}
+
+.popular-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.rank-chip {
+  background: var(--naraddon-primary);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  min-width: 48px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 200, 150, 0.22);
+}
+
+.popular-question-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.question-stats {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.question-stats .time {
+  color: var(--gray-500);
+}
+
+.question-numbers {
+  justify-content: space-between;
 }

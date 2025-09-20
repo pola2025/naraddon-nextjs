@@ -1,199 +1,187 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import './page.css';
 
-// 예시 상세 데이터
-const mockStoryDetail = {
-  id: '1',
-  category: '운영',
-  categoryId: 'operation',
-  title: '배달앱 수수료 절감 방법 공유합니다',
-  content: `
-    최근 배달앱 수수료가 너무 올라서 고민이 많으셨죠? 
-    저도 처음엔 수수료 때문에 정말 막막했는데, 3년간 운영하면서 터득한 노하우를 공유드립니다.
-
-    **1. 자체 배달 시스템 구축**
-    처음엔 투자비용이 들지만, 장기적으로 보면 훨씬 이득입니다.
-    - 단골 고객 대상으로 먼저 시작
-    - 카카오톡 채널이나 네이버 스마트스토어 활용
-    - 배달 직원 1명 채용 (월 250만원 정도)
-
-    **2. 배달앱 복수 이용**
-    한 곳에만 의존하지 말고 여러 플랫폼을 활용하세요.
-    - 각 플랫폼별 프로모션 기간 활용
-    - 수수료율 비교해서 유리한 곳 선택
-
-    **3. 포장 주문 유도**
-    포장 할인을 통해 배달앱 의존도를 줄이세요.
-    - 포장 10% 할인
-    - 포장 주문 시 음료 서비스
-
-    이렇게 하니까 월 매출 5000만원 기준으로 수수료를 200만원 정도 절감할 수 있었습니다.
-    다른 사장님들도 한 번 시도해보세요!
-  `,
-  author: {
-    isAnonymous: false,
-    businessType: '요식업',
-    region: '서울 강남구',
-    yearsInBusiness: 3,
-    name: '김사장',
-  },
-  stats: {
-    comments: 12,
-    likes: 45,
-    views: 234,
-  },
-  createdAt: new Date(Date.now() - 600000),
-  comments: [
-    {
-      id: '1',
-      author: '박사장',
-      businessType: '카페',
-      content: '좋은 정보 감사합니다! 저도 자체 배달 시스템 구축 고민 중이었는데 도움이 되네요.',
-      createdAt: new Date(Date.now() - 300000),
-      likes: 5,
-    },
-    {
-      id: '2',
-      author: '이사장',
-      businessType: '치킨집',
-      content: '포장 할인은 정말 효과적이더라구요. 저희도 15% 할인하니까 포장 주문이 확 늘었어요.',
-      createdAt: new Date(Date.now() - 180000),
-      likes: 3,
-    },
-  ],
+const CATEGORY_LABELS: Record<string, string> = {
+  startup: '창업',
+  operation: '운영',
+  trouble: '고충',
+  network: '네트워킹',
+  support: '지원',
+  success: '성공사례',
+  question: '질문',
 };
 
-const formatTimeAgo = (date: Date) => {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const minutes = Math.floor(diff / 60000);
-  const hours = Math.floor(diff / 3600000);
-  const days = Math.floor(diff / 86400000);
-
-  if (minutes < 60) return `${minutes}분 전`;
-  if (hours < 24) return `${hours}시간 전`;
-  if (days < 7) return `${days}일 전`;
-  return date.toLocaleDateString();
+type TtontokPost = {
+  _id: string;
+  category: string;
+  title: string;
+  content: string;
+  nickname: string;
+  isAnonymous: boolean;
+  businessType?: string;
+  region?: string;
+  yearsInBusiness?: number | null;
+  views: number;
+  createdAt?: string | null;
 };
 
-export default function StoryDetailPage() {
-  const params = useParams();
+function formatDateParts(isoDate?: string | null) {
+  if (!isoDate) {
+    return { date: '-', time: '' };
+  }
+
+  const parsed = new Date(isoDate);
+  if (Number.isNaN(parsed.getTime())) {
+    return { date: '-', time: '' };
+  }
+
+  const date = parsed.toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  const time = parsed.toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+
+  return { date, time };
+}
+
+export default function TtontokDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [story] = useState(mockStoryDetail);
-  const [liked, setLiked] = useState(false);
-  const [commentText, setCommentText] = useState('');
+  const [post, setPost] = useState<TtontokPost | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLike = () => {
-    setLiked(!liked);
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/ttontok/posts/${params.id}`, {
+          method: 'GET',
+          cache: 'no-store',
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error('게시글을 불러오지 못했습니다.');
+        }
+
+        const data = await response.json();
+        if (!isMounted) {
+          return;
+        }
+
+        setPost(data.post);
+        setError(null);
+
+        void fetch(`/api/ttontok/posts/${params.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ incrementViews: true }),
+        }).catch(() => undefined);
+      } catch (err) {
+        if (!controller.signal.aborted && isMounted) {
+          console.error(err);
+          setError('게시글을 찾을 수 없습니다.');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchPost();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [params.id]);
+
+  const handleBack = () => {
+    router.push('/ttontok');
   };
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // 댓글 등록 로직
-    setCommentText('');
-  };
+  if (loading) {
+    return (
+      <div className="ttontok-detail-page">
+        <div className="ttontok-detail-container">
+          <div className="ttontok-detail-message">게시글을 불러오는 중입니다…</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <div className="ttontok-detail-page">
+        <div className="ttontok-detail-container">
+          <div className="ttontok-detail-message">{error ?? '게시글을 찾을 수 없습니다.'}</div>
+          <button type="button" className="ttontok-detail-back" onClick={handleBack}>
+            목록으로 돌아가기
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const categoryLabel = CATEGORY_LABELS[post.category] ?? '기타';
+  const { date, time } = formatDateParts(post.createdAt);
+  const nickname = post.isAnonymous ? '익명' : post.nickname;
+  const businessInfo = post.isAnonymous
+    ? '비공개'
+    : [post.region, post.businessType].filter(Boolean).join(' · ') || '사업 정보 미입력';
 
   return (
-    <div className="story-detail-container">
-      <div className="story-detail-header">
-        <Link href="/ttontok" className="back-button">
-          ← 목록으로
-        </Link>
-      </div>
+    <div className="ttontok-detail-page">
+      <div className="ttontok-detail-container">
+        <div className="ttontok-detail-header">
+          <button type="button" className="ttontok-detail-back" onClick={handleBack}>
+            ← 똔톡 목록으로
+          </button>
+        </div>
 
-      <div className="story-detail-content">
-        <div className="story-detail-meta">
-          <span className="category-badge">{story.category}</span>
-          <h1 className="story-detail-title">{story.title}</h1>
+        <article className="ttontok-detail-card">
+          <div className="ttontok-detail-meta">
+            <span className={`category-badge category-${post.category}`}>{categoryLabel}</span>
+            <span className="ttontok-detail-views">👁 {post.views}</span>
+          </div>
 
-          <div className="author-section">
-            <div className="author-info">
-              {story.author.isAnonymous ? (
-                <span className="author-name">익명</span>
-              ) : (
-                <>
-                  <span className="author-name">{story.author.name}</span>
-                  <span className="separator">·</span>
-                  <span>{story.author.businessType}</span>
-                  <span className="separator">·</span>
-                  <span>{story.author.region}</span>
-                  <span className="separator">·</span>
-                  <span>{story.author.yearsInBusiness}년차</span>
-                </>
-              )}
+          <h1 className="ttontok-detail-title">{post.title}</h1>
+
+          <div className="ttontok-detail-author">
+            <div>
+              <p className="ttontok-detail-author-name">{nickname}</p>
+              <p className="ttontok-detail-author-info">{businessInfo}</p>
             </div>
-            <div className="post-info">
-              <span>{formatTimeAgo(story.createdAt)}</span>
-              <span className="separator">·</span>
-              <span>조회 {story.stats.views}</span>
+            <div className="ttontok-detail-date">
+              <span>{date}</span>
+              <span>{time}</span>
             </div>
           </div>
-        </div>
 
-        <div className="story-detail-body">
-          {story.content.split('\n').map((paragraph, index) => {
-            if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
-              return (
-                <h3 key={index} className="content-subtitle">
-                  {paragraph.replace(/\*\*/g, '')}
-                </h3>
-              );
-            }
-            if (paragraph.startsWith('- ')) {
-              return (
-                <li key={index} className="content-list-item">
-                  {paragraph.substring(2)}
-                </li>
-              );
-            }
-            if (paragraph.trim()) {
-              return <p key={index}>{paragraph}</p>;
-            }
-            return null;
-          })}
-        </div>
-
-        <div className="story-actions">
-          <button className={`like-button ${liked ? 'liked' : ''}`} onClick={handleLike}>
-            👍 도움이 돼요 ({story.stats.likes + (liked ? 1 : 0)})
-          </button>
-          <button className="share-button">📤 공유하기</button>
-        </div>
-
-        <div className="comments-section">
-          <h3 className="comments-title">댓글 {story.comments.length}</h3>
-
-          <form className="comment-form" onSubmit={handleCommentSubmit}>
-            <textarea
-              placeholder="경험이나 의견을 나눠주세요..."
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              rows={3}
-            />
-            <button type="submit" disabled={!commentText.trim()}>
-              댓글 작성
-            </button>
-          </form>
-
-          <div className="comments-list">
-            {story.comments.map((comment) => (
-              <div key={comment.id} className="comment-item">
-                <div className="comment-header">
-                  <div className="comment-author">
-                    <span className="author-name">{comment.author}</span>
-                    <span className="business-type">{comment.businessType}</span>
-                  </div>
-                  <span className="comment-time">{formatTimeAgo(comment.createdAt)}</span>
-                </div>
-                <p className="comment-content">{comment.content}</p>
-                <button className="comment-like">👍 {comment.likes}</button>
-              </div>
+          <div className="ttontok-detail-content">
+            {post.content.split('\n').map((line, index) => (
+              <p key={index}>{line.trim() === '' ? '\u00A0' : line}</p>
             ))}
           </div>
+        </article>
+
+        <div className="ttontok-detail-actions">
+          <Link href="/ttontok" className="ttontok-detail-back">
+            목록으로 돌아가기
+          </Link>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 /* 정책소식 섹션 스타일 */
 .policy-thumbnails-section {
-  padding: 80px 0;
+  padding: 72px 0 60px;
   background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
   position: relative;
   overflow: hidden;
@@ -20,7 +20,7 @@
 .policy-thumbnails-section .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 var(--home-content-padding-x, 24px);
   position: relative;
   z-index: 1;
 }
@@ -28,69 +28,92 @@
 /* 헤더 영역 */
 .thumbnails-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 50px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #e0e0e0;
-}
-
-.header-content {
-  flex: 1;
-}
-
-.thumbnails-title {
-  font-size: 36px;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 10px;
-}
-
-.thumbnails-title .highlight {
-  color: #667eea;
+  gap: 24px;
+  padding-bottom: 16px;
+  margin-bottom: 48px;
   position: relative;
 }
 
-.thumbnails-subtitle {
-  font-size: 16px;
-  color: #666;
-  font-weight: 400;
+.thumbnails-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(15, 118, 110, 0.25), rgba(148, 163, 184, 0.15));
 }
 
-.view-all-btn {
+.thumbnails-heading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.thumbnails-eyebrow {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #047857;
+}
+
+.thumbnails-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.thumbnails-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #64748b;
+}
+
+.thumbnails-action {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  text-decoration: none;
-  border-radius: 25px;
-  font-size: 15px;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  font-size: 0.95rem;
   font-weight: 600;
-  transition: all 0.3s ease;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.22);
 }
 
-.view-all-btn:hover {
+.thumbnails-action:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 16px 32px rgba(16, 185, 129, 0.26);
 }
 
-.view-all-btn i {
-  font-size: 14px;
-  transition: transform 0.3s ease;
+.thumbnails-action:focus-visible {
+  outline: 2px solid rgba(16, 185, 129, 0.7);
+  outline-offset: 2px;
 }
 
-.view-all-btn:hover i {
-  transform: translateX(3px);
+.thumbnails-action i {
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+.thumbnails-action:hover i {
+  transform: translateX(4px);
 }
 
 /* 썸네일 그리드 */
 .thumbnails-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
-  margin-bottom: 40px;
+  gap: 24px;
+  margin-bottom: 36px;
 }
 
 .thumbnail-item {
@@ -356,6 +379,15 @@
     font-size: 28px;
   }
 
+  .thumbnails-heading {
+    gap: 6px;
+  }
+
+  .thumbnails-action {
+    align-self: stretch;
+    justify-content: center;
+  }
+
   .thumbnails-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
@@ -384,8 +416,53 @@
     height: 200px;
   }
 
-  .view-all-btn {
+  .thumbnails-action {
     width: 100%;
     justify-content: center;
   }
+}
+.thumbnails-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  color: #475569;
+  text-align: center;
+  gap: 12px;
+  min-height: 180px;
+}
+
+.thumbnails-status--error {
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+.thumbnails-status__retry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border-radius: 9999px;
+  border: 1px solid rgba(37, 99, 235, 0.6);
+  background: #ffffff;
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.thumbnails-status__retry:hover {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+}
+
+.thumbnails-status__retry:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
 }

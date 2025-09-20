@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
 import './PolicyAnalysisWrite.css';
 
 const PolicyAnalysisWrite = () => {
@@ -231,12 +232,18 @@ const PolicyAnalysisWrite = () => {
   const [formData, setFormData] = useState({
     title: '',
     category: 'government',
-    sections: {}, // 각 섹션별 내용 저장
+    sections: {}, // �� ���Ǻ� ���� ����
     tags: '',
     images: [],
     thumbnailIndex: 0,
-    useStructured: true, // 구조화된 폼 사용 여부
+    useStructured: true, // ����ȭ�� �� ��� ����
+    freeContent: '',
+    examinerKey: '',
   });
+
+  const [examinerOptions, setExaminerOptions] = useState([]);
+  const [isLoadingExaminers, setIsLoadingExaminers] = useState(false);
+  const [examinerError, setExaminerError] = useState('');
 
   // 카테고리 변경 시 섹션 초기화
   useEffect(() => {
@@ -254,6 +261,41 @@ const PolicyAnalysisWrite = () => {
       sections: initialSections,
     }));
   }, [formData.category]);
+
+  useEffect(() => {
+    const loadExaminers = async () => {
+      try {
+        setIsLoadingExaminers(true);
+        setExaminerError('');
+        const response = await fetch('/api/expert-services/examiners');
+        if (!response.ok) {
+          throw new Error('인증 기업심사관을 불러오지 못했습니다.');
+        }
+        const data = await response.json().catch(() => null);
+        const list = Array.isArray(data?.examiners) ? data.examiners : [];
+        setExaminerOptions(list);
+      } catch (error) {
+        console.error('[PolicyAnalysisWrite] fetch examiners', error);
+        setExaminerOptions([]);
+        setExaminerError(error instanceof Error ? error.message : '인증 기업심사관을 불러오지 못했습니다.');
+      } finally {
+        setIsLoadingExaminers(false);
+      }
+    };
+
+    loadExaminers();
+  }, []);
+
+  useEffect(() => {
+    if (!formData.examinerKey && examinerOptions.length > 0) {
+      const firstExaminer = examinerOptions[0];
+      const optionValue =
+        (firstExaminer && (firstExaminer._id || firstExaminer.legacyKey || firstExaminer.imageKey)) || '';
+      if (optionValue) {
+        setFormData((prev) => ({ ...prev, examinerKey: optionValue }));
+      }
+    }
+  }, [examinerOptions, formData.examinerKey]);
 
   // 임시 저장 상태
   const [isSaved, setIsSaved] = useState(false);
@@ -372,6 +414,8 @@ const PolicyAnalysisWrite = () => {
   // 태그 관리
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState([]);
+  const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleTagInput = (e) => {
     const value = e.target.value;
@@ -449,39 +493,110 @@ const PolicyAnalysisWrite = () => {
   };
 
   // 폼 제출 핸들러
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 유효성 검사
-    if (!formData.title) {
+    if (isSubmitting) {
+      return;
+    }
+
+    if (!formData.title.trim()) {
       alert('제목을 입력해주세요.');
       return;
     }
 
-    // 필수 섹션 체크
-    const currentCategory = categoryFields[formData.category];
-    const missingSections = currentCategory.sections
-      .filter((section) => section.required && !formData.sections[section.id])
-      .map((section) => section.title);
-
-    if (missingSections.length > 0) {
-      alert(`다음 필수 항목을 입력해주세요:\n${missingSections.join(', ')}`);
+    if (!formData.examinerKey) {
+      alert('인증된 기업심사관을 선택해주세요.');
       return;
     }
 
-    // 최종 데이터 생성
-    const finalContent = generateMarkdownContent();
+    const currentCategory = categoryFields[formData.category];
 
-    console.log('정책분석 작성 완료:', {
-      ...formData,
+    let structuredSections = [];
+    if (formData.useStructured) {
+      const missingSections = currentCategory.sections
+        .filter((section) => section.required && !formData.sections[section.id]?.trim())
+        .map((section) => section.title);
+
+      if (missingSections.length > 0) {
+        alert(`필수 항목을 모두 입력해주세요:
+${missingSections.join(', ')}`);
+        return;
+      }
+
+      structuredSections = currentCategory.sections
+        .filter((section) => formData.sections[section.id]?.trim())
+        .map((section) => ({
+          id: section.id,
+          title: section.title,
+          content: formData.sections[section.id],
+        }));
+    }
+
+    const finalContent = formData.useStructured ? generateMarkdownContent() : formData.freeContent || '';
+
+    if (!finalContent.trim()) {
+      alert('내용을 입력해주세요.');
+      return;
+    }
+
+    if (!password.trim()) {
+      alert('게시글 비밀번호를 입력해주세요.');
+      return;
+    }
+
+    const excerpt = finalContent
+      .replace(/[#*`>\-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 140);
+
+    const imagesPayload = formData.images.map((image, index) => ({
+      url: image.url,
+      name: image.name || `image-${index + 1}`,
+      caption: image.caption || '',
+    }));
+
+    const payload = {
+      password: password.trim(),
+      title: formData.title.trim(),
+      category: formData.category,
+      excerpt,
       content: finalContent,
-      thumbnail: formData.images[formData.thumbnailIndex]?.url || null,
-    });
+      isStructured: formData.useStructured,
+      sections: structuredSections,
+      tags,
+      thumbnail: formData.images[formData.thumbnailIndex]?.url || '',
+      images: imagesPayload,
+      examinerKey: formData.examinerKey,
+    };
 
-    localStorage.removeItem('policyAnalysisDraft');
+    try {
+      setIsSubmitting(true);
+      const response = await fetch('/api/policy-analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-    alert('정책분석이 작성되었습니다. (개발 모드)');
-    router.push('/policy-analysis');
+      const result = await response.json();
+      if (!response.ok) {
+        alert(result?.message || '정책분석 게시글 등록에 실패했습니다.');
+        return;
+      }
+
+      localStorage.removeItem('policyAnalysisDraft');
+      alert('정책분석 게시글이 등록되었습니다.');
+      const nextId = result?.post?._id || result?.post?.id;
+      router.push(nextId ? `/policy-analysis/${nextId}` : '/policy-analysis');
+    } catch (error) {
+      console.error('정책분석 작성 오류', error);
+      alert('정책분석 게시글 저장 중 오류가 발생했습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // 취소 핸들러
@@ -509,6 +624,10 @@ const PolicyAnalysisWrite = () => {
       .replace(/\n/g, '<br />');
   };
 
+  const selectedExaminer = examinerOptions.find((examiner) => {
+    const optionValue = examiner?._id || examiner?.legacyKey || examiner?.imageKey;
+    return optionValue === formData.examinerKey;
+  });
   const currentCategory = categoryFields[formData.category];
 
   return (
@@ -595,6 +714,59 @@ const PolicyAnalysisWrite = () => {
                   ))}
                 </div>
               </div>
+
+              {/* 인증 기업심사관 */}
+              <div className="form-group examiner-group">
+                <label htmlFor="examiner">
+                  인증 기업심사관 <span className="required">*</span>
+                </label>
+                <select
+                  id="examiner"
+                  value={formData.examinerKey}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      examinerKey: e.target.value,
+                    }))
+                  }
+                  disabled={isLoadingExaminers || examinerOptions.length === 0}
+                  required
+                >
+                  <option value="">인증기업심사관을 선택해주세요</option>
+                  {examinerOptions.map((examiner) => {
+                    const optionValue = examiner?._id || examiner?.legacyKey || examiner?.imageKey;
+                    if (!optionValue) {
+                      return null;
+                    }
+                    return (
+                      <option key={optionValue} value={optionValue}>
+                        {examiner.name} 인증기업심사관{examiner.companyName ? ` | ${examiner.companyName}` : ''}
+                      </option>
+                    );
+                  })}
+                </select>
+                {isLoadingExaminers ? (
+                  <p className="examiner-helper">인증 기업심사관을 불러오는 중입니다...</p>
+                ) : null}
+                {examinerError ? (
+                  <p className="examiner-helper examiner-helper--error">{examinerError}</p>
+                ) : null}
+                {selectedExaminer && (
+                  <div className="examiner-highlight">
+                    <div className="examiner-header">
+                      <strong>{selectedExaminer.name}</strong>
+                      <span>인증기업심사관</span>
+                    </div>
+                    <p className="examiner-company">{selectedExaminer.companyName}</p>
+                    <div className="examiner-tags">
+                      {(selectedExaminer.specialties || []).slice(0, 3).map((tag) => (
+                        <span key={tag}>#{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
 
               {/* 태그 */}
               <div className="form-group">
@@ -810,15 +982,30 @@ const PolicyAnalysisWrite = () => {
             )}
           </div>
 
+          {/* 게시글 비밀번호 */}
+          <div className="form-group password-group">
+            <label htmlFor="policy-password">
+              게시글 비밀번호 <span className="required">*</span>
+            </label>
+            <input
+              type="password"
+              id="policy-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="환경변수에 등록된 비밀번호를 입력하세요"
+              required
+            />
+          </div>
+
           {/* 하단 버튼 */}
           <div className="form-actions">
             <button type="button" className="btn-cancel" onClick={handleCancel}>
               <i className="fas fa-times"></i>
               취소
             </button>
-            <button type="submit" className="btn-submit">
+            <button type="submit" className="btn-submit" disabled={isSubmitting}>
               <i className="fas fa-check"></i>
-              작성 완료
+              {isSubmitting ? '작성 중...' : '작성 완료'}
             </button>
           </div>
         </form>
@@ -831,7 +1018,12 @@ const PolicyAnalysisWrite = () => {
               <h1 className="preview-title">{formData.title || '제목 없음'}</h1>
               <div className="preview-meta">
                 <span className="author">
-                  <i className="fas fa-user-tie"></i> 테스트 작성자
+                  <i className="fas fa-shield-alt"></i>{' '}
+                  {selectedExaminer ? `${selectedExaminer.name} 인증기업심사관` : '인증기업심사관'}
+                </span>
+                <span className="company">
+                  <i className="fas fa-building"></i>{' '}
+                  {selectedExaminer ? selectedExaminer.companyName : '기업명을 선택해주세요'}
                 </span>
                 <span className="date">
                   <i className="fas fa-calendar"></i> {new Date().toLocaleDateString('ko-KR')}
@@ -871,3 +1063,12 @@ const PolicyAnalysisWrite = () => {
 };
 
 export default PolicyAnalysisWrite;
+
+
+
+
+
+
+
+
+

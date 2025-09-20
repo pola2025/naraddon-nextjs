@@ -373,8 +373,8 @@ const PolicyAnalysis = () => {
       {/* CTA 섹션 */}
       <div className="cta-section">
         <div className="cta-container">
-          <h2>우리 기업에 맞는 정책자금을 찾고 계신가요?</h2>
-          <p>나라똔 기업심사관이 1:1 맞춤 분석을 통해 최적의 정책자금을 찾아드립니다</p>
+          <h2>인증 기업심사관과 함께 정책자금을 찾아보시겠어요?</h2>
+          <p>검증된 정책분석 전문가가 1:1로 맞춤 전략을 제안해드립니다.<br />대표님의 사업에 필요한 정책을 바로 안내해드립니다.</p>
           <div className="cta-stats">
             <div className="stat">
               <strong>93%</strong>
@@ -399,3 +399,7 @@ const PolicyAnalysis = () => {
 };
 
 export default PolicyAnalysis;
+
+
+
+

@@ -35,11 +35,9 @@ const IntroVideo = ({
       </div>
 
       {/* 자막 - 화면 중앙에 표시 */}
-      {currentCaption && (
-        <div className={`video-caption ${!isCaptionVisible ? 'fade-out' : ''}`}>
-          <div className="main-caption">{currentCaption}</div>
-        </div>
-      )}
+      <div className={`video-caption ${currentCaption && isCaptionVisible ? 'visible' : 'hidden'}`}>
+        {currentCaption && <div className="main-caption">{currentCaption}</div>}
+      </div>
 
       {/* 시작 버튼 */}
       <div className="start-button-container">
@@ -53,3 +51,4 @@ const IntroVideo = ({
 };
 
 export default IntroVideo;
+

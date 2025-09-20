@@ -1,22 +1,30 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './Home.css';
 import HeroSection from './components/HeroSection';
 import IntroVideo from './components/IntroVideo';
 import TrustSection from '../TrustSection';
 import PolicyThumbnails from '../PolicyThumbnails';
 import SaveSection from '../SaveSection';
-import NaraddonTube from '../NaraddonTube';
+import NaraddonTube from '../NaraddonTube/NaraddonTube';
 import EmpathySection from '../EmpathySection';
 import { captions } from './constants/captions';
 
+const CAPTION_FADE_DURATION = 850;
+
 function Home() {
+  useEffect(() => {
+    document.body.classList.add('page-home');
+    return () => document.body.classList.remove('page-home');
+  }, []);
   const [showIntro, setShowIntro] = useState(true);
   const [showStartButton, setShowStartButton] = useState(true);
   const [showGreenOverlay, setShowGreenOverlay] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const [currentCaption, setCurrentCaption] = useState('');
-  const [isCaptionVisible, setIsCaptionVisible] = useState(true);
+  const [isCaptionVisible, setIsCaptionVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const captionRef = useRef('');
+  const fadeTimeoutRef = useRef(null);
 
   // 자막 업데이트
   useEffect(() => {
@@ -30,22 +38,43 @@ function Home() {
       const caption = captions.find((cap) => elapsed >= cap.time && elapsed < cap.endTime);
 
       if (caption) {
-        if (caption.text !== currentCaption) {
+        if (caption.text !== captionRef.current) {
+          captionRef.current = caption.text;
           setIsCaptionVisible(false);
 
-          setTimeout(() => {
+          if (fadeTimeoutRef.current) {
+            clearTimeout(fadeTimeoutRef.current);
+          }
+
+          fadeTimeoutRef.current = setTimeout(() => {
             setCurrentCaption(caption.text);
             setIsCaptionVisible(true);
-          }, 200);
+            fadeTimeoutRef.current = null;
+          }, CAPTION_FADE_DURATION);
         }
-      } else {
-        setCurrentCaption('');
+      } else if (captionRef.current) {
+        captionRef.current = '';
+        setIsCaptionVisible(false);
+
+        if (fadeTimeoutRef.current) {
+          clearTimeout(fadeTimeoutRef.current);
+        }
+
+        fadeTimeoutRef.current = setTimeout(() => {
+          setCurrentCaption('');
+          fadeTimeoutRef.current = null;
+        }, CAPTION_FADE_DURATION);
       }
     };
 
     const interval = setInterval(updateCaption, 100);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (fadeTimeoutRef.current) {
+        clearTimeout(fadeTimeoutRef.current);
+      }
+    };
   }, [showIntro]);
 
   // 시작 버튼 클릭 핸들러
@@ -95,11 +124,11 @@ function Home() {
 
       {/* 메인 콘텐츠 (인트로 후 표시) */}
       {!showIntro && (
-        <div className="main-content-area">
+        <div className="home-main-content">
           {/* 영상 배경 래퍼 */}
-          <div className="video-section-wrapper">
+          <div className="home-hero-section">
             {/* 배경 영상 */}
-            <div className="video-background">
+            <div className="home-hero-section__background">
               <video
                 autoPlay
                 muted
@@ -122,7 +151,7 @@ function Home() {
                 <source src="/videos/Naraddon_main_2nd.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-              <div className="video-overlay"></div>
+              <div className="home-hero-section__overlay"></div>
             </div>
 
             {/* 히어로 섹션 */}
@@ -145,162 +174,35 @@ function Home() {
           <EmpathySection />
 
           {/* 정부기관 로고 롤링 섹션 - 맨 아래로 이동 */}
-          <section
-            className="government-logos-section"
-            style={{
-              padding: '60px 0 80px',
-              background: '#ffffff',
-              overflow: 'hidden',
-              borderBottom: '1px solid #e0e0e0',
-            }}
-          >
-            <div
-              className="container"
-              style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 20px' }}
-            >
-              <div style={{ textAlign: 'center', marginBottom: '40px', position: 'relative' }}>
-                <h2
-                  style={{
-                    fontSize: '36px',
-                    fontWeight: '700',
-                    color: '#2c3e50',
-                    marginBottom: '10px',
-                    display: 'inline-block',
-                    position: 'relative',
-                    paddingBottom: '15px',
-                  }}
-                >
+          <section className="home-government-logos">
+            <div className="home-government-logos__container">
+              <div className="home-government-logos__heading">
+                <h2 className="home-government-logos__title">
                   함께하는 정부기관
-                  <span
-                    style={{
-                      position: 'absolute',
-                      bottom: '0',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      width: '80px',
-                      height: '4px',
-                      background: 'linear-gradient(90deg, #4CAF50, #45a049)',
-                      borderRadius: '2px',
-                    }}
-                  ></span>
+                  <span className="home-government-logos__title-underline"></span>
                 </h2>
-                <p
-                  style={{
-                    display: 'block',
-                    fontSize: '16px',
-                    color: '#666666',
-                    fontWeight: '400',
-                    marginTop: '10px',
-                  }}
-                >
+                <p className="home-government-logos__subtitle">
                   신뢰할 수 있는 정부기관과 함께 성공을 만들어갑니다
                 </p>
               </div>
-              <div
-                className="government-logos-wrapper"
-                style={{
-                  position: 'relative',
-                  width: '100%',
-                  overflow: 'hidden',
-                  height: '80px',
-                }}
-              >
-                <div
-                  className="government-logos"
-                  style={{
-                    display: 'flex',
-                    animation: 'scrollLogos 60s linear infinite',
-                    width: 'fit-content',
-                  }}
-                >
-                  {/* 첫 번째 트랙 */}
-                  <div
-                    className="logos-track"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '60px',
-                      paddingRight: '60px',
-                    }}
-                  >
+              <div className="home-government-logos__wrapper">
+                <div className="home-government-logos__scroller">
+                  <div className="home-government-logos__row">
                     {[...Array(17)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="government-logo"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          minWidth: '140px',
-                          height: '70px',
-                          opacity: 0.8,
-                          transition: 'all 0.3s ease',
-                          filter: 'grayscale(0%)',
-                          cursor: 'pointer',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.opacity = '1';
-                          e.currentTarget.style.transform = 'scale(1.1)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.opacity = '0.8';
-                          e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                      >
+                      <div key={i} className="home-government-logos__logo">
                         <img
                           src={`/images/${i + 1}.png`}
                           alt={`정부기관 로고 ${i + 1}`}
-                          style={{
-                            maxWidth: '120px',
-                            maxHeight: '60px',
-                            objectFit: 'contain',
-                          }}
                         />
                       </div>
                     ))}
                   </div>
-                  {/* 두 번째 트랙 (무한 루프용) */}
-                  <div
-                    className="logos-track"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '60px',
-                      paddingRight: '60px',
-                    }}
-                  >
+                  <div className="home-government-logos__row">
                     {[...Array(17)].map((_, i) => (
-                      <div
-                        key={`dup-${i}`}
-                        className="government-logo"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          minWidth: '140px',
-                          height: '70px',
-                          opacity: 0.8,
-                          transition: 'all 0.3s ease',
-                          filter: 'grayscale(0%)',
-                          cursor: 'pointer',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.opacity = '1';
-                          e.currentTarget.style.transform = 'scale(1.1)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.opacity = '0.8';
-                          e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                      >
+                      <div key={`dup-${i}`} className="home-government-logos__logo">
                         <img
                           src={`/images/${i + 1}.png`}
                           alt={`정부기관 로고 ${i + 1}`}
-                          style={{
-                            maxWidth: '120px',
-                            maxHeight: '60px',
-                            objectFit: 'contain',
-                          }}
                         />
                       </div>
                     ))}
@@ -308,21 +210,13 @@ function Home() {
                 </div>
               </div>
             </div>
-            <style jsx>{`
-              @keyframes scrollLogos {
-                0% {
-                  transform: translateX(0);
-                }
-                100% {
-                  transform: translateX(-50%);
-                }
-              }
-            `}</style>
           </section>
         </div>
+
       )}
     </div>
   );
 }
 
 export default Home;
+

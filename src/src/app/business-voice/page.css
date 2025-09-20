@@ -226,137 +226,6 @@
 }
 
 /* 쇼츠 섹션 */
-.shorts-section {
-  background: white;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.shorts-section h3 {
-  font-size: 1.2rem;
-  color: var(--gray-900);
-  margin-bottom: 20px;
-  font-weight: 600;
-}
-
-.shorts-list {
-  display: flex;
-  gap: 15px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  -webkit-overflow-scrolling: touch;
-}
-
-.shorts-list::-webkit-scrollbar {
-  height: 6px;
-}
-
-.shorts-list::-webkit-scrollbar-track {
-  background: var(--gray-200);
-  border-radius: 3px;
-}
-
-.shorts-list::-webkit-scrollbar-thumb {
-  background: var(--naraddon-primary);
-  border-radius: 3px;
-}
-
-.shorts-item {
-  flex-shrink: 0;
-  width: 120px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.shorts-item:hover {
-  transform: scale(1.05);
-}
-
-.shorts-thumbnail {
-  position: relative;
-  width: 120px;
-  height: 160px;
-  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.4));
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 8px;
-  background-color: var(--gray-200);
-}
-
-.duration {
-  position: absolute;
-  bottom: 5px;
-  right: 5px;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 0.75rem;
-}
-
-.shorts-play {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s;
-  cursor: pointer;
-  color: var(--naraddon-primary);
-  font-size: 1.2rem;
-}
-
-.shorts-item:hover .shorts-play {
-  opacity: 1;
-}
-
-.shorts-info {
-  padding: 0 4px;
-}
-
-.shorts-title {
-  font-size: 0.85rem;
-  color: var(--gray-900);
-  margin: 0 0 4px 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  line-height: 1.3;
-}
-
-.shorts-meta {
-  font-size: 0.75rem;
-  color: var(--gray-600);
-}
-
-.more-videos-btn {
-  width: 100%;
-  padding: 12px;
-  background: var(--naraddon-primary-light);
-  color: var(--naraddon-primary-dark);
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.more-videos-btn:hover {
-  background: var(--naraddon-primary);
-  color: white;
-}
-
 /* 섹션 2: 똔톡 - 콤팩트 그리드 레이아웃 */
 .ttontok-section {
   background: #fafafa;
@@ -1362,19 +1231,7 @@
     padding: 10px;
   }
 
-  .shorts-list {
-    gap: 10px;
   }
-
-  .shorts-item {
-    width: 100px;
-  }
-
-  .shorts-thumbnail {
-    width: 100px;
-    height: 133px;
-  }
-}
 
 @media (max-width: 768px) {
   .business-voice-container {
@@ -1507,10 +1364,6 @@
   .ttontok-content {
     font-size: 12px;
     -webkit-line-clamp: 2;
-  }
-
-  .shorts-list {
-    gap: 8px;
   }
 
   .popular-list {

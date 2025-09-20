@@ -203,11 +203,11 @@ const VoiceHero = () => {
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6"
           >
             <span className="block bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700">
-              사업자님들의
+              대표님들의 고민을 함께합니다.
             </span>
             <span className="block mt-2 relative">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient">
-                진솔한 이야기
+                소상공인 성장 플랫폼 커뮤니티
               </span>
               <motion.div
                 initial={{ scaleX: 0 }}
@@ -224,10 +224,7 @@ const VoiceHero = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 mb-10 px-4 leading-relaxed"
           >
-            나라똔과 함께 <span className="font-semibold text-gray-800">매출 40% 성장</span>을
-            경험한
-            <br className="hidden md:block" />
-            전국 사업자님들의 생생한 성공 스토리를 확인해보세요
+            대표님들의 고민과 애환을 <span className="font-semibold text-gray-800">나라똔 플랫폼</span>이 함께 합니다.
           </motion.p>
 
           <motion.div
@@ -342,3 +339,4 @@ const VoiceHero = () => {
 };
 
 export default VoiceHero;
+

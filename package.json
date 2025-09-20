@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:3001": "next dev -p 3001",
+    "dev:3001": "powershell -ExecutionPolicy Bypass -File scripts/kill-port.ps1 3001 && next dev -p 3001",
+    "dev:3002": "next dev -p 3002",
+    "dev:8080": "next dev -p 8080",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -14,6 +16,7 @@
     "backup:milestone": "node scripts/backup.js milestone",
     "backup:list": "node scripts/backup.js list",
     "backup:status": "node scripts/backup.js status",
+    "seed:experts": "node scripts/seed-expert-examiners.js",
     "commit:history": "node scripts/commit-tracker.js history",
     "commit:stats": "node scripts/commit-tracker.js stats",
     "commit:restore": "node scripts/commit-tracker.js restore",
@@ -21,9 +24,13 @@
     "preflight": "powershell -ExecutionPolicy Bypass -File tools/preflight.ps1",
     "release": "npm run backup:full && npm run preflight && vercel deploy --prod",
     "deploy": "npm run backup:full && vercel --prod",
-    "deploy:all": "npm run backup:full && npm run preflight && vercel --prod"
+    "deploy:all": "npm run backup:full && npm run preflight && vercel --prod",
+    "backup:consult-sections": "node scripts/backup-consultation-sections.js",
+    "seed:ttontok": "ts-node --transpile-only scripts/seed-ttontok.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.637.0",
+    "@aws-sdk/s3-request-presigner": "^3.892.0",
     "clsx": "^2.1.0",
     "dotenv": "^17.2.2",
     "framer-motion": "^11.0.3",
@@ -52,7 +59,9 @@
     "postcss": "^8",
     "prettier": "^3.6.2",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.38.0",
+    "ts-node": "^10.9.2"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

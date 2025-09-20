@@ -17,7 +17,7 @@ const HeroSection = () => {
     <div className={`hero-section-container ${contentVisible ? 'visible' : ''}`}>
       <div className="hero-text-container">
         <h1 className="hero-main-title">
-          대한민국 1,000만 사장님의 성공!
+          기업이 살아야, 나라가 산다
           <span className="highlight">가장 믿음직한 동행, 나라똔이 함께합니다.</span>
         </h1>
 
@@ -27,7 +27,7 @@ const HeroSection = () => {
               <i className="fas fa-comments"></i>
               <span>무료상담신청</span>
             </a>
-            <a href="#qna" className="hero-btn hero-btn-secondary">
+            <a href="/consultation-request#qna-section" className="hero-btn hero-btn-secondary">
               <i className="fas fa-question-circle"></i>
               <span>사업하면서 반드시 알아야 하는 100가지 Q&A</span>
             </a>
@@ -56,3 +56,4 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+

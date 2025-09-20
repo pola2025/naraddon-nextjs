@@ -103,6 +103,30 @@
   --header-height: 70px;
   --mobile-header-height: 60px;
   --tagline-height: 38px;
+  /* 히어로 디자인 토큰 */
+  --hero-background: linear-gradient(115deg, #2f6bff 0%, #2a8bff 45%, #12c6a3 100%);
+  --hero-overlay-radial-primary: rgba(255, 255, 255, 0.18);
+  --hero-overlay-radial-secondary: rgba(255, 255, 255, 0.1);
+  --hero-text-color: #ffffff;
+  --hero-highlight-color: #e5f4ff;
+  --hero-subtitle-color: rgba(255, 255, 255, 0.92);
+  --hero-secondary-text-color: rgba(255, 255, 255, 0.82);
+  --hero-badge-background: rgba(255, 255, 255, 0.18);
+  --hero-badge-border: rgba(255, 255, 255, 0.32);
+  --hero-badge-text: #f8fbff;
+  --hero-cta-background: #ffffff;
+  --hero-cta-hover-background: #f1f5ff;
+  --hero-cta-text: #1d4ed8;
+  --hero-cta-shadow: 0 16px 34px rgba(23, 100, 255, 0.22);
+  --hero-stat-background: rgba(255, 255, 255, 0.12);
+  --hero-stat-border: rgba(255, 255, 255, 0.28);
+  --hero-stat-shadow: 0 24px 42px rgba(28, 84, 140, 0.24);
+  --hero-stat-value-color: #ffffff;
+  --hero-stat-label-color: rgba(255, 255, 255, 0.78);
+  --hero-content-gap: 32px;
+  --hero-footer-gap: 28px;
+  --hero-stats-gap: 20px;
+  --hero-content-width: 64rem;
 }
 
 /* 다크 모드 (향후 구현 시) */
@@ -114,3 +138,6 @@
   --text-secondary: #e0e0e0;
   --text-tertiary: #a0a0a0;
 }
+
+
+

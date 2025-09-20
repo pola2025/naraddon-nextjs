@@ -50,14 +50,7 @@ const BusinessVoicePage = () => {
     date: '3일 전',
   };
 
-  // 쇼츠 영상 데이터
-  const shortsVideos = [
-    { id: 1, title: '세무 절세 꿀팁', author: '이○○', views: 8921 },
-    { id: 2, title: '벤처인증 1주일', author: '박○○', views: 6543 },
-    { id: 3, title: '수출바우처 승인', author: '최○○', views: 5102 },
-    { id: 4, title: '정부지원 서류', author: '정○○', views: 4567 },
-    { id: 5, title: '창업 초기자본', author: '강○○', views: 3890 },
-  ];
+
 
   // 똔톡 콤팩트 리스트 데이터 (내용 추가)
   const ttontokList = [
@@ -469,27 +462,7 @@ const BusinessVoicePage = () => {
             </div>
           </div>
 
-          {/* 쇼츠 영상 리스트 */}
-          <div className="shorts-section">
-            <h3>📱 1분 쇼츠 인터뷰</h3>
-            <div className="shorts-list">
-              {shortsVideos.map((video) => (
-                <div key={video.id} className="shorts-item">
-                  <div className="shorts-thumbnail">
-                    <span className="duration">0:58</span>
-                    <button className="shorts-play">▶</button>
-                  </div>
-                  <div className="shorts-info">
-                    <p className="shorts-title">{video.title}</p>
-                    <span className="shorts-meta">
-                      {video.author} • {video.views.toLocaleString()}회
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button className="more-videos-btn">더 많은 인터뷰 보기 →</button>
-          </div>
+          
         </div>
       </section>
 

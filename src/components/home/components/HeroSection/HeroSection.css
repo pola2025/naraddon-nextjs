@@ -209,7 +209,7 @@
 /* 모바일 반응형 */
 @media (max-width: 768px) {
   .hero-section-container {
-    padding: 40px 20px;
+    padding: 100px 20px 40px;
   }
 
   .hero-main-title {
@@ -249,7 +249,7 @@
 /* 소형 모바일 반응형 */
 @media (max-width: 576px) {
   .hero-section-container {
-    padding: 30px 15px;
+    padding: 100px 15px 30px;
   }
 
   .hero-main-title {
@@ -299,3 +299,11 @@
     font-size: 14px;
   }
 }
+
+
+@media (min-width: 1024px) {
+  .hero-section-container {
+    padding-left: 60px;
+  }
+}
+

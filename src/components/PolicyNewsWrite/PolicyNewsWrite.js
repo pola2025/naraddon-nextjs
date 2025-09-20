@@ -1,71 +1,103 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import './PolicyNewsWrite.css';
 
+const categories = [
+  { value: '', label: '카테고리를 선택해주세요' },
+  { value: '정부지원', label: '정부지원' },
+  { value: '중소기업', label: '중소기업' },
+  { value: '창업지원', label: '창업지원' },
+  { value: '연구개발', label: '연구개발' },
+  { value: '금융지원', label: '금융지원' },
+  { value: '세제지원', label: '세제지원' },
+  { value: '고용지원', label: '고용지원' },
+  { value: '지역정책', label: '지역정책' },
+  { value: '환경정책', label: '환경정책' },
+  { value: '기타', label: '기타' },
+];
+
+const defaultFormData = {
+  title: '',
+  category: '',
+  excerpt: '',
+  content: '',
+  tags: '',
+  thumbnail: '',
+  isMainNews: false,
+};
+
 const PolicyNewsWrite = () => {
   const router = useRouter();
-
-  // 관리자 권한 체크 (추후 실제 권한 체크 로직으로 대체)
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  const [formData, setFormData] = useState({
-    title: '',
-    category: '',
-    excerpt: '',
-    content: '',
-    tags: '',
-    thumbnail: '',
-    isMainNews: false,
-  });
-
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [formData, setFormData] = useState(defaultFormData);
   const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
-
-  // 카테고리 옵션
-  const categories = [
-    { value: '', label: '카테고리 선택' },
-    { value: '지원사업', label: '지원사업' },
-    { value: '제조업', label: '제조업' },
-    { value: '창업지원', label: '창업지원' },
-    { value: '기술개발', label: '기술개발' },
-    { value: '금융지원', label: '금융지원' },
-    { value: '경영지원', label: '경영지원' },
-    { value: '수출지원', label: '수출지원' },
-    { value: '기술지원', label: '기술지원' },
-    { value: '특별지원', label: '특별지원' },
-    { value: '환경지원', label: '환경지원' },
-  ];
+  const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verifyError, setVerifyError] = useState('');
 
   useEffect(() => {
-    // 추후 실제 관리자 권한 체크 로직 구현
-    // 예: API 호출하여 사용자 권한 확인
-    // setIsAdmin(true); // 관리자인 경우
-    setIsAdmin(false); // 현재는 false로 설정
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const cached = sessionStorage.getItem('policyNewsAuthorized');
+    if (cached === 'true') {
+      setIsAuthorized(true);
+    }
   }, []);
 
-  // 입력 변경 처리
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  useEffect(() => {
+    if (!isAuthorized || typeof window === 'undefined') {
+      return;
+    }
+    const draft = localStorage.getItem('policyNewsDraft');
+    if (draft) {
+      try {
+        const parsed = JSON.parse(draft);
+        setFormData({ ...defaultFormData, ...parsed });
+        if (parsed.thumbnail) {
+          setImagePreview(parsed.thumbnail);
+        }
+      } catch (error) {
+        console.warn('임시 저장된 데이터를 불러오지 못했습니다.', error);
+      }
+    }
+  }, [isAuthorized]);
+
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
 
-    // 에러 메시지 제거
     if (errors[name]) {
       setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
+        const nextErrors = { ...prev };
+        delete nextErrors[name];
+        return nextErrors;
       });
     }
   };
 
-  // 이미지 URL 처리
-  const handleImageUrlChange = (e) => {
-    const url = e.target.value;
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+    setVerifyError('');
+
+    if (errors.password) {
+      setErrors((prev) => {
+        const nextErrors = { ...prev };
+        delete nextErrors.password;
+        return nextErrors;
+      });
+    }
+  };
+
+  const handleImageUrlChange = (event) => {
+    const url = event.target.value;
     setFormData((prev) => ({ ...prev, thumbnail: url }));
 
     if (url) {
@@ -73,126 +105,219 @@ const PolicyNewsWrite = () => {
     } else {
       setImagePreview(null);
     }
+
+    if (errors.thumbnail) {
+      setErrors((prev) => {
+        const nextErrors = { ...prev };
+        delete nextErrors.thumbnail;
+        return nextErrors;
+      });
+    }
   };
 
-  // 에디터 툴바 기능 (간단한 구현)
   const insertFormatting = (format) => {
     const textarea = document.getElementById('content');
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = formData.content.substring(start, end);
-    let newText = '';
+    if (!textarea) {
+      return;
+    }
+
+    const { selectionStart, selectionEnd } = textarea;
+    const selectedText = formData.content.substring(selectionStart, selectionEnd);
+    let wrapped = selectedText;
 
     switch (format) {
       case 'bold':
-        newText = `<strong>${selectedText}</strong>`;
+        wrapped = `<strong>${selectedText}</strong>`;
         break;
       case 'italic':
-        newText = `<em>${selectedText}</em>`;
+        wrapped = `<em>${selectedText}</em>`;
         break;
       case 'heading':
-        newText = `<h3>${selectedText}</h3>`;
+        wrapped = `<h3>${selectedText}</h3>`;
         break;
       case 'link':
-        newText = `<a href="#">${selectedText}</a>`;
+        wrapped = `<a href="#">${selectedText || '링크'}</a>`;
         break;
       default:
-        newText = selectedText;
+        break;
     }
 
-    const newContent =
-      formData.content.substring(0, start) + newText + formData.content.substring(end);
-    setFormData((prev) => ({ ...prev, content: newContent }));
+    const nextValue =
+      formData.content.substring(0, selectionStart) + wrapped + formData.content.substring(selectionEnd);
+
+    setFormData((prev) => ({ ...prev, content: nextValue }));
   };
 
-  // 폼 검증
   const validateForm = () => {
-    const newErrors = {};
+    const nextErrors = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = '제목을 입력해주세요.';
+      nextErrors.title = '제목을 입력해주세요.';
     }
     if (!formData.category) {
-      newErrors.category = '카테고리를 선택해주세요.';
+      nextErrors.category = '카테고리를 선택해주세요.';
     }
     if (!formData.excerpt.trim()) {
-      newErrors.excerpt = '요약을 입력해주세요.';
+      nextErrors.excerpt = '요약을 입력해주세요.';
     }
     if (!formData.content.trim()) {
-      newErrors.content = '내용을 입력해주세요.';
+      nextErrors.content = '내용을 입력해주세요.';
     }
     if (!formData.thumbnail.trim()) {
-      newErrors.thumbnail = '썸네일 이미지를 설정해주세요.';
+      nextErrors.thumbnail = '표지 이미지를 입력해주세요.';
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
   };
 
-  // 폼 제출
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const verifyPassword = async (event) => {
+    event.preventDefault();
+    if (!password.trim()) {
+      setVerifyError('비밀번호를 입력해주세요.');
+      return;
+    }
+
+    try {
+      setIsVerifying(true);
+      setVerifyError('');
+      const response = await fetch('/api/policy-news/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        setVerifyError(result?.message || '비밀번호가 올바르지 않습니다.');
+        return;
+      }
+
+      setIsAuthorized(true);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('policyNewsAuthorized', 'true');
+      }
+    } catch (error) {
+      console.error('비밀번호 검증 실패', error);
+      setVerifyError('비밀번호 검증 중 오류가 발생했습니다.');
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     if (!validateForm()) {
       alert('필수 항목을 모두 입력해주세요.');
       return;
     }
 
-    // 태그 처리
+    if (!password.trim()) {
+      setErrors((prev) => ({ ...prev, password: '게시글 비밀번호를 입력해주세요.' }));
+      return;
+    }
+
     const tagsArray = formData.tags
       .split(',')
       .map((tag) => tag.trim())
       .filter((tag) => tag.length > 0);
 
-    const submitData = {
-      ...formData,
+    const payload = {
+      title: formData.title,
+      category: formData.category,
+      excerpt: formData.excerpt,
+      content: formData.content,
+      thumbnail: formData.thumbnail,
       tags: tagsArray,
-      date: new Date().toLocaleDateString('ko-KR').replace(/\. /g, '.').replace('.', ''),
-      views: 0,
-      likes: 0,
-      comments: 0,
+      isMain: formData.isMainNews,
+      password,
     };
 
-    console.log('제출 데이터:', submitData);
+    try {
+      setIsSubmitting(true);
+      const response = await fetch('/api/policy-news', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-    // TODO: API 호출하여 데이터 저장
-    alert('정책뉴스가 성공적으로 등록되었습니다.');
-    router.push('/policy-analysis');
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        alert(result?.message || '게시글 등록에 실패했습니다.');
+        return;
+      }
+
+      localStorage.removeItem('policyNewsDraft');
+      alert('정책소식이 등록되었습니다.');
+      router.push(`/policy-news/${result.post._id}`);
+    } catch (error) {
+      console.error('정책소식 등록 실패', error);
+      alert('게시글 등록 중 오류가 발생했습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  // 취소
   const handleCancel = () => {
-    if (window.confirm('작성 중인 내용이 사라집니다. 취소하시겠습니까?')) {
+    if (window.confirm('작성 중인 내용을 취소하시겠습니까?')) {
       router.back();
     }
   };
 
-  // 임시저장
   const handleSaveDraft = () => {
     localStorage.setItem('policyNewsDraft', JSON.stringify(formData));
-    alert('임시저장되었습니다.');
+    alert('임시 저장되었습니다.');
   };
 
-  // 임시저장 불러오기
   const handleLoadDraft = () => {
     const draft = localStorage.getItem('policyNewsDraft');
     if (draft) {
-      const parsedDraft = JSON.parse(draft);
-      setFormData(parsedDraft);
-      if (parsedDraft.thumbnail) {
-        setImagePreview(parsedDraft.thumbnail);
+      const parsed = JSON.parse(draft);
+      setFormData({ ...defaultFormData, ...parsed });
+      if (parsed.thumbnail) {
+        setImagePreview(parsed.thumbnail);
       }
-      alert('임시저장된 내용을 불러왔습니다.');
+      alert('임시 저장된 내용을 불러왔습니다.');
     } else {
-      alert('임시저장된 내용이 없습니다.');
+      alert('임시 저장된 데이터가 없습니다.');
     }
   };
+
+  if (!isAuthorized) {
+    return (
+      <div className="policy-news-write">
+        <div className="write-header">
+          <h1>정책소식 작성</h1>
+          <p>비밀번호를 입력하세요.</p>
+        </div>
+        <form className="password-verify-form" onSubmit={verifyPassword}>
+          <label htmlFor="verify-password">게시글 비밀번호</label>
+          <input
+            type="password"
+            id="verify-password"
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder="비밀번호를 입력하세요"
+          />
+          {verifyError && <span className="error-message">{verifyError}</span>}
+          <button type="submit" className="btn-submit" disabled={isVerifying}>
+            <i className="fas fa-lock"></i> {isVerifying ? '확인 중...' : '확인'}
+          </button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div className="policy-news-write">
       <div className="write-header">
-        <h1>정책뉴스 작성</h1>
-        <p>최신 정책 동향과 지원사업 소식을 작성해주세요</p>
+        <h1>정책소식 작성</h1>
+        <p>비밀번호를 입력하면 게시글을 등록할 수 있습니다.</p>
       </div>
 
       <form className="write-form" onSubmit={handleSubmit}>
@@ -207,7 +332,7 @@ const PolicyNewsWrite = () => {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              placeholder="뉴스 제목을 입력하세요"
+              placeholder="게시글 제목을 입력해주세요"
               className={errors.title ? 'error' : ''}
             />
             {errors.title && <span className="error-message">{errors.title}</span>}
@@ -224,9 +349,9 @@ const PolicyNewsWrite = () => {
               onChange={handleChange}
               className={errors.category ? 'error' : ''}
             >
-              {categories.map((cat) => (
-                <option key={cat.value} value={cat.value}>
-                  {cat.label}
+              {categories.map((category) => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
                 </option>
               ))}
             </select>
@@ -243,12 +368,10 @@ const PolicyNewsWrite = () => {
             name="excerpt"
             value={formData.excerpt}
             onChange={handleChange}
-            placeholder="뉴스 내용을 간략히 요약해주세요 (최대 200자)"
-            maxLength="200"
-            rows="3"
+            placeholder="게시글 요약을 입력해주세요"
+            rows={3}
             className={errors.excerpt ? 'error' : ''}
           />
-          <div className="char-count">{formData.excerpt.length} / 200</div>
           {errors.excerpt && <span className="error-message">{errors.excerpt}</span>}
         </div>
 
@@ -257,37 +380,16 @@ const PolicyNewsWrite = () => {
             내용 <span className="required">*</span>
           </label>
           <div className="editor-toolbar">
-            <button
-              type="button"
-              className="toolbar-btn"
-              onClick={() => insertFormatting('bold')}
-              title="굵게"
-            >
+            <button type="button" className="toolbar-btn" onClick={() => insertFormatting('bold')}>
               <i className="fas fa-bold"></i>
             </button>
-            <button
-              type="button"
-              className="toolbar-btn"
-              onClick={() => insertFormatting('italic')}
-              title="기울임"
-            >
+            <button type="button" className="toolbar-btn" onClick={() => insertFormatting('italic')}>
               <i className="fas fa-italic"></i>
             </button>
-            <span className="toolbar-separator"></span>
-            <button
-              type="button"
-              className="toolbar-btn"
-              onClick={() => insertFormatting('heading')}
-              title="제목"
-            >
+            <button type="button" className="toolbar-btn" onClick={() => insertFormatting('heading')}>
               <i className="fas fa-heading"></i>
             </button>
-            <button
-              type="button"
-              className="toolbar-btn"
-              onClick={() => insertFormatting('link')}
-              title="링크"
-            >
+            <button type="button" className="toolbar-btn" onClick={() => insertFormatting('link')}>
               <i className="fas fa-link"></i>
             </button>
           </div>
@@ -296,8 +398,8 @@ const PolicyNewsWrite = () => {
             name="content"
             value={formData.content}
             onChange={handleChange}
-            placeholder="뉴스 내용을 자세히 작성해주세요. HTML 태그를 사용할 수 있습니다."
-            rows="15"
+            placeholder="정책소식 내용을 입력해주세요. HTML 태그를 사용할 수 있습니다."
+            rows={15}
             className={errors.content ? 'error' : ''}
           />
           {errors.content && <span className="error-message">{errors.content}</span>}
@@ -305,7 +407,7 @@ const PolicyNewsWrite = () => {
 
         <div className="form-group">
           <label htmlFor="thumbnail">
-            썸네일 이미지 <span className="required">*</span>
+            표지 이미지 URL <span className="required">*</span>
           </label>
           <div className="image-upload-area">
             <input
@@ -314,20 +416,19 @@ const PolicyNewsWrite = () => {
               name="thumbnail"
               value={formData.thumbnail}
               onChange={handleImageUrlChange}
-              placeholder="이미지 URL을 입력하세요 (예: https://example.com/image.jpg)"
+              placeholder="https://example.com/thumbnail.jpg"
               className={errors.thumbnail ? 'error' : ''}
             />
             {errors.thumbnail && <span className="error-message">{errors.thumbnail}</span>}
 
             <div className="upload-box">
               <i className="fas fa-cloud-upload-alt"></i>
-              <p>이미지 URL을 위에 입력해주세요</p>
-              <p className="upload-info">권장 크기: 1200x630px (JPG, PNG)</p>
+              <p>이미지 URL을 입력해주세요 (권장 1200x630px)</p>
             </div>
 
             {imagePreview && (
               <div className="image-preview">
-                <img src={imagePreview} alt="썸네일 미리보기" />
+                <img src={imagePreview} alt="미리보기" />
                 <button
                   type="button"
                   className="remove-image"
@@ -345,16 +446,16 @@ const PolicyNewsWrite = () => {
 
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="tags">태그 (쉼표로 구분)</label>
+            <label htmlFor="tags">태그</label>
             <input
               type="text"
               id="tags"
               name="tags"
               value={formData.tags}
               onChange={handleChange}
-              placeholder="정책자금, 중소기업, 지원사업"
+              placeholder="정책, 지원사업, 정부지원"
             />
-            <p className="help-text">관련 키워드를 입력하면 검색에 도움이 됩니다</p>
+            <p className="help-text">쉼표로 구분해 입력하면 됩니다.</p>
           </div>
 
           <div className="form-group checkbox-group">
@@ -365,48 +466,51 @@ const PolicyNewsWrite = () => {
                 checked={formData.isMainNews}
                 onChange={handleChange}
               />
-              <span>메인 뉴스로 설정</span>
+              <span>메인 슬라이드에 노출</span>
             </label>
-            <p className="help-text">메인 뉴스로 설정하면 슬라이드에 표시됩니다.</p>
+            <p className="help-text">선택 시 정책소식 슬라이드 영역에 노출됩니다.</p>
           </div>
         </div>
 
-        {/* 관리자에게만 표시되는 액션 버튼들 */}
-        {isAdmin && (
-          <div className="form-actions">
-            <div className="left-actions">
-              <button type="button" className="btn-draft" onClick={handleSaveDraft}>
-                <i className="fas fa-save"></i> 임시저장
-              </button>
-              <button type="button" className="btn-load" onClick={handleLoadDraft}>
-                <i className="fas fa-folder-open"></i> 불러오기
-              </button>
-            </div>
+        <div className="form-group password-group">
+          <label htmlFor="post-password">
+            게시글 비밀번호 <span className="required">*</span>
+          </label>
+          <input
+            type="password"
+            id="post-password"
+            name="post-password"
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder="비밀번호를 입력하세요"
+            className={errors.password ? 'error' : ''}
+          />
+          {errors.password && <span className="error-message">{errors.password}</span>}
+        </div>
 
-            <div className="right-actions">
-              <button type="button" className="btn-cancel" onClick={handleCancel}>
-                <i className="fas fa-times"></i> 취소
-              </button>
-              <button type="submit" className="btn-submit">
-                <i className="fas fa-check"></i> 등록
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* 관리자가 아닌 경우 메시지 표시 */}
-        {!isAdmin && (
-          <div className="admin-notice">
-            <i className="fas fa-lock"></i>
-            <p>정책뉴스 작성은 관리자 권한이 필요합니다.</p>
-            <button type="button" onClick={() => router.push('/policy-analysis')}>
-              목록으로 돌아가기
+        <div className="form-actions">
+          <div className="left-actions">
+            <button type="button" className="btn-draft" onClick={handleSaveDraft}>
+              <i className="fas fa-save"></i> 임시 저장
+            </button>
+            <button type="button" className="btn-load" onClick={handleLoadDraft}>
+              <i className="fas fa-folder-open"></i> 불러오기
             </button>
           </div>
-        )}
+
+          <div className="right-actions">
+            <button type="button" className="btn-cancel" onClick={handleCancel}>
+              <i className="fas fa-times"></i> 취소
+            </button>
+            <button type="submit" className="btn-submit" disabled={isSubmitting}>
+              <i className="fas fa-check"></i> {isSubmitting ? '등록 중...' : '등록'}
+            </button>
+          </div>
+        </div>
       </form>
     </div>
   );
 };
 
 export default PolicyNewsWrite;
+

@@ -13,19 +13,19 @@
 }
 /* 나라똔튜브 섹션 - 플로팅 카드 디자인 */
 .naraddon-tube-section {
-  padding: 40px 0;
+  padding: 64px 0;
   background: transparent;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .naraddon-tube-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 40px;
+  padding: 48px var(--home-content-padding-x, 24px);
   background: #ffffff;
   border-radius: 24px;
-  /* 깊이감 있는 그림자 복원 */
+  overflow: visible;
   box-shadow:
     0 1px 3px 0 rgba(0, 0, 0, 0.04),
     0 1px 2px 0 rgba(0, 0, 0, 0.06),
@@ -35,44 +35,51 @@
 }
 
 /* 섹션 헤더 - 공백 최소화 */
-.section-header {
-  text-align: center;
-  margin-bottom: 8px; /* 공백 더 줄임 */
-}
-
-.section-title {
-  font-size: 36px; /* 함께하는 정부기관과 동일한 크기 */
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 10px;
-  letter-spacing: -1px;
-  line-height: 1;
-  display: inline-block;
+.tube-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
   position: relative;
-  padding-bottom: 15px;
+  padding-bottom: 16px;
 }
 
-/* 타이틀 아래 녹색 포인트 선 추가 */
-.section-title::after {
+.tube-header::after {
   content: '';
   position: absolute;
+  left: 0;
+  right: 0;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(90deg, #4caf50, #45a049);
-  border-radius: 2px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(15, 118, 110, 0.25), rgba(148, 163, 184, 0.15));
 }
 
-.section-subtitle {
-  font-size: 16px; /* 함께하는 정부기관과 동일 */
-  color: #666666;
-  font-weight: 400;
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  display: block;
+.tube-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.tube-eyebrow {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #047857;
+}
+
+.tube-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.tube-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #64748b;
+  max-width: 680px;
 }
 
 /* YouTube 스타일 그리드 레이아웃 - 가로 4개 배열 */
@@ -86,7 +93,7 @@
 /* YouTube 카드 스타일 - border 제거 */
 .youtube-card {
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: visible;
   transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
@@ -109,7 +116,8 @@
 
 .youtube-card.expanded {
   z-index: 100;
-  transform: scale(1);
+  transform: scale(1.28);
+  transform-origin: center top;
   padding-bottom: 0; /* 확장 시 패딩 제거 */
 }
 
@@ -117,14 +125,80 @@
 .thumbnail-section {
   position: relative;
   width: 100%;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); /* 더 부드러운 가감속 */
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); /* 카드 확대 애니메이션 */
   transform-origin: center center;
+  border-radius: 24px;
+}
+
+.thumbnail-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.75) 100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  border-radius: inherit;
+}
+
+.youtube-card.expanded .thumbnail-section::after,
+.youtube-card:hover .thumbnail-section::after {
+  opacity: 1;
+}
+
+.youtube-card.expanded .videos-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 24px;
+  padding: 0 12px;
+}
+
+.youtube-card.expanded .video-item {
+  flex: 1 1 calc(50% - 12px);
+  max-width: calc(50% - 12px);
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.youtube-card.expanded .video-thumbnail {
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.youtube-card.expanded .video-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.youtube-card.expanded .video-hover-overlay {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.65) 100%);
+}
+
+.youtube-card.expanded .video-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.youtube-card.expanded .video-title {
+  color: #111827;
+}
+
+@media (max-width: 768px) {
+  .youtube-card.expanded .video-item {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
 }
 
 .youtube-card.expanded .thumbnail-section {
-  transform: scale(1.8) translateY(-35px); /* 1.8배 확대로 증가 */
+  transform: scale(1.44) translateY(-28px); /* 기존 대비 20% 축소 */
   z-index: 101;
-  margin-bottom: 90px; /* 확대 시 여백 추가 */
+  margin-bottom: 0; /* 썸네일과 영상 영역을 밀착 */
   pointer-events: auto;
   transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -134,14 +208,14 @@
   width: 100%;
   padding-bottom: 75%; /* 4:3 비율 유지 */
   overflow: hidden;
-  border-radius: 16px 16px 0 0;
+  border-radius: 8px 8px 0 0;
   background: #f5f5f5;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .youtube-card.expanded .thumbnail-wrapper {
-  border-radius: 16px;
+  border-radius: 10px;
   /* 네온 글로우 제거 */
   box-shadow:
     0 10px 30px rgba(0, 0, 0, 0.3),
@@ -166,64 +240,92 @@
 
 /* 썸네일 정보 */
 .thumbnail-info {
+  position: relative;
   padding: 12px 16px;
   background: #ffffff;
   border-radius: 0 0 16px 16px;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.4s ease;
 }
 
 .youtube-card.expanded .thumbnail-info {
   background: transparent;
   position: absolute;
-  bottom: -45px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  padding: 8px 16px;
+  left: 16px;
+  right: 16px;
+  bottom: 18px;
+  padding: 0;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .thumbnail-title {
-  color: #333333;
+  color: #0f172a;
   font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 4px;
+  font-weight: 700;
+  margin-bottom: 6px;
   line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  position: relative;
+  z-index: 2;
   transition: all 0.3s ease;
+}
+
+.youtube-card:hover .thumbnail-title {
+  background: rgba(15, 23, 42, 0.75);
+  color: #ffffff;
+  text-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
 }
 
 .youtube-card.expanded .thumbnail-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #333 !important; /* 검정색으로 변경 */
-  text-shadow: none;
+  background: rgba(15, 23, 42, 0.85);
+  color: #ffffff;
+  font-size: 18px;
+  text-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 }
 
 .video-count {
-  color: #666666;
+  color: #475569;
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(203, 213, 225, 0.45);
   transition: all 0.3s ease;
 }
 
+
 .youtube-card.expanded .video-count {
-  color: #666 !important; /* 회색으로 변경 */
-  font-size: 14px;
-  text-shadow: none;
+  color: #bbf7d0;
+  background: rgba(15, 118, 110, 0.55);
+  text-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
 }
+
 
 /* 확장된 영상 목록 */
 .expanded-videos {
-  padding: 80px 20px 30px;
+  padding: 32px 20px 24px;
   background: transparent; /* 그라디언트 제거 */
   border-radius: 0 0 16px 16px;
   animation: slideDown 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  margin-top: -40px;
+  margin-top: -32px;
   position: relative;
   z-index: 99;
+}
+
+.youtube-card.expanded .expanded-videos {
+  width: 150%;
+  margin-left: -25%;
+  max-width: none;
 }
 
 @keyframes slideDown {
@@ -238,9 +340,15 @@
 }
 
 .videos-grid {
+
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+
+  gap: 24px;
+
+  padding: 0 16px;
+
 }
 
 .video-item {
@@ -260,7 +368,7 @@
   width: 100%;
   padding-bottom: 56.25%; /* 16:9 비율 */
   background: #000;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   pointer-events: auto;
@@ -341,7 +449,7 @@
 }
 
 .video-title {
-  color: #ffffff !important; /* 강제로 흰색 적용 */
+  color: #111827; /* 강제로 흰색 적용 */
   font-size: 13px;
   font-weight: 500;
   margin-top: 8px;
@@ -449,59 +557,214 @@
 
 /* 반응형 디자인 */
 @media (max-width: 1200px) {
+
   .youtube-style-grid {
+
     grid-template-columns: repeat(3, 1fr);
+
   }
 
-  .youtube-card.expanded .thumbnail-section {
-    transform: scale(1.5) translateY(-25px); /* 반응형에서도 충분히 크게 */
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+
+
+  .youtube-card.expanded {
+
+    transform: scale(1.18);
+
   }
+
+
+
+  .youtube-card.expanded .expanded-videos {
+
+    width: 135%;
+
+    margin-left: -17.5%;
+
+  }
+
+
+
+  .youtube-card.expanded .thumbnail-section {
+
+    transform: scale(1.2) translateY(-18px); /* ������������ ����� ũ�� */
+
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+
+  }
+
 }
+
+
+
+
 
 @media (max-width: 900px) {
+
   .youtube-style-grid {
+
     grid-template-columns: repeat(2, 1fr);
+
     gap: 16px;
+
   }
 
-  .section-title {
-    font-size: 36px;
+
+
+  .tube-header {
+
+    align-items: flex-start;
+
   }
 
-  .section-subtitle {
-    font-size: 16px;
+
+
+  .tube-heading {
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 6px;
+
   }
+
+
+
+  .tube-title {
+
+    font-size: 1.9rem;
+
+  }
+
+
+
+  .tube-subtitle {
+
+    font-size: 0.9rem;
+
+    max-width: none;
+
+  }
+
+
+
+  .youtube-card.expanded {
+
+    transform: scale(1.12);
+
+  }
+
+
+
+  .youtube-card.expanded .expanded-videos {
+
+    width: 120%;
+
+    margin-left: -10%;
+
+  }
+
+
 
   .youtube-card.expanded .thumbnail-section {
-    transform: scale(1.4) translateY(-20px); /* 태블릿에서도 크게 */
+
+    transform: scale(1.12) translateY(-14px); /* Ȯ�� ���¿����� �ε巴�� */
+
     transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+
   }
+
 }
+
+
+
+
 
 @media (max-width: 600px) {
+
   .youtube-style-grid {
+
     grid-template-columns: 1fr;
+
     gap: 20px;
+
   }
 
-  .section-title {
-    font-size: 28px;
+
+
+  .tube-heading {
+
+    gap: 4px;
+
   }
+
+
+
+  .tube-title {
+
+    font-size: 1.6rem;
+
+  }
+
+
+
+  .tube-subtitle {
+
+    font-size: 0.88rem;
+
+  }
+
+
 
   .video-modal {
+
     width: 95%;
+
   }
+
+
 
   .videos-grid {
+
     grid-template-columns: 1fr;
+
+    padding: 0;
+
   }
 
-  .youtube-card.expanded .thumbnail-section {
-    transform: scale(1.3) translateY(-15px); /* 모바일에서도 적절히 크게 */
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+
+
+  .youtube-card.expanded {
+
+    transform: scale(1.04);
+
   }
+
+
+
+  .youtube-card.expanded .expanded-videos {
+
+    width: 100%;
+
+    margin-left: 0;
+
+  }
+
+
+
+  .youtube-card.expanded .thumbnail-section {
+
+    transform: scale(1.04) translateY(-10px); /* ����Ͽ����� �ڿ������� */
+
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+
+  }
+
 }
+
+
+
+
 
 /* 스크롤바 스타일링 (YouTube 스타일) */
 .expanded-videos::-webkit-scrollbar {
@@ -522,3 +785,243 @@
 }
 
 /* 네온 효과 제거 - 화이트 배경에 맞게 */
+/* NaraddonTube admin controls & modal styling */
+.tube-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tube-admin-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #047857, #059669);
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 25px -10px rgba(4, 120, 87, 0.65);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.tube-admin-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 32px -12px rgba(4, 120, 87, 0.55);
+  filter: brightness(1.05);
+}
+
+.tube-admin-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(0.2);
+}
+
+.tube-status-message {
+  margin-top: 16px;
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+.tube-status-message--error {
+  color: #dc2626;
+}
+
+.naraddon-modal {
+  max-width: 540px;
+  width: 90%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px 36px 32px;
+  box-shadow:
+    0 30px 60px -20px rgba(15, 23, 42, 0.35),
+    0 12px 24px -10px rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+}
+
+.naraddon-modal--form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.naraddon-modal .close-button {
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #0f172a;
+}
+
+.naraddon-modal .close-button:hover {
+  background: rgba(15, 23, 42, 0.08);
+  border-color: rgba(15, 23, 42, 0.15);
+}
+
+.naraddon-modal__title {
+  margin: 24px 0 8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.naraddon-modal__description {
+  margin: 0 0 24px;
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+.naraddon-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.naraddon-modal__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.naraddon-modal__input,
+.naraddon-modal__textarea {
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  color: #0f172a;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.naraddon-modal__input:focus,
+.naraddon-modal__textarea:focus {
+  outline: none;
+  border-color: rgba(4, 120, 87, 0.9);
+  box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.15);
+  background: #ffffff;
+}
+
+.naraddon-modal__textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+
+.naraddon-modal__fieldset {
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 14px;
+  padding: 16px;
+  background: rgba(248, 250, 252, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.naraddon-modal__fieldset-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.naraddon-modal__grid {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.naraddon-modal__grid > div {
+  flex: 1;
+}
+
+.naraddon-modal__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.naraddon-modal__checkbox input {
+  width: 18px;
+  height: 18px;
+}
+
+.naraddon-modal__submit {
+  margin-top: 8px;
+  width: 100%;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #047857, #059669);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 18px 35px -18px rgba(4, 120, 87, 0.65);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.naraddon-modal__submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 40px -20px rgba(4, 120, 87, 0.7);
+  filter: brightness(1.05);
+}
+
+.naraddon-modal__submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  filter: grayscale(0.2);
+  box-shadow: none;
+}
+
+.naraddon-modal__feedback {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.naraddon-modal__feedback--error {
+  color: #dc2626;
+}
+
+.naraddon-modal__feedback--success {
+  color: #047857;
+}
+
+@media (max-width: 1024px) {
+  .tube-actions {
+    position: static;
+    align-self: flex-start;
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .naraddon-modal {
+    width: 92%;
+    padding: 32px 24px 28px;
+  }
+
+  .naraddon-modal__grid {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tube-admin-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

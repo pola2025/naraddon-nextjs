@@ -130,6 +130,7 @@
 .questions-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: auto;
 }
 
 .questions-table thead {
@@ -145,30 +146,13 @@
   text-align: left;
 }
 
-.th-no {
-  width: 60px;
-  text-align: center;
-}
-.th-category {
-  width: 80px;
-}
-.th-title {
-  width: auto;
-}
-.th-author {
-  width: 100px;
-}
-.th-answers {
-  width: 60px;
-  text-align: center;
-}
-.th-views {
-  width: 60px;
-  text-align: center;
-}
-.th-date {
-  width: 80px;
-}
+.th-no { width: 60px; text-align: center; }
+.th-category { width: 120px; text-align: center; }
+.th-title { width: auto; min-width: 400px; text-align: left; padding-left: 50px; }
+.th-author { width: 100px; }
+.th-answers { width: 60px; text-align: center; }
+.th-views { width: 70px; text-align: center; }
+.th-date { width: 90px; }
 
 .questions-table tbody tr {
   border-bottom: 1px solid var(--gray-100);
@@ -185,64 +169,50 @@
   vertical-align: middle;
 }
 
-.td-no {
-  text-align: center;
-  color: var(--gray-600);
-}
+.td-no { text-align: center; color: var(--gray-600); }
 .td-category {
+  text-align: center;
+  padding: 8px 10px;
+  width: 120px;
 }
 .td-title {
+  padding: 8px 20px;
+  text-align: left;
+  padding-left: 60px;
 }
-.td-author {
-  color: var(--gray-700);
-}
-.td-answers {
-  text-align: center;
-  font-weight: 500;
-}
-.td-views {
-  text-align: center;
-  color: var(--gray-600);
-}
-.td-date {
-  color: var(--gray-600);
-  font-size: 12px;
-}
+.td-author { color: var(--gray-700); white-space: nowrap; }
+.td-answers { text-align: center; font-weight: 500; }
+.td-views { text-align: center; color: var(--gray-600); }
+.td-date { color: var(--gray-600); font-size: 12px; white-space: nowrap; }
 
 .category-badge {
-  padding: 3px 8px;
-  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 4px;
   font-size: 11px;
   font-weight: 600;
   color: white;
+  white-space: nowrap;
+  min-width: 70px;
 }
 
-.category-badge.category-창업 {
-  background: #00c896;
-}
-.category-badge.category-운영 {
-  background: #4a90e2;
-}
-.category-badge.category-세무 {
-  background: #9b59b6;
-}
-.category-badge.category-인사 {
-  background: #f39c12;
-}
-.category-badge.category-마케팅 {
-  background: #27ae60;
-}
-.category-badge.category-지원금 {
-  background: #e74c3c;
-}
-.category-badge.category-기타 {
-  background: #34495e;
-}
+.category-badge.category-창업 { background: #00C896; }
+.category-badge.category-운영 { background: #4A90E2; }
+.category-badge.category-세무 { background: #9B59B6; }
+.category-badge.category-인사 { background: #F39C12; }
+.category-badge.category-마케팅 { background: #27AE60; }
+.category-badge.category-지원금 { background: #E74C3C; }
+.category-badge.category-기타 { background: #34495E; }
 
 .question-link {
   color: var(--gray-900);
   text-decoration: none;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .question-link:hover {
@@ -251,12 +221,12 @@
 }
 
 .badge-hot {
-  color: #ff6b6b;
+  color: #FF6B6B;
   margin-right: 4px;
 }
 
 .badge-new {
-  background: #00e5a8;
+  background: #00E5A8;
   color: white;
   padding: 2px 6px;
   border-radius: 10px;
@@ -311,24 +281,62 @@
     gap: 6px;
     padding-bottom: 4px;
   }
-
+  
   .filter-tab {
     white-space: nowrap;
     font-size: 12px;
     padding: 5px 10px;
   }
-
+  
   .questions-table {
     font-size: 12px;
+    table-layout: auto;
   }
 
+
+  .category-badge {
+    min-width: 50px;
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+  
   .th-author,
   .td-author {
     display: none;
   }
-
+  
   .th-views,
   .td-views {
     display: none;
   }
+
+  .th-actions,
+  .td-actions {
+    display: none;
+  }
+}
+.th-actions {
+  width: 80px;
+  text-align: center;
+}
+
+.td-actions {
+  text-align: center;
+}
+
+.table-action-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: 6px;
+  background: white;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.table-action-btn:hover {
+  background: var(--naraddon-primary-light);
+  border-color: var(--naraddon-primary);
+  color: var(--naraddon-primary-dark);
 }

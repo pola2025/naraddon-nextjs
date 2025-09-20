@@ -196,6 +196,25 @@
   font-size: 14px !important;
 }
 
+.footer-link-button {
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  cursor: pointer !important;
+  font: inherit !important;
+  padding: 0 !important;
+}
+
+.footer-link-button:hover,
+.footer-link-button:focus {
+  color: var(--naraddon-green-accent) !important;
+}
+
+.footer-link-button:focus-visible {
+  outline: 2px solid var(--naraddon-green-accent) !important;
+  outline-offset: 3px !important;
+}
+
 .footer-links a:hover {
   color: var(--naraddon-green-accent) !important;
 }

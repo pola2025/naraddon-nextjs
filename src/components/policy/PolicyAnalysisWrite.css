@@ -1122,3 +1122,116 @@
     width: 100%;
   }
 }
+/* 인증 기업심사관 선택 영역 */
+.examiner-group select {
+  width: 100%;
+  margin-top: 0.75rem;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(47, 123, 255, 0.2);
+  background: #fff;
+  font-size: 1rem;
+  color: #1b2a4b;
+}
+
+.examiner-highlight {
+  margin-top: 1rem;
+  padding: 1.2rem 1.4rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(47, 123, 255, 0.12), rgba(47, 123, 255, 0.04));
+  border: 1px solid rgba(47, 123, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.examiner-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.examiner-header strong {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f1d41;
+}
+
+.examiner-header span {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: #2f7bff;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.examiner-company {
+  font-size: 0.95rem;
+  color: #2f7bff;
+  font-weight: 600;
+}
+
+.examiner-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.examiner-tags span {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(47, 123, 255, 0.12);
+  color: #2f7bff;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.password-group input[type='password'] {
+  margin-top: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(47, 123, 255, 0.2);
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  color: #1b2a4b;
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.preview-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.preview-meta .author,
+.preview-meta .company,
+.preview-meta .date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+
+.preview-meta .author {
+  color: #0f1d41;
+}
+
+.preview-meta .company {
+  color: #2f7bff;
+}
+
+.preview-meta .author i,
+.preview-meta .company i {
+  color: #2f7bff;
+}
+
+.preview-meta .date {
+  color: #4a5c7a;
+}
+

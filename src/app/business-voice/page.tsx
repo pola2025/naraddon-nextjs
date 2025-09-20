@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import InterviewSection from '@/components/business-voice/InterviewSection';
 import './page.css';
 import './qa-section.css';
 import './qa-table.css';
@@ -59,18 +60,18 @@ const BusinessVoicePage = () => {
     { id: 5, title: '창업 초기자본', author: '강○○', views: 3890 },
   ];
 
-  // 똔톡 콤팩트 리스트 데이터 (내용 추가)
+  // 똔톡 콤팩트 리스트 데이터 (2024년 7월 이후 실제 고충 기반)
   const ttontokList = [
     {
       id: 1,
       isHot: true,
       isNew: false,
       category: '창업',
-      title: '퇴사 후 6개월, 드디어 오픈했습니다',
+      title: '전기료 지원 20만원 받으셨나요?',
       content:
-        '30대 중반에 안정적인 직장을 그만두고 창업을 결심했습니다. 주변의 만류도 많았지만 꿈을 위해 도전했고, 드디어 오늘 가게 오픈합니다. 준비 과정에서 나라똔 지원금이 큰 도움이 되었어요.',
-      author: '김대표',
-      business: '요식업',
+        '연매출 6천만원 이하 소상공인이면 전기료 20만원 지원받을 수 있다고 하네요. 저는 이번달에 신청해서 받았습니다. 아직 모르시는 분들 계실까봐 공유드려요. 소상공인24 사이트에서 신청 가능합니다.',
+      author: '커피한잔',
+      business: '카페',
       location: '서울',
       comments: 12,
       likes: 45,
@@ -337,7 +338,7 @@ const BusinessVoicePage = () => {
     {
       id: 1,
       question: '배달앱 수수료가 너무 비싸서 힘들어요',
-      author: '예비창업자',
+      author: '블루라떼',
       time: '10분 전',
       answerCount: 3,
       isHot: false,
@@ -353,7 +354,7 @@ const BusinessVoicePage = () => {
         },
         {
           id: 2,
-          author: '10년차카페사장',
+          author: '산토끼',
           content:
             '포장 할인으로 배달 의존도를 줄이세요. 저희는 포장 20% 할인으로 매출 구조를 개선했습니다.',
           likes: 15,
@@ -362,7 +363,7 @@ const BusinessVoicePage = () => {
         },
         {
           id: 3,
-          author: '치킨집운영중',
+          author: '하늘바다',
           content:
             '배민, 쿠팡이츠, 요기요 수수료 비교해서 가장 유리한 곳과 단독 계약하면 우대 조건 받을 수 있어요.',
           likes: 8,
@@ -374,7 +375,7 @@ const BusinessVoicePage = () => {
     {
       id: 2,
       question: '임대차 계약시 꼭 확인해야 할 사항은?',
-      author: '카페사장',
+      author: '달빛소나타',
       time: '1시간 전',
       answerCount: 5,
       isHot: false,
@@ -383,7 +384,7 @@ const BusinessVoicePage = () => {
     {
       id: 3,
       question: '온라인 마케팅 어디서부터 시작해야 하나요?',
-      author: '소매업3년',
+      author: '겨울나무',
       time: '2시간 전',
       answerCount: 2,
       isHot: false,
@@ -392,7 +393,7 @@ const BusinessVoicePage = () => {
     {
       id: 4,
       question: '최저임금 인상 대응 방법 공유해주세요',
-      author: '편의점사장',
+      author: '별똥별',
       time: '3시간 전',
       answerCount: 8,
       isHot: true,
@@ -401,7 +402,7 @@ const BusinessVoicePage = () => {
     {
       id: 5,
       question: '정부지원금 신청 서류 준비 팁이 있나요?',
-      author: '제조업대표',
+      author: '햇살가득',
       time: '5시간 전',
       answerCount: 12,
       isHot: true,
@@ -420,78 +421,41 @@ const BusinessVoicePage = () => {
   return (
     <div className="business-voice-container">
       {/* 헤더 섹션 */}
-      <header className="bv-header">
-        <div className="header-content">
-          <h1>사업자 목소리</h1>
-          <p>나라똔과 함께 성장하는 사업자들의 생생한 목소리</p>
-        </div>
-      </header>
-
-      {/* 페이지 내 네비게이션 */}
-      <nav className="page-navigation">
-        <button onClick={() => scrollToSection('interview-section')} className="nav-btn">
-          📺 대표님 인터뷰
-        </button>
-        <button onClick={() => scrollToSection('ttontok-section')} className="nav-btn">
-          💬 똔톡
-        </button>
-        <button onClick={() => scrollToSection('qa-section')} className="nav-btn">
-          ❓ Q&A
-        </button>
-      </nav>
-
-      {/* 섹션 1: 나라똔과 함께한 대표님 인터뷰 */}
-      <section id="interview-section" className="interview-section">
-        <div className="section-header">
-          <h2>🎬 나라똔과 함께한 대표님 인터뷰</h2>
-          <p>실제 정부지원금을 받은 대표님들의 생생한 이야기</p>
-        </div>
-
-        <div className="interview-content">
-          {/* 메인 인터뷰 영상 */}
-          <div className="main-interview">
-            <div className="video-container">
-              <img src={mainInterview.thumbnail} alt="메인 인터뷰" />
-              <button className="play-button" onClick={() => setPlayingVideo(mainInterview.id)}>
-                <span>▶</span>
-              </button>
-              <div className="video-overlay">
-                <h3>{mainInterview.title}</h3>
-                <p>
-                  {mainInterview.author} | {mainInterview.company}
-                </p>
-                <div className="video-meta">
-                  <span className="amount-badge">💰 {mainInterview.amount}</span>
-                  <span>👁 {mainInterview.views.toLocaleString()}</span>
-                  <span>{mainInterview.date}</span>
-                </div>
-              </div>
+      <section className="expert-hero layout-hero relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-sky-100">
+        <div className="layout-container">
+          <div className="max-w-3xl">
+            <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-sm font-semibold text-blue-600">
+              BUSINESS VOICE
+            </span>
+            <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+              나라똔과 함께 성장하는
+              <span className="block text-blue-600">사업자들의 생생한 목소리</span>
+            </h1>
+            <p className="mt-6 text-lg leading-7 text-slate-600">
+              실제 사업자들의 경험과 노하우를 공유하는 커뮤니티
+              <span className="block">성공 사례부터 실패 경험까지, 진솔한 이야기를 만나보세요</span>
+            </p>
+            <div className="mt-10 flex flex-wrap items-center gap-6">
+              <Link
+                href="#ttontok-section"
+                className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:bg-emerald-600"
+              >
+                <i className="fas fa-comments" aria-hidden="true" /> 커뮤니티 참여하기
+              </Link>
+              <Link
+                href="/consultation-request#form-section"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-base font-semibold text-emerald-600 shadow-lg ring-1 ring-emerald-100 transition hover:bg-emerald-50"
+              >
+                <i className="fas fa-headset" aria-hidden="true" /> 무료 상담 신청
+              </Link>
             </div>
-          </div>
-
-          {/* 쇼츠 영상 리스트 */}
-          <div className="shorts-section">
-            <h3>📱 1분 쇼츠 인터뷰</h3>
-            <div className="shorts-list">
-              {shortsVideos.map((video) => (
-                <div key={video.id} className="shorts-item">
-                  <div className="shorts-thumbnail">
-                    <span className="duration">0:58</span>
-                    <button className="shorts-play">▶</button>
-                  </div>
-                  <div className="shorts-info">
-                    <p className="shorts-title">{video.title}</p>
-                    <span className="shorts-meta">
-                      {video.author} • {video.views.toLocaleString()}회
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button className="more-videos-btn">더 많은 인터뷰 보기 →</button>
           </div>
         </div>
       </section>
+
+
+      {/* 섹션 1: 나라똔과 함께한 대표님 인터뷰 - 새로운 컴포넌트 사용 */}
+      <InterviewSection />
 
       {/* 섹션 2: 똔톡 */}
       <section id="ttontok-section" className="ttontok-section">
@@ -693,208 +657,80 @@ const BusinessVoicePage = () => {
         </div>
       </section>
 
-      {/* 섹션 3: Q&A */}
+      {/* 섹션 3: Q&A - 질문/답변 구조 */}
       <section id="qa-section" className="qa-section">
         <div className="section-header">
-          <h2>❓ 묻고 답하기 - 사업하면서 궁금한 내용 물어보기</h2>
+          <h2>❓ 묻고 답하기</h2>
+          <p className="section-desc">사업자들의 실시간 고민과 해결책을 확인하세요</p>
         </div>
 
-        {/* 주간 인기 질문 TOP 10 */}
-        <div className="popular-questions">
-          <h3>🏆 주간 인기 질문 TOP 10</h3>
-
-          {/* 1위 질문 - 확장된 형태 */}
-          <div className="top-question-expanded">
-            <div className="rank-badge-large">🥇 1위</div>
-            <div className="qa-content-expanded">
-              <div className="question-header-top">
-                <span className="qa-category-badge category-수수료">수수료</span>
-                <h4 className="question-title-large">배달앱 수수료가 너무 비싸서 힘들어요</h4>
+        {/* 인기 Q&A */}
+        <div className="qa-popular-container">
+          {/* 질문 1 */}
+          <div className="qa-item-card">
+            <div className="qa-question-area">
+              <div className="qa-question-header">
+                <div className="qa-meta-info">
+                  <span className="qa-ranking">🥇 1위</span>
+                  <span className="category-badge category-수수료">수수료</span>
+                  <span className="qa-author">블루라떼</span>
+                  <span className="qa-time">10분 전</span>
+                </div>
+                <div className="qa-stats">
+                  <span>👁 523</span>
+                  <span>💬 5</span>
+                </div>
               </div>
-              <div className="question-meta">
-                <span>예비창업자</span>
-                <span>•</span>
-                <span>10분 전</span>
-                <span>•</span>
-                <span>🔥 조회 523</span>
-                <span>•</span>
-                <span>💬 답변 5</span>
+              <h3 className="qa-question-title">
+                <span className="hot-badge">🔥</span>
+                배달앱 수수료가 너무 비싸서 힘들어요
+              </h3>
+              <p className="qa-question-text">
+                저는 치킨집을 운영하고 있는데요, 배달앱 수수료가 정말 너무 비싸서 힘듭니다.
+                배민, 쿠팡이츠, 요기요 다 사용하고 있는데 수수료가 15~20%나 되네요.
+                거기에 광고비까지 내면 거의 남는게 없어요. 다른 사장님들은 어떻게 하고 계신가요?
+              </p>
+            </div>
+
+            <div className="qa-answers-area">
+              <div className="qa-answer best-answer">
+                <div className="answer-header">
+                  <span className="answerer-name">산토끼</span>
+                  <span className="best-badge">✓ 베스트</span>
+                  <span className="answer-time">5분 전</span>
+                </div>
+                <p className="answer-text">
+                  저도 같은 고민 많이 했었는데요, 자체 배달 시스템을 만드세요.
+                  인스타그램이나 네이버 스마트스토어로 주문받고 직접 배달하면 수수료를 크게 줄일 수 있습니다.
+                </p>
+                <button className="helpful-btn">👍 23</button>
               </div>
 
-              {/* 모든 답변 표시 */}
-              <div className="all-answers">
-                <div className="answers-header">
-                  <h5>답변 5개</h5>
+              <div className="qa-answer">
+                <div className="answer-header">
+                  <span className="answerer-name">하늘바다</span>
+                  <span className="answer-time">8분 전</span>
                 </div>
+                <p className="answer-text">
+                  배달앱 완전히 끊기는 어렵지만, 비중을 줄이는게 답입니다.
+                  네이버 스마트플레이스 활용하면 수수료 3.3%밖에 안됩니다.
+                </p>
+                <button className="helpful-btn">👍 15</button>
+              </div>
 
-                {/* 베스트 답변 */}
-                <div className="answer-item best-answer">
-                  <div className="answer-badge">✅ 베스트 답변</div>
-                  <div className="answer-author">
-                    <span className="author-name">나라똔 컨설턴트</span>
-                    <span className="expert-badge">✓ 전문가</span>
-                  </div>
-                  <p className="answer-content">
-                    자체 배달 시스템 구축을 추천드립니다. 초기 투자는 필요하지만 장기적으로 수수료를
-                    크게 절감할 수 있습니다. 또한 포장 할인을 통해 배달 의존도를 줄이는 방법도
-                    효과적입니다.
-                  </p>
-                  <div className="answer-footer">
-                    <button className="helpful-btn">👍 도움이 돼요 (45)</button>
-                    <span className="answer-time">5분 전</span>
-                  </div>
+              <div className="qa-answer">
+                <div className="answer-header">
+                  <span className="answerer-name">민들레</span>
+                  <span className="answer-time">9분 전</span>
                 </div>
-
-                {/* 일반 답변들 */}
-                <div className="answer-item">
-                  <div className="answer-author">
-                    <span className="author-name">10년차카페사장</span>
-                  </div>
-                  <p className="answer-content">
-                    포장 할인으로 배달 의존도를 줄이세요. 저희는 포장 20% 할인으로 매출 구조를
-                    개선했습니다.
-                  </p>
-                  <div className="answer-footer">
-                    <button className="helpful-btn">👍 도움이 돼요 (15)</button>
-                    <span className="answer-time">8분 전</span>
-                  </div>
-                </div>
-
-                <div className="answer-item">
-                  <div className="answer-author">
-                    <span className="author-name">치킨집운영중</span>
-                  </div>
-                  <p className="answer-content">
-                    배민, 쿠팡이츠, 요기요 수수료 비교해서 가장 유리한 곳과 단독 계약하면 우대 조건
-                    받을 수 있어요.
-                  </p>
-                  <div className="answer-footer">
-                    <button className="helpful-btn">👍 도움이 돼요 (8)</button>
-                    <span className="answer-time">방금</span>
-                  </div>
-                </div>
-
-                <div className="answer-item">
-                  <div className="answer-author">
-                    <span className="author-name">온라인솥운영</span>
-                  </div>
-                  <p className="answer-content">
-                    자체 배달 앱 개발도 고려해보세요. 초기 비용은 들지만 수수료 0%로 운영
-                    가능합니다.
-                  </p>
-                  <div className="answer-footer">
-                    <button className="helpful-btn">👍 도움이 돼요 (5)</button>
-                    <span className="answer-time">12분 전</span>
-                  </div>
-                </div>
-
-                <div className="answer-item">
-                  <div className="answer-author">
-                    <span className="author-name">소상공인회장</span>
-                  </div>
-                  <p className="answer-content">
-                    지역 소상공인 연합회에 가입하시면 공동 배달 시스템을 이용할 수 있습니다.
-                    수수료가 훨씬 저렴해요.
-                  </p>
-                  <div className="answer-footer">
-                    <button className="helpful-btn">👍 도움이 돼요 (3)</button>
-                    <span className="answer-time">15분 전</span>
-                  </div>
-                </div>
+                <p className="answer-text">
+                  포장 할인 20% 주고 직접 픽업 유도하세요. 배달앱보다 이익이 더 많이 남습니다.
+                </p>
+                <button className="helpful-btn">👍 8</button>
               </div>
             </div>
           </div>
 
-          {/* 2-10위 질문 그리드 */}
-          <div className="popular-grid">
-            {[
-              {
-                rank: 2,
-                title: '세무 신고 혼자서도 가능한가요?',
-                author: '카페사장',
-                time: '1시간',
-                views: 412,
-                answers: 8,
-              },
-              {
-                rank: 3,
-                title: '직원 채용시 주의사항은?',
-                author: '소매업3년',
-                time: '2시간',
-                views: 389,
-                answers: 15,
-              },
-              {
-                rank: 4,
-                title: '카페 창업 초기 자본금 얼마나?',
-                author: '예비창업',
-                time: '3시간',
-                views: 367,
-                answers: 11,
-              },
-              {
-                rank: 5,
-                title: '정부지원금 서류 준비 팁',
-                author: '제조업대표',
-                time: '5시간',
-                views: 334,
-                answers: 7,
-              },
-              {
-                rank: 6,
-                title: '온라인 마케팅 어디서 시작?',
-                author: '온라인몰',
-                time: '6시간',
-                views: 298,
-                answers: 9,
-              },
-              {
-                rank: 7,
-                title: '최저임금 인상 대응 방법',
-                author: '편의점사장',
-                time: '8시간',
-                views: 276,
-                answers: 13,
-              },
-              {
-                rank: 8,
-                title: '임대차 계약 확인사항',
-                author: '예비창업자',
-                time: '10시간',
-                views: 254,
-                answers: 6,
-              },
-              {
-                rank: 9,
-                title: '프랜차이즈 vs 개인창업',
-                author: '고민중',
-                time: '12시간',
-                views: 231,
-                answers: 18,
-              },
-              {
-                rank: 10,
-                title: '사업자 대출 어디가 좋은가요?',
-                author: '조대표',
-                time: '1일',
-                views: 198,
-                answers: 10,
-              },
-            ].map((q) => (
-              <Link key={q.rank} href={`/qa/${q.rank}`} className="popular-question-card">
-                <div className="rank-badge">{q.rank}위</div>
-                <h4 className="question-title-compact">{q.title}</h4>
-                <div className="question-stats">
-                  <span className="author">{q.author}</span>
-                  <span className="time">{q.time} 전</span>
-                </div>
-                <div className="question-numbers">
-                  <span>👁 {q.views}</span>
-                  <span>💬 {q.answers}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
         </div>
 
         {/* 최신 질문 및 질문 작성 */}
@@ -963,7 +799,7 @@ const BusinessVoicePage = () => {
                     no: 156,
                     category: '운영',
                     title: '배달앱 수수료가 너무 비싸서 힘들어요',
-                    author: '예비창업자',
+                    author: '블루라떼',
                     answers: 3,
                     views: 45,
                     date: '10분 전',
@@ -973,7 +809,7 @@ const BusinessVoicePage = () => {
                     no: 155,
                     category: '세무',
                     title: '부가세 신고 혼자서도 가능한가요?',
-                    author: '카페사장',
+                    author: '달빛소나타',
                     answers: 5,
                     views: 67,
                     date: '30분 전',
@@ -983,7 +819,7 @@ const BusinessVoicePage = () => {
                     no: 154,
                     category: '창업',
                     title: '카페 창업 초기 자본금 얼마나 필요한가요?',
-                    author: '예비창업',
+                    author: '겨울나무',
                     answers: 8,
                     views: 123,
                     date: '1시간 전',
@@ -993,7 +829,7 @@ const BusinessVoicePage = () => {
                     no: 153,
                     category: '인사',
                     title: '직원 채용시 주의사항은 무엇인가요?',
-                    author: '소매업3년',
+                    author: '별똥별',
                     answers: 2,
                     views: 34,
                     date: '2시간 전',
@@ -1002,7 +838,7 @@ const BusinessVoicePage = () => {
                     no: 152,
                     category: '지원금',
                     title: '정부지원금 서류 준비 팁 공유해주세요',
-                    author: '제조업대표',
+                    author: '햇살가득',
                     answers: 12,
                     views: 234,
                     date: '3시간 전',
@@ -1012,7 +848,7 @@ const BusinessVoicePage = () => {
                     no: 151,
                     category: '마케팅',
                     title: '온라인 마케팅 어디서 시작해야 하나요?',
-                    author: '온라인몰',
+                    author: '은하수',
                     answers: 6,
                     views: 89,
                     date: '5시간 전',
@@ -1021,7 +857,7 @@ const BusinessVoicePage = () => {
                     no: 150,
                     category: '운영',
                     title: '최저임금 인상 대응 방법 공유해주세요',
-                    author: '편의점사장',
+                    author: '아침이슬',
                     answers: 9,
                     views: 156,
                     date: '6시간 전',
@@ -1030,7 +866,7 @@ const BusinessVoicePage = () => {
                     no: 149,
                     category: '기타',
                     title: '임대차 계약시 확인해야 할 사항들',
-                    author: '예비창업자',
+                    author: '구름빵',
                     answers: 4,
                     views: 78,
                     date: '8시간 전',
@@ -1039,7 +875,7 @@ const BusinessVoicePage = () => {
                     no: 148,
                     category: '창업',
                     title: '프랜차이즈 vs 개인창업 장단점 비교',
-                    author: '고민중',
+                    author: '봄바람',
                     answers: 15,
                     views: 345,
                     date: '10시간 전',
@@ -1048,7 +884,7 @@ const BusinessVoicePage = () => {
                     no: 147,
                     category: '지원금',
                     title: '사업자 대출 어디가 좋은가요?',
-                    author: '조대표',
+                    author: '푸른하늘',
                     answers: 7,
                     views: 198,
                     date: '12시간 전',
@@ -1064,8 +900,6 @@ const BusinessVoicePage = () => {
                     </td>
                     <td className="td-title">
                       <Link href={`/qa/${q.no}`} className="question-link">
-                        {q.isHot && <span className="badge-hot">🔥</span>}
-                        {q.isNew && <span className="badge-new">NEW</span>}
                         {q.title}
                       </Link>
                     </td>
@@ -1097,15 +931,23 @@ const BusinessVoicePage = () => {
         </div>
       </section>
 
-      {/* CTA 섹션 */}
-      <section className="cta-section">
-        <div className="cta-content">
-          <h2>사업 고민, 혼자 해결하지 마세요</h2>
-          <p>나라똔 전문가와 동료 사업자들이 함께합니다</p>
-          <div className="cta-buttons">
-            <button className="cta-primary">무료 상담 신청</button>
-            <Link href="/ttontok" className="cta-secondary">
-              커뮤니티 참여
+      {/* CTA 섹션 - 정책분석과 동일한 스타일 적용 */}
+      <section className="business-voice__cta-section" aria-labelledby="business-voice-cta-title">
+        <div className="business-voice__cta-container">
+          <div className="business-voice__cta-banner">
+            <div className="business-voice__cta-content">
+              <p className="business-voice__cta-eyebrow">Business Voice</p>
+              <h2 id="business-voice-cta-title" className="business-voice__cta-title">
+                인증 기업심사관과 함께 사업 고민을
+                <br className="business-voice__cta-break" />
+                해결하시겠어요?
+              </h2>
+              <p className="business-voice__cta-description">
+                검증된 정책분석 전문가가 1:1로 맞춤 전략을 제안해드립니다.<br />대표님의 사업에 필요한 정책을 바로 안내해드립니다.
+              </p>
+            </div>
+            <Link href="/consultation-request#form-section" className="business-voice__cta-button">
+              상담 예약하기
             </Link>
           </div>
         </div>

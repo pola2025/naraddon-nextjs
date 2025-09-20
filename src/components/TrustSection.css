@@ -1,5 +1,5 @@
 /* 신뢰 보증 섉션 - 플로팅 카드 디자인 */
-.trust-section {
+.home-trust-section {
   padding: 40px 0; /* 세로 패딩 축소 */
   background: transparent;
   position: relative;
@@ -7,14 +7,14 @@
 }
 
 /* 가로 레이아웃 전용 스타일 */
-.trust-section.horizontal {
+.home-trust-section.horizontal {
   padding: 40px 0; /* 세로 패딩 축소 */
   background: transparent;
   position: relative;
   z-index: 0;
 }
 
-.trust-section .container {
+.home-trust-section .container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 40px;
@@ -31,7 +31,7 @@
 
 /* 선 제거 */
 
-.trust-section::after {
+.home-trust-section::after {
   content: '100% 책임보증';
   position: absolute;
   top: 50px;
@@ -832,11 +832,11 @@
 
 /* 반응형 */
 @media (max-width: 768px) {
-  .trust-section {
+  .home-trust-section {
     padding: 60px 20px;
   }
 
-  .trust-section::after {
+  .home-trust-section::after {
     display: none;
   }
 
@@ -926,7 +926,7 @@
 /* 가로 레이아웃 스타일 (Horizontal Layout) */
 /* =================================== */
 
-.trust-content-horizontal {
+.home-trust-content {
   display: flex;
   align-items: center;
   gap: 40px;
@@ -935,7 +935,7 @@
 }
 
 /* 왼쪽: 타이틀과 방패 */
-.trust-left {
+.home-trust-left {
   flex: 0 0 auto;
   min-width: 420px; /* 너비 증가 */
 }
@@ -1027,7 +1027,7 @@
 }
 
 /* 중앙: 3개 특징 */
-.trust-center {
+.home-trust-center {
   flex: 1;
   padding: 0 30px;
   border-left: 1px solid rgba(76, 175, 80, 0.1);
@@ -1079,7 +1079,7 @@
 }
 
 /* 오른쪽: 4개 배지 */
-.trust-right {
+.home-trust-right {
   flex: 0 0 auto;
   min-width: 320px;
 }
@@ -1142,28 +1142,28 @@
 
 /* 반응형 - 가로 레이아웃 */
 @media (max-width: 1200px) {
-  .trust-content-horizontal {
+  .home-trust-content {
     gap: 30px;
   }
 
-  .trust-left {
+  .home-trust-left {
     min-width: 360px; /* 반응형 너비 조정 */
   }
 
-  .trust-right {
+  .home-trust-right {
     min-width: 280px;
   }
 }
 
 @media (max-width: 1024px) {
-  .trust-content-horizontal {
+  .home-trust-content {
     flex-direction: column;
     gap: 30px;
   }
 
-  .trust-left,
-  .trust-center,
-  .trust-right {
+  .home-trust-left,
+  .home-trust-center,
+  .home-trust-right {
     width: 100%;
     max-width: 600px;
     min-width: auto;
@@ -1175,7 +1175,7 @@
     justify-content: center;
   }
 
-  .trust-center {
+  .home-trust-center {
     border-top: 1px solid rgba(76, 175, 80, 0.1);
     border-bottom: 1px solid rgba(76, 175, 80, 0.1);
     padding: 20px 0;
@@ -1189,23 +1189,23 @@
 }
 
 @media (max-width: 768px) {
-  .trust-section.horizontal {
+  .home-trust-section.horizontal {
     padding: 30px 0;
   }
 
   .shield-icon-large {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
   }
 
   .shield-icon-large i {
-    font-size: 50px;
+    font-size: 45px;
   }
 
   .guarantee-badge-large {
-    width: 35px;
-    height: 35px;
-    font-size: 10px;
+    width: 32px;
+    height: 32px;
+    font-size: 9px;
   }
 
   .guarantee-title-compact {
@@ -1225,3 +1225,4 @@
     grid-template-columns: 1fr;
   }
 }
+

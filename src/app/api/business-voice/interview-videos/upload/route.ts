@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { r2Client, sanitizeFileName, buildR2ObjectUrl } from '@/lib/r2';
+import { getR2Client, sanitizeFileName, buildR2ObjectUrl, isR2Configured } from '@/lib/r2';
 import { v4 as uuidv4 } from 'uuid';
 
 const ADMIN_PASSWORD = 'vhffkvhffk2@';
@@ -11,6 +11,14 @@ const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avi
 
 // POST: Presigned URL 생성 (썸네일 업로드용)
 export async function POST(request: NextRequest) {
+  // R2 설정 확인
+  if (!isR2Configured()) {
+    return NextResponse.json(
+      { success: false, message: 'R2 storage is not configured' },
+      { status: 503 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { password, fileName, contentType } = body;
@@ -43,7 +51,8 @@ export async function POST(request: NextRequest) {
       ContentType: contentType,
     });
 
-    const presignedUrl = await getSignedUrl(r2Client, command, {
+    const client = getR2Client();
+    const presignedUrl = await getSignedUrl(client, command, {
       expiresIn: 3600, // 1시간
     });
 

@@ -10,7 +10,9 @@
       "Bash(vercel:*)",
       "Read(//h/Naraddon/naraddon-latest/**)",
       "Bash(git config:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(npm run migrate:*)",
+      "Bash(npx tsx:*)"
     ],
     "deny": [],
     "ask": []

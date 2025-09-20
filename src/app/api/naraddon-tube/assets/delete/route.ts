@@ -1,12 +1,19 @@
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { r2Client } from '@/lib/r2';
+import { getR2Client, isR2Configured } from '@/lib/r2';
 
 const bucketName = process.env.CLOUDFLARE_R2_BUCKET;
 
 export async function POST(request: NextRequest) {
   try {
+    if (!isR2Configured()) {
+      return NextResponse.json(
+        { success: false, message: 'R2 storage is not configured' },
+        { status: 503 }
+      );
+    }
+
     const adminPassword = process.env.NARADDON_TUBE_PASSWORD;
 
     if (!adminPassword) {
@@ -35,7 +42,8 @@ export async function POST(request: NextRequest) {
     }
 
     const command = new DeleteObjectCommand({ Bucket: bucketName, Key: objectKey });
-    await r2Client.send(command);
+    const client = getR2Client();
+    await client.send(command);
 
     return NextResponse.json({ success: true });
   } catch (error) {

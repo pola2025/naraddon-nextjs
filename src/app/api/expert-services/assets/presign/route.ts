@@ -3,13 +3,20 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { buildR2ObjectUrl, r2Client, sanitizeFileName } from '@/lib/r2';
+import { buildR2ObjectUrl, getR2Client, sanitizeFileName, isR2Configured } from '@/lib/r2';
 
 const getAdminPassword = () => process.env.EXPERT_SERVICES_ADMIN_PASSWORD ?? '';
 const bucketName = process.env.CLOUDFLARE_R2_BUCKET;
 
 export async function POST(request: NextRequest) {
   try {
+    if (!isR2Configured()) {
+      return NextResponse.json(
+        { success: false, message: 'R2 storage is not configured' },
+        { status: 503 }
+      );
+    }
+
     const adminPassword = getAdminPassword();
     if (!adminPassword) {
       return NextResponse.json(
@@ -53,7 +60,8 @@ export async function POST(request: NextRequest) {
           : 'application/octet-stream',
     });
 
-    const uploadUrl = await getSignedUrl(r2Client, command, { expiresIn: 60 });
+    const client = getR2Client();
+    const uploadUrl = await getSignedUrl(client, command, { expiresIn: 60 });
     const publicUrl = buildR2ObjectUrl(objectKey, bucketName);
 
     return NextResponse.json({ uploadUrl, objectKey, publicUrl });

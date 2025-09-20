@@ -6,7 +6,7 @@ import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
 import crypto from 'crypto';
 
-import { r2Client, sanitizeFileName, buildR2ObjectUrl } from '@/lib/r2';
+import { getR2Client, sanitizeFileName, buildR2ObjectUrl, isR2Configured } from '@/lib/r2';
 
 import { getAdminPasswordOrThrow, hasValidAccess } from '@/app/api/policy-analysis/_access';
 
@@ -20,11 +20,6 @@ const CACHE_CONTROL_IMMUTABLE = 'public, max-age=31536000, immutable';
 
 
 
-if (!BUCKET) {
-
-  throw new Error('CLOUDFLARE_R2_BUCKET environment variable is not set.');
-
-}
 
 
 
@@ -53,6 +48,13 @@ function createAttachmentKey(fileName: string) {
 export async function POST(request: NextRequest) {
 
   try {
+
+    if (!isR2Configured()) {
+      return NextResponse.json(
+        { success: false, message: 'R2 storage is not configured' },
+        { status: 503 }
+      );
+    }
 
     let adminPassword: string;
 
@@ -130,6 +132,10 @@ export async function POST(request: NextRequest) {
 
 
 
+    if (!BUCKET) {
+      return NextResponse.json({ message: 'Cloudflare R2 bucket is not configured.' }, { status: 500 });
+    }
+
     const buffer = Buffer.from(await file.arrayBuffer());
     const checksum = crypto.createHash('sha256').update(buffer).digest('hex');
     const key = createAttachmentKey(file.name);
@@ -138,7 +144,8 @@ export async function POST(request: NextRequest) {
     const normalizedUploader =
       typeof uploader === 'string' && uploader.trim() ? uploader.trim() : 'admin';
 
-    await r2Client.send(
+    const client = getR2Client();
+    await client.send(
       new PutObjectCommand({
         Bucket: BUCKET,
         Key: key,
@@ -195,6 +202,13 @@ export async function DELETE(request: NextRequest) {
 
   try {
 
+    if (!isR2Configured()) {
+      return NextResponse.json(
+        { success: false, message: 'R2 storage is not configured' },
+        { status: 503 }
+      );
+    }
+
     let adminPassword: string;
 
     try {
@@ -249,7 +263,12 @@ export async function DELETE(request: NextRequest) {
 
 
 
-    await r2Client.send(
+    if (!BUCKET) {
+      return NextResponse.json({ message: 'Cloudflare R2 bucket is not configured.' }, { status: 500 });
+    }
+
+    const client = getR2Client();
+    await client.send(
 
       new DeleteObjectCommand({
 

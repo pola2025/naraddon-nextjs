@@ -52,6 +52,8 @@ export default function ExpertServicesPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const autoPlayTimerRef = useRef<number | null>(null);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
 
   const fetchExpertProfiles = useCallback(async () => {
     if (!ENABLE_DYNAMIC_EXPERT_SOURCE) {
@@ -252,6 +254,31 @@ export default function ExpertServicesPage() {
     }
   }, [pauseAutoPlay]);
 
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (!canNavigate) return;
+
+    const swipeDistance = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50;
+
+    if (swipeDistance > minSwipeDistance) {
+      // Swiped left - go to next
+      pauseAutoPlay();
+      goToNext();
+    } else if (swipeDistance < -minSwipeDistance) {
+      // Swiped right - go to previous
+      pauseAutoPlay();
+      goToPrev();
+    }
+  }, [canNavigate, goToNext, goToPrev, pauseAutoPlay]);
+
   const resetForm = () => {
     setForm(defaultFormState);
     setSelectedField('');
@@ -360,6 +387,9 @@ export default function ExpertServicesPage() {
             className="expert-carousel-horizontal"
             onMouseEnter={() => setIsAutoPlaying(false)}
             onMouseLeave={() => setIsAutoPlaying(true)}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             {displayedExperts.length === 0 ? (
               <div className="expert-carousel__empty">

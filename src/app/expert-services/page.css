@@ -228,17 +228,23 @@
   background: white;
   border-radius: 20px;
   overflow: hidden;
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   cursor: pointer;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   position: relative;
   padding-bottom: 54px;
+  will-change: transform, box-shadow;
 }
 
 .expert-card-horizontal[data-position="center"] {
   transform: scale(1.05);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   z-index: 10;
+}
+
+.expert-card-horizontal[data-position="center"]:hover {
+  transform: scale(1.08) translateY(-8px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
 }
 
 .expert-card-horizontal[data-position="center"] .consult-cta {
@@ -258,8 +264,8 @@
 }
 
 .expert-card-horizontal:hover[data-position="side"] {
-  opacity: 0.85;
-  transform: scale(0.97);
+  opacity: 0.75;
+  transform: scale(0.92) translateY(-4px);
 }
 
 .card-inner {
@@ -379,7 +385,6 @@
 }
 
 .consult-cta:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
   box-shadow: 0 -4px 15px rgba(102, 126, 234, 0.25);
 }
 
@@ -487,7 +492,55 @@
   }
 
   .carousel-control {
-    display: none;
+    display: block !important;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    color: #667eea;
+    font-size: 13px;
+  }
+
+  .carousel-control.prev {
+    left: 4px;
+  }
+
+  .carousel-control.next {
+    right: 4px;
+  }
+}
+
+/* 모바일 스와이프 힌트 */
+@media (max-width: 767px) {
+  .expert-carousel-horizontal::after {
+    content: '← 좌우로 스와이프 →';
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #94a3b8;
+    animation: swipeHint 3s ease-in-out infinite;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+}
+
+/* 스와이프 힌트 애니메이션 */
+@keyframes swipeHint {
+  0%, 100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.95);
+  }
+  10%, 90% {
+    opacity: 0.7;
+    transform: translateX(-50%) scale(1);
+  }
+  25% {
+    transform: translateX(calc(-50% - 10px)) scale(1);
+  }
+  75% {
+    transform: translateX(calc(-50% + 10px)) scale(1);
   }
 }
 

@@ -26,16 +26,19 @@ function Home() {
   const captionRef = useRef('');
   const fadeTimeoutRef = useRef(null);
 
-  // 자막 업데이트
+  // 자막 업데이트 (무한 반복)
   useEffect(() => {
     if (!showIntro) return;
 
     const startTime = Date.now();
+    const totalDuration = 30; // 전체 자막 길이 (30초)
 
     const updateCaption = () => {
       const elapsed = (Date.now() - startTime) / 1000;
+      // 무한 반복을 위한 모듈로 연산
+      const loopedTime = elapsed % totalDuration;
 
-      const caption = captions.find((cap) => elapsed >= cap.time && elapsed < cap.endTime);
+      const caption = captions.find((cap) => loopedTime >= cap.time && loopedTime < cap.endTime);
 
       if (caption) {
         if (caption.text !== captionRef.current) {

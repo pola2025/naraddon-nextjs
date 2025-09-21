@@ -12,7 +12,8 @@ export function getAdminPasswordOrThrow() {
   if (!password) {
     throw new Error('POLICY_ANALYSIS_PASSWORD is not configured.');
   }
-  return password;
+  // 줄바꿈 문자 제거
+  return password.trim();
 }
 
 export function hasValidAccess(request: NextRequest, providedPassword?: string | null) {

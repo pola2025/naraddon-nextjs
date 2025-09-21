@@ -45,6 +45,26 @@ export default function Header() {
   const pathname = usePathname();
   const { user, isAuthenticated } = useAuth();
 
+  // 인증 기업심사관 페이지 데이터 프리페칭
+  useEffect(() => {
+    // 사용자가 사이트에 접속하면 인증 기업심사관 데이터를 미리 로드
+    const prefetchExaminers = async () => {
+      try {
+        await fetch('/api/expert-services/examiners', {
+          method: 'GET',
+          cache: 'force-cache',
+        });
+      } catch (error) {
+        // 프리페치 실패는 무시 (실제 페이지 방문시 다시 시도)
+        console.debug('[Header] Prefetch examiners failed:', error);
+      }
+    };
+
+    // 페이지 로드 후 3초 뒤에 프리페칭 시작 (초기 로딩에 영향 없도록)
+    const timer = setTimeout(prefetchExaminers, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const [logoError, setLogoError] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSecondaryOpen, setIsSecondaryOpen] = useState(false);

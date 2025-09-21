@@ -119,11 +119,14 @@ export async function POST(request: NextRequest) {
     const hasValidAccessCookie =
       request.cookies.get(ACCESS_COOKIE)?.value === buildCookieValue(adminPassword);
 
+    // 비밀번호 검증
     if (trimmedPassword && trimmedPassword !== adminPassword) {
+      console.error('[policy-analysis][POST] Password mismatch');
       return NextResponse.json({ message: '비밀번호가 일치하지 않습니다.' }, { status: 401 });
     }
 
     if (!trimmedPassword && !hasValidAccessCookie) {
+      console.error('[policy-analysis][POST] No password or cookie provided');
       return NextResponse.json({ message: '비밀번호 인증이 필요합니다.' }, { status: 401 });
     }
 

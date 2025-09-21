@@ -4,6 +4,10 @@ import { certifiedExaminers } from '@/data/certifiedExaminers';
 import connectDB from '@/lib/mongodb';
 import ExpertExaminer from '@/models/ExpertExaminer';
 
+// API 라우트 캐싱 설정
+export const revalidate = 300; // 5분 캐싱
+export const dynamic = 'force-static';
+
 const SORT_ORDER = { sortOrder: 1, createdAt: -1 } as const;
 const DEFAULT_CATEGORY = 'funding';
 const LIST_SPLIT_REGEX = new RegExp('[,\\r\\n]+');
@@ -167,8 +171,23 @@ const handleDuplicateKeyError = (error: unknown) => {
   return null;
 };
 
+// 메모리 캐시 추가
+let cachedExaminers: any = null;
+let cacheTimestamp = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5분
+
 export async function GET(request: NextRequest) {
   try {
+    // 캐시 확인
+    const now = Date.now();
+    if (cachedExaminers && (now - cacheTimestamp) < CACHE_DURATION) {
+      return NextResponse.json({ examiners: cachedExaminers }, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+      });
+    }
+
     await connectDB();
     await seedExaminersIfNeeded();
 
@@ -192,7 +211,12 @@ export async function GET(request: NextRequest) {
       query = {};
     }
 
-    const examiners = await ExpertExaminer.find(query).sort(SORT_ORDER).lean();
+    // 필요한 필드만 선택하여 쿼리 최적화
+    const examiners = await ExpertExaminer.find(query)
+      .select('_id name position companyName category imageUrl imageAlt sortOrder isPublished')
+      .sort(SORT_ORDER)
+      .lean()
+      .exec();
 
     // 중복 제거: _id 기준으로 unique 처리
     const uniqueMap = new Map();
@@ -204,7 +228,17 @@ export async function GET(request: NextRequest) {
     });
     const uniqueExaminers = Array.from(uniqueMap.values());
 
-    return NextResponse.json({ examiners: uniqueExaminers });
+    // 캐시 업데이트
+    if (!includeHidden) {
+      cachedExaminers = uniqueExaminers;
+      cacheTimestamp = Date.now();
+    }
+
+    return NextResponse.json({ examiners: uniqueExaminers }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+      },
+    });
   } catch (error) {
     console.error('[expert-services/examiners][GET]', error);
     return NextResponse.json({ message: 'Failed to load examiner profiles.' }, { status: 500 });

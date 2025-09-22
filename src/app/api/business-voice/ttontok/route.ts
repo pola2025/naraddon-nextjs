@@ -127,9 +127,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Password validation
+  // Admin authentication check
+  // Check if request comes from admin page or has valid password
+  const isAdminRequest = request.headers.get('x-admin-auth') === 'true';
   const TTONTOK_WRITE_PASSWORD = process.env.TTONTOK_WRITE_PASSWORD;
-  if (!password || password !== TTONTOK_WRITE_PASSWORD) {
+
+  if (!isAdminRequest && (!password || password !== TTONTOK_WRITE_PASSWORD)) {
     return NextResponse.json(
       { message: '비밀번호가 올바르지 않습니다.' },
       { status: 401 }

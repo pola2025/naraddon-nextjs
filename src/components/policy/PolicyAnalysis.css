@@ -2,24 +2,24 @@
 .policy-analysis-page {
   width: 100%;
   min-height: 100vh;
-  background: #f8fafc;
+  background: linear-gradient(to bottom, #ffffff, #f8fafc);
   --layout-max-width: 1280px;
   --layout-horizontal-padding: clamp(16px, 5vw, 60px);
   --layout-section-gap: clamp(32px, 6vw, 72px);
   --layout-padding-inline: 16px;
   --layout-padding-inline-lg: 60px;
-  --policy-analysis-header-offset: 80px;
-  --policy-analysis-hero-top-padding: clamp(16px, 4vw, 32px);
-  --policy-analysis-hero-bottom-padding: clamp(48px, 6vw, 88px);
-  --policy-analysis-hero-max-width: 1280px;
+  --business-voice-header-offset: 80px;
+  --business-voice-hero-top-padding: clamp(16px, 4vw, 32px);
+  --business-voice-hero-bottom-padding: clamp(48px, 6vw, 88px);
+  --business-voice-hero-max-width: 1280px;
   --hero-background: linear-gradient(135deg, #e8f2ff 0%, #ffffff 55%, #f8fdf9 100%);
   --hero-overlay-radial-primary: rgba(59, 130, 246, 0.2);
   --hero-overlay-radial-secondary: rgba(45, 212, 191, 0.18);
   --hero-text-color: #0f172a;
   --hero-highlight-color: #2563eb;
   --hero-subtitle-color: #475569;
-  padding-top: 0 !important;
-  margin-top: 0 !important;
+  padding-top: 0;
+  margin-top: 0;
 }
 
 @media (max-width: 768px) {
@@ -32,8 +32,8 @@
 
   /* 히어로 섹션 모바일 최적화 */
   .policy-analysis-page .expert-hero {
-    margin-top: calc(-1 * var(--policy-analysis-header-offset));
-    padding-top: calc(var(--policy-analysis-header-offset) + var(--policy-analysis-hero-top-padding) - 40px);
+    margin-top: calc(-1 * var(--business-voice-header-offset));
+    padding-top: calc(var(--business-voice-header-offset) + var(--business-voice-hero-top-padding) - 40px);
     padding-bottom: 40px;
   }
 
@@ -51,9 +51,9 @@
 
 .policy-analysis-page .expert-hero {
   position: relative;
-  margin-top: calc(-1 * var(--policy-analysis-header-offset));
-  padding-top: calc(var(--policy-analysis-header-offset) + var(--policy-analysis-hero-top-padding) - 40px);
-  padding-bottom: var(--policy-analysis-hero-bottom-padding);
+  margin-top: calc(-1 * var(--business-voice-header-offset));
+  padding-top: calc(var(--business-voice-header-offset) + var(--business-voice-hero-top-padding) - 40px);
+  padding-bottom: var(--business-voice-hero-bottom-padding);
   background: var(--hero-background);
   color: var(--hero-text-color);
   overflow: hidden;
@@ -70,7 +70,7 @@
 }
 
 .policy-analysis-page .expert-hero .layout-container {
-  max-width: var(--policy-analysis-hero-max-width);
+  max-width: var(--business-voice-hero-max-width);
   padding-left: var(--layout-padding-inline);
   padding-right: var(--layout-padding-inline);
   margin: 0 auto;

@@ -187,7 +187,7 @@ export default function BusinessVoiceAdminPage() {
   };
 
   const handleCreatePost = async () => {
-    const newPost: NewPost = {
+    const newPost = {
       title: '새 게시글',
       content: '내용을 입력하세요',
       nickname: '작성자',
@@ -200,13 +200,19 @@ export default function BusinessVoiceAdminPage() {
     try {
       const response = await fetch('/api/business-voice/ttontok', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-auth': 'true'
+        },
         body: JSON.stringify(newPost)
       });
 
       if (response.ok) {
         alert('새 게시글이 생성되었습니다.');
         fetchPosts();
+      } else {
+        const error = await response.json();
+        alert(error.message || '게시글 생성에 실패했습니다.');
       }
     } catch (error) {
       console.error('게시글 생성 실패:', error);
@@ -220,7 +226,10 @@ export default function BusinessVoiceAdminPage() {
     try {
       const response = await fetch(`/api/business-voice/ttontok/${selectedPost.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-auth': 'true'
+        },
         body: JSON.stringify({
           title: selectedPost.title,
           content: selectedPost.content,
@@ -239,6 +248,9 @@ export default function BusinessVoiceAdminPage() {
         setEditMode(false);
         fetchPosts();
         fetchPostDetail(selectedPost.id);
+      } else {
+        const result = await response.json();
+        alert(result.message || '게시글 수정에 실패했습니다.');
       }
     } catch (error) {
       console.error('게시글 수정 실패:', error);
@@ -251,7 +263,10 @@ export default function BusinessVoiceAdminPage() {
 
     try {
       const response = await fetch(`/api/business-voice/ttontok/${postId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'x-admin-auth': 'true'
+        }
       });
 
       if (response.ok) {

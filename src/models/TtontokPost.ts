@@ -94,9 +94,19 @@ const TtontokPostSchema = new Schema<ITtontokPost>(
       default: false,
       index: true,
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      required: true,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+      required: true,
+    },
   },
   {
-    timestamps: true,
+    timestamps: false,
   }
 );
 

@@ -13,6 +13,14 @@ import './PolicyNewsSection.css';
 import usePolicyNews from '@/hooks/usePolicyNews';
 import { sanitizeImageUrl } from '@/utils/imageUrlSanitizer';
 
+const categoryLabelMap = {
+  funding: '정책자금',
+  support: '지원사업',
+  startup: '창업지원',
+  rnd: 'R&D',
+  policy: '정책해설',
+};
+
 
 
 const PolicyNewsSection = () => {
@@ -391,7 +399,7 @@ const PolicyNewsSection = () => {
                           </span>
                         )}
                         {news.badge && <span className="news-badge info">{news.badge}</span>}
-                        <span className="news-category">{news.category}</span>
+                        <span className="news-category">{categoryLabelMap[news.category] || '정책정보'}</span>
                       </div>
                     </div>
                     <div className="slide-content">
@@ -480,7 +488,7 @@ const PolicyNewsSection = () => {
                       <div onClick={() => handleNewsClick(news.id)} style={{ cursor: 'pointer', flex: 1, display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <span className="news-item-date-compact news-item-date-desktop">{news.dateText}</span>
                         <span className="news-item-date-compact news-item-date-mobile">{formatShortDate(news.dateText)}</span>
-                        <span className={`news-item-category-compact news-item-category-desktop news-category-${news.category?.toLowerCase().replace(/\s+/g, '-')}`}>{news.category}</span>
+                        <span className={`news-item-category-compact news-item-category-desktop news-category-${news.category?.toLowerCase().replace(/\s+/g, '-')}`}>{categoryLabelMap[news.category] || '정책정보'}</span>
                         <h4 className="news-item-title-compact">{news.title}</h4>
                         {news.isPinned && (
                           <i className="fas fa-thumbtack news-item-pin-icon" style={{ marginLeft: 'auto', color: '#666', fontSize: '12px' }}></i>

@@ -12,5 +12,9 @@ const PolicyAnalysis = dynamic(() => import('@/components/policy/PolicyAnalysis'
 });
 
 export default function PolicyAnalysisPage() {
-  return <PolicyAnalysis />;
+  return (
+    <div style={{ marginTop: '-80px' }}>
+      <PolicyAnalysis />
+    </div>
+  );
 }

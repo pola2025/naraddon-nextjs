@@ -93,6 +93,12 @@ export async function PATCH(
     return NextResponse.json({ message: '게시글 ID가 올바르지 않습니다.' }, { status: 400 });
   }
 
+  // Admin authentication check
+  const isAdminRequest = request.headers.get('x-admin-auth') === 'true';
+  if (!isAdminRequest) {
+    return NextResponse.json({ message: '권한이 없습니다.' }, { status: 401 });
+  }
+
   const post = await TtontokPost.findById(postId);
   if (!post || post.isArchived) {
     return NextResponse.json({ message: '게시글을 찾을 수 없습니다.' }, { status: 404 });
@@ -144,7 +150,8 @@ export async function PATCH(
   }
 
   if ('createdAt' in payload) {
-    const date = new Date(payload.createdAt as string);
+    const dateValue = payload.createdAt as string;
+    const date = new Date(dateValue);
     if (!isNaN(date.getTime())) {
       updates.createdAt = date;
     }
@@ -159,7 +166,7 @@ export async function PATCH(
   try {
     const updated = await TtontokPost.findByIdAndUpdate(
       postId,
-      updates,
+      { $set: updates },
       { new: true, runValidators: true }
     ).lean();
 
@@ -192,6 +199,12 @@ export async function DELETE(
   const { postId } = context.params;
   if (!postId || !Types.ObjectId.isValid(postId)) {
     return NextResponse.json({ message: '게시글 ID가 올바르지 않습니다.' }, { status: 400 });
+  }
+
+  // Admin authentication check
+  const isAdminRequest = request.headers.get('x-admin-auth') === 'true';
+  if (!isAdminRequest) {
+    return NextResponse.json({ message: '권한이 없습니다.' }, { status: 401 });
   }
 
   const post = await TtontokPost.findById(postId);

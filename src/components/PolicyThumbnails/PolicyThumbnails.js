@@ -24,6 +24,10 @@ const categoryLabelMap = {
   startup: '창업지원',
   rnd: 'R&D',
   policy: '정책해설',
+  '정부지원': '정부지원',
+  '지역정책': '지역정책',
+  '중소기업': '중소기업',
+  '기타': '기타',
 };
 
 const PolicyThumbnails = () => {
@@ -88,7 +92,7 @@ const PolicyThumbnails = () => {
               <div className="thumbnail-info">
                 <div className="category-tag">
                   <span className="category-icon">{categoryIconMap[item.category] || '📌'}</span>
-                  <span className="category-name">{categoryLabelMap[item.category] || '정책정보'}</span>
+                  <span className="category-name">{categoryLabelMap[item.category] || item.category}</span>
                 </div>
 
                 <h3 className="thumbnail-title">{item.title}</h3>
@@ -115,7 +119,7 @@ const PolicyThumbnails = () => {
               </div>
               <div className="list-item-category">
                 <span className="category-badge-mobile">
-                  {categoryLabelMap[item.category] || '정책'}
+                  {categoryLabelMap[item.category] || item.category}
                 </span>
               </div>
               <div className="list-item-title">

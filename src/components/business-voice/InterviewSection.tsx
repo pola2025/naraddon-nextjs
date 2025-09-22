@@ -565,7 +565,6 @@ export default function InterviewSection() {
                         alt={video.title}
                         width={320}
                         height={180}
-                        loading="lazy"
                         priority={shouldLoadEagerly}
                         style={{
                           opacity: isImageLoaded ? 1 : 0,

@@ -142,8 +142,40 @@ function Home() {
           setIsExpanded={setIsExpanded}
         />
       ) : (
-        <>
-          <HeroSection />
+        <div className="home-main-content">
+          {/* 영상 배경 래퍼 */}
+          <div className="home-hero-section">
+            {/* 배경 영상 */}
+            <div className="home-hero-section__background">
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                onError={(e) => {
+                  console.error('메인 페이지 배경 영상 로드 실패:', e);
+                  // 영상 로드 실패 시 대체 배경
+                  const videoElement = e.target;
+                  if (videoElement && videoElement.parentElement) {
+                    videoElement.style.display = 'none';
+                    videoElement.parentElement.style.background =
+                      'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+                  }
+                }}
+                onLoadedData={() => {
+                  console.log('✅ 메인 페이지 배경 영상 로드 성공');
+                }}
+              >
+                <source src="/videos/Naraddon_main_2nd.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <div className="home-hero-section__overlay"></div>
+            </div>
+
+            {/* 히어로 섹션 */}
+            <HeroSection />
+          </div>
+
           <Suspense fallback={<SectionLoader />}>
             <TrustSection />
           </Suspense>
@@ -159,7 +191,7 @@ function Home() {
           <Suspense fallback={<SectionLoader />}>
             <EmpathySection />
           </Suspense>
-        </>
+        </div>
       )}
     </>
   );

@@ -15,7 +15,7 @@
 
 .login-box h1 {
   text-align: center;
-  color: #333;
+  color: #000;
   margin-bottom: 30px;
 }
 
@@ -59,7 +59,7 @@
 }
 
 .admin-header h1 {
-  color: #333;
+  color: #000;
   margin: 0;
 }
 
@@ -117,7 +117,7 @@
 }
 
 .posts-header h2 {
-  color: #333;
+  color: #000;
   margin: 0;
 }
 
@@ -163,7 +163,7 @@
   padding: 12px;
   text-align: left;
   font-weight: 600;
-  color: #666;
+  color: #000;
   border-bottom: 2px solid #ddd;
 }
 
@@ -266,7 +266,7 @@
 }
 
 .editor-header h2 {
-  color: #333;
+  color: #000;
   margin: 0;
 }
 
@@ -317,7 +317,7 @@
 
 .form-row label {
   font-weight: 600;
-  color: #666;
+  color: #000;
   font-size: 14px;
 }
 
@@ -328,7 +328,7 @@
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 14px;
-  color: #212121;
+  color: #000;
 }
 
 .form-row textarea {
@@ -361,7 +361,7 @@
 }
 
 .post-preview h3 {
-  color: #333;
+  color: #000;
   margin-bottom: 15px;
 }
 
@@ -370,7 +370,7 @@
   gap: 15px;
   margin-bottom: 10px;
   font-size: 14px;
-  color: #666;
+  color: #000;
 }
 
 .post-meta span {
@@ -384,7 +384,7 @@
   gap: 15px;
   margin-bottom: 15px;
   font-size: 14px;
-  color: #666;
+  color: #000;
 }
 
 .post-tags {
@@ -404,7 +404,7 @@
 
 .post-content {
   line-height: 1.6;
-  color: #333;
+  color: #000;
   white-space: pre-wrap;
 }
 
@@ -415,7 +415,7 @@
 }
 
 .replies-section h3 {
-  color: #333;
+  color: #000;
   margin-bottom: 20px;
 }
 
@@ -427,7 +427,7 @@
 }
 
 .new-reply-form h4 {
-  color: #666;
+  color: #000;
   margin-bottom: 15px;
 }
 
@@ -493,7 +493,7 @@
 }
 
 .order-hint {
-  color: #666;
+  color: #000;
   font-size: 14px;
 }
 
@@ -518,16 +518,16 @@
 
 .reply-author {
   font-weight: 600;
-  color: #333;
+  color: #000;
 }
 
 .reply-date {
   font-size: 13px;
-  color: #999;
+  color: #000;
 }
 
 .reply-content {
-  color: #666;
+  color: #000;
   line-height: 1.5;
   margin-bottom: 10px;
   white-space: pre-wrap;
@@ -541,7 +541,7 @@
 }
 
 .reply-actions span {
-  color: #666;
+  color: #000;
 }
 
 .reply-order-buttons {
@@ -608,7 +608,7 @@
 .loading {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: #000;
 }
 
 @media (max-width: 1200px) {

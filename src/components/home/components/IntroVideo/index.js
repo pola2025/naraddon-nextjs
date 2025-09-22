@@ -6,9 +6,11 @@ const IntroVideo = ({
   currentCaption,
   isCaptionVisible,
   showGreenOverlay,
-  onStartClick,
+  onStart,
   videoError,
-  setVideoError,
+  onVideoError,
+  isExpanded,
+  setIsExpanded,
 }) => {
   if (!showStartButton) return null;
 
@@ -44,7 +46,7 @@ const IntroVideo = ({
           onError={(e) => {
             console.error('❌ 영상 로드 실패:', e);
             console.error('영상 경로:', videoSrc);
-            setVideoError(true);
+            if (onVideoError) onVideoError();
 
             // 에러 시 대체 콘텐츠 표시
             const videoElement = e.target;
@@ -81,7 +83,7 @@ const IntroVideo = ({
 
       {/* 시작 버튼 */}
       <div className="start-button-container">
-        <button className="start-button" onClick={onStartClick}>
+        <button className="start-button" onClick={onStart}>
           <span className="button-text">나라똔과 함께하기</span>
           <i className="fas fa-arrow-right"></i>
         </button>

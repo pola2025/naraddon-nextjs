@@ -5,6 +5,7 @@
   max-width: 1400px;
   margin: 60px auto;
   padding: 0 20px;
+  overflow: hidden; /* 전체 섹션에서 overflow 방지 */
 }
 
 /* 섹션 헤더 */
@@ -71,6 +72,8 @@
   display: grid;
   grid-template-columns: 400px 1fr; /* 왼쪽 고정 너비 세로형, 오른쪽 유동 */
   gap: 40px;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* 메인 뉴스 슬라이더 (왼쪽) - 세로형 구조 */
@@ -365,6 +368,13 @@
   height: 750px; /* 왼쪽 메인 슬라이더와 동일한 높이 */
 }
 
+@media (max-width: 768px) {
+  .news-list {
+    height: auto;
+    margin-top: 20px;
+  }
+}
+
 .list-header {
   display: flex;
   justify-content: space-between;
@@ -631,6 +641,24 @@
   .policy-news-section {
     padding: 0 15px;
     margin: 40px auto;
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  .policy-news-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .news-content-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
   }
 
   .news-section-header {
@@ -645,14 +673,43 @@
 
   .main-news-slider {
     height: 550px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 30px 0; /* 아래쪽 여백 추가 */
+    border-radius: 16px;
   }
 
   .slide-image {
-    height: 550px; /* 모바일에서 적절한 높이 */
+    height: 300px; /* 모바일에서 적절한 높이 */
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .slide-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  .slider-container {
+    height: 550px;
+    width: 100%;
+  }
+
+  .slide-item {
+    height: 550px;
+    width: 100%;
+  }
+
+  .slide-content {
+    top: 300px; /* 이미지 높이에 맞춰 조정 */
+    height: 250px;
   }
 
   .slider-control {
-    top: 275px; /* 모바일에서 이미지 중앙 조정 */
+    top: 150px; /* 모바일에서 이미지 중앙 조정 - 300px의 절반 */
   }
 
   .slide-content {
@@ -688,6 +745,7 @@
 
   .news-items-wrapper {
     padding: 0 28px;
+    margin-top: 20px; /* 메인 슬라이더와 간격 추가 */
   }
 
   .news-items {
@@ -788,17 +846,35 @@
   }
 
   .main-news-slider {
-    height: 500px;
+    height: 480px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 25px 0; /* 아래쪽 여백 추가 */
+    border-radius: 12px;
   }
 
   .slide-image {
-    height: 500px; /* 작은 화면에서 조정 */
+    height: 250px; /* 작은 화면에서 조정 */
+    width: 100%;
+  }
+
+  .slider-container {
+    height: 480px;
+  }
+
+  .slide-item {
+    height: 480px;
+  }
+
+  .slide-content {
+    top: 250px;
+    height: 230px;
   }
 
   .slider-control {
     width: 35px;
     height: 35px;
-    top: 250px;
+    top: 125px; /* 250px의 절반 */
   }
 
   .slider-control i {

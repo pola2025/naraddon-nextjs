@@ -19,6 +19,10 @@
   margin-top: calc(-1 * var(--business-voice-header-offset));
   padding-top: calc(var(--business-voice-header-offset) + var(--business-voice-hero-top-padding) - 40px);
   padding-bottom: var(--business-voice-hero-bottom-padding);
+  /* Force reset any other margins */
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;
 }
 
 @media (max-width: 768px) {

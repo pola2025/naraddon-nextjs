@@ -462,10 +462,10 @@ export default function TtontokDetailPage() {
                   <div className="reply-header">
                     <div className="reply-author">
                       <div className="reply-author-info">
-                        <span className="reply-name">{displayName}</span>
                         {showCompany && (
                           <span className="reply-company">{displayCompany}</span>
                         )}
+                        <span className="reply-name">{displayName}</span>
                       </div>
                     </div>
                     <span className="reply-date">{formatDate(reply.createdAt)}</span>

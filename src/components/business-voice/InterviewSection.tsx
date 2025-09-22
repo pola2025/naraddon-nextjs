@@ -129,8 +129,8 @@ export default function InterviewSection() {
         });
       },
       {
-        rootMargin: '100px', // Start loading 100px before entering viewport
-        threshold: 0.25 // Load when 25% of element is visible
+        rootMargin: '200px', // Start loading 200px before entering viewport
+        threshold: 0.01 // Load as soon as element starts appearing
       }
     );
 
@@ -167,6 +167,15 @@ export default function InterviewSection() {
 
       if (data.success && Array.isArray(data.videos)) {
         setVideos(data.videos);
+
+        // 처음 3개 썸네일 미리 로드
+        data.videos.slice(0, 3).forEach((video: InterviewVideo) => {
+          const videoId = video.youtubeId || video.youtubeUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/)?.[1];
+          if (videoId) {
+            const img = new window.Image();
+            img.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+          }
+        });
       }
     } catch (error) {
       console.error('Failed to fetch videos:', error);
@@ -527,8 +536,8 @@ export default function InterviewSection() {
                   return match ? match[1] : '';
                 };
                 const videoId = video.youtubeId || extractYoutubeId(video.youtubeUrl);
-                // hqdefault를 기본으로 사용 (480x360, 더 나은 품질과 빠른 로딩의 균형)
-                const youtubeThumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                // mqdefault를 기본으로 사용 (320x180, 더 빠른 로딩)
+                const youtubeThumbnail = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
                 const thumbnailUrl = video.displayThumbnail || video.thumbnailUrl || youtubeThumbnail;
 
                 const isVisible = visibleCards.has(video._id);
@@ -552,11 +561,11 @@ export default function InterviewSection() {
                       )}
 
                       <Image
-                        src={shouldLoadEagerly || isVisible ? thumbnailUrl : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y1ZjVmNSIvPjwvc3ZnPg=='}
+                        src={thumbnailUrl}
                         alt={video.title}
                         width={320}
                         height={180}
-                        loading={shouldLoadEagerly ? 'eager' : 'lazy'}
+                        loading="lazy"
                         priority={shouldLoadEagerly}
                         style={{
                           opacity: isImageLoaded ? 1 : 0,
@@ -569,10 +578,8 @@ export default function InterviewSection() {
                         onLoad={() => handleImageLoad(thumbnailUrl)}
                         onError={(e) => {
                           const target = e.currentTarget as HTMLImageElement;
-                          // hqdefault가 없으면 mqdefault로 폴백
-                          if (target.src.includes('hqdefault')) {
-                            target.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-                          } else if (target.src.includes('mqdefault')) {
+                          // mqdefault가 없으면 default로 폴백
+                          if (target.src.includes('mqdefault')) {
                             target.src = `https://img.youtube.com/vi/${videoId}/default.jpg`;
                           }
                         }}

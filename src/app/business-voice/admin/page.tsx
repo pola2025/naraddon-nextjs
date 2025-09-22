@@ -48,7 +48,7 @@ interface NewReply {
   likeCount: number;
 }
 
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+// Admin password is now handled by server-side API
 
 const PREDEFINED_NICKNAMES = {
   examiners: [
@@ -113,14 +113,28 @@ export default function BusinessVoiceAdminPage() {
     }
   }, [isAuthenticated, currentPage, selectedCategory, sortBy]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      localStorage.setItem('ttontokAdminAuth', 'authenticated');
-      fetchPosts();
-    } else {
-      alert('비밀번호가 올바르지 않습니다.');
+
+    try {
+      const response = await fetch('/api/business-voice/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setIsAuthenticated(true);
+        localStorage.setItem('ttontokAdminAuth', 'authenticated');
+        fetchPosts();
+      } else {
+        alert(data.message || '비밀번호가 올바르지 않습니다.');
+      }
+    } catch (error) {
+      console.error('로그인 오류:', error);
+      alert('로그인 중 오류가 발생했습니다.');
     }
   };
 

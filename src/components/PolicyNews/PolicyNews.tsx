@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import './PolicyNews.css';
+import { getCachedPolicyNews } from '@/utils/prefetch';
 
 import boardImage1 from '@/assets/images/board/board_image_01.jpg';
 import boardImage2 from '@/assets/images/board/board_image_02.jpg';
@@ -66,6 +67,31 @@ const PolicyNews = () => {
 
     const loadItems = async () => {
       try {
+        // 캐시된 데이터 먼저 확인
+        const cachedData = getCachedPolicyNews();
+        if (cachedData) {
+          if (!cancelled) {
+            const normalized = (cachedData.posts || []).slice(0, 4).map((post: any, index: number) => {
+              const fallback = fallbackImages[index % fallbackImages.length];
+              const fallbackSrc = typeof fallback === 'string' ? fallback : fallback.src;
+              const badgeLabel = post.badge || (post.isMain ? '추천' : defaultBadges[index % defaultBadges.length].label);
+              const badgeType = resolveBadgeType(post.badge) || defaultBadges[index % defaultBadges.length].type;
+              return {
+                id: post._id || post.id,
+                title: post.title || '제목 미정',
+                createdAt: post.createdAt,
+                thumbnail: post.thumbnail || fallbackSrc,
+                badgeLabel,
+                badgeType,
+                category: post.category || '정책소식',
+              };
+            });
+            setItems(normalized);
+          }
+          return;
+        }
+
+        // 캐시가 없으면 API 호출
         const response = await fetch('/api/policy-news?limit=4', { cache: 'no-store' });
         if (!response.ok) {
           throw new Error('게시글을 불러오지 못했습니다.');

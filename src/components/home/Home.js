@@ -8,12 +8,17 @@ import SaveSection from '../SaveSection';
 import NaraddonTube from '../NaraddonTube/NaraddonTube';
 import EmpathySection from '../EmpathySection';
 import { captions } from './constants/captions';
+import { prefetchPolicyNews } from '../../utils/prefetch';
 
 const CAPTION_FADE_DURATION = 850;
 
 function Home() {
   useEffect(() => {
     document.body.classList.add('page-home');
+
+    // 정책소식 데이터 미리 로드
+    prefetchPolicyNews();
+
     return () => document.body.classList.remove('page-home');
   }, []);
   const [showIntro, setShowIntro] = useState(true);

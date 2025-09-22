@@ -1,0 +1,750 @@
+'use client';
+
+import React, { useEffect, useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import './PolicyNewsWrite.css';
+
+const categories = [
+  { value: '', label: '카테고리를 선택해주세요' },
+  { value: '정부지원', label: '정부지원' },
+  { value: '중소기업', label: '중소기업' },
+  { value: '창업지원', label: '창업지원' },
+  { value: '연구개발', label: '연구개발' },
+  { value: '금융지원', label: '금융지원' },
+  { value: '세제지원', label: '세제지원' },
+  { value: '고용지원', label: '고용지원' },
+  { value: '지역정책', label: '지역정책' },
+  { value: '환경정책', label: '환경정책' },
+  { value: '기타', label: '기타' },
+];
+
+const defaultFormData = {
+  title: '',
+  category: '',
+  excerpt: '',
+  content: '',
+  tags: '',
+  thumbnail: '',
+  isMainNews: false,
+};
+
+const PolicyNewsWrite = () => {
+  const router = useRouter();
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [formData, setFormData] = useState(defaultFormData);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verifyError, setVerifyError] = useState('');
+  const [posts, setPosts] = useState([]);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const fileInputRef = useRef(null);
+
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const cached = sessionStorage.getItem('policyNewsAuthorized');
+    if (cached === 'true') {
+      setIsAuthorized(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isAuthorized || typeof window === 'undefined') {
+      return;
+    }
+    const draft = localStorage.getItem('policyNewsDraft');
+    if (draft) {
+      try {
+        const parsed = JSON.parse(draft);
+        setFormData({ ...defaultFormData, ...parsed });
+        if (parsed.thumbnail) {
+          setImagePreview(parsed.thumbnail);
+        }
+      } catch (error) {
+        console.warn('임시 저장된 데이터를 불러오지 못했습니다.', error);
+      }
+    }
+    // 인증 성공 시 게시글 목록 가져오기
+    fetchPosts();
+  }, [isAuthorized]);
+
+  const fetchPosts = async () => {
+    setIsLoadingPosts(true);
+    try {
+      const response = await fetch('/api/policy-news?limit=50');
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data.posts || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch posts:', error);
+    } finally {
+      setIsLoadingPosts(false);
+    }
+  };
+
+  const handleDeletePost = async (postId, postTitle) => {
+    const confirmPassword = window.prompt(`"${postTitle}" 게시글을 삭제하시겠습니까?\n\n비밀번호를 입력하세요:`);
+    if (!confirmPassword) return;
+
+    try {
+      const response = await fetch(`/api/policy-news/${postId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: confirmPassword })
+      });
+
+      if (!response.ok) {
+        const result = await response.json();
+        alert(result?.message || '삭제에 실패했습니다.');
+        return;
+      }
+
+      alert('게시글이 삭제되었습니다.');
+      fetchPosts(); // 목록 새로고침
+    } catch (error) {
+      alert('삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleEditPost = (postId) => {
+    // 수정 페이지로 이동
+    window.location.href = `/policy-news/${postId}/edit`;
+  };
+
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+
+    if (errors[name]) {
+      setErrors((prev) => {
+        const nextErrors = { ...prev };
+        delete nextErrors[name];
+        return nextErrors;
+      });
+    }
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+    setVerifyError('');
+
+    if (errors.password) {
+      setErrors((prev) => {
+        const nextErrors = { ...prev };
+        delete nextErrors.password;
+        return nextErrors;
+      });
+    }
+  };
+
+  const handleImageUrlChange = (event) => {
+    const url = event.target.value;
+    setFormData((prev) => ({ ...prev, thumbnail: url }));
+
+    if (url) {
+      setImagePreview(url);
+    } else {
+      setImagePreview(null);
+    }
+
+    if (errors.thumbnail) {
+      setErrors((prev) => {
+        const nextErrors = { ...prev };
+        delete nextErrors.thumbnail;
+        return nextErrors;
+      });
+    }
+  };
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // 파일 크기 체크 (3MB)
+    if (file.size > 3 * 1024 * 1024) {
+      alert('이미지 파일 크기는 3MB 이하여야 합니다.');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      return;
+    }
+
+    // 파일 타입 체크
+    if (!file.type.startsWith('image/')) {
+      alert('이미지 파일만 업로드 가능합니다.');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      return;
+    }
+
+    // 비밀번호 체크
+    if (!password) {
+      alert('이미지를 업로드하려면 먼저 비밀번호를 입력해주세요.');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      return;
+    }
+
+    setIsUploadingImage(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('password', password);
+
+      const response = await fetch('/api/policy-news/upload-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Upload failed:', errorData);
+        throw new Error(errorData.message || '이미지 업로드에 실패했습니다.');
+      }
+
+      const data = await response.json();
+      setFormData((prev) => ({ ...prev, thumbnail: data.url }));
+      setImagePreview(data.url);
+
+      if (errors.thumbnail) {
+        setErrors((prev) => {
+          const nextErrors = { ...prev };
+          delete nextErrors.thumbnail;
+          return nextErrors;
+        });
+      }
+    } catch (error) {
+      console.error('Image upload error:', error);
+      alert(error.message || '이미지 업로드 중 오류가 발생했습니다.');
+    } finally {
+      setIsUploadingImage(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  // insertFormatting 함수는 ReactQuill 사용으로 더 이상 필요없음
+
+  const validateForm = () => {
+    const nextErrors = {};
+
+    if (!formData.title.trim()) {
+      nextErrors.title = '제목을 입력해주세요.';
+    }
+    if (!formData.category) {
+      nextErrors.category = '카테고리를 선택해주세요.';
+    }
+    if (!formData.excerpt.trim()) {
+      nextErrors.excerpt = '요약을 입력해주세요.';
+    }
+    if (!formData.content.trim()) {
+      nextErrors.content = '내용을 입력해주세요.';
+    }
+    if (!formData.thumbnail.trim()) {
+      nextErrors.thumbnail = '표지 이미지를 입력해주세요.';
+    }
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const verifyPassword = async (event) => {
+    event.preventDefault();
+    if (!password.trim()) {
+      setVerifyError('비밀번호를 입력해주세요.');
+      return;
+    }
+
+    try {
+      setIsVerifying(true);
+      setVerifyError('');
+      const response = await fetch('/api/policy-news/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        setVerifyError(result?.message || '비밀번호가 올바르지 않습니다.');
+        return;
+      }
+
+      setIsAuthorized(true);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('policyNewsAuthorized', 'true');
+      }
+    } catch (error) {
+      console.error('비밀번호 검증 실패', error);
+      setVerifyError('비밀번호 검증 중 오류가 발생했습니다.');
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!validateForm()) {
+      alert('필수 항목을 모두 입력해주세요.');
+      return;
+    }
+
+    if (!password.trim()) {
+      setErrors((prev) => ({ ...prev, password: '게시글 비밀번호를 입력해주세요.' }));
+      return;
+    }
+
+    const tagsArray = formData.tags
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
+
+    const payload = {
+      title: formData.title,
+      category: formData.category,
+      excerpt: formData.excerpt,
+      content: formData.content,
+      thumbnail: formData.thumbnail,
+      tags: tagsArray,
+      isMain: formData.isMainNews,
+      password,
+    };
+
+    try {
+      setIsSubmitting(true);
+      const response = await fetch('/api/policy-news', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        alert(result?.message || '게시글 등록에 실패했습니다.');
+        return;
+      }
+
+      localStorage.removeItem('policyNewsDraft');
+      alert('정책소식이 등록되었습니다.');
+      router.push(`/policy-news/${result.post._id}`);
+    } catch (error) {
+      console.error('정책소식 등록 실패', error);
+      alert('게시글 등록 중 오류가 발생했습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    if (window.confirm('작성 중인 내용을 취소하시겠습니까?')) {
+      router.back();
+    }
+  };
+
+  const handleSaveDraft = () => {
+    localStorage.setItem('policyNewsDraft', JSON.stringify(formData));
+    alert('임시 저장되었습니다.');
+  };
+
+  const handleLoadDraft = () => {
+    const draft = localStorage.getItem('policyNewsDraft');
+    if (draft) {
+      const parsed = JSON.parse(draft);
+      setFormData({ ...defaultFormData, ...parsed });
+      if (parsed.thumbnail) {
+        setImagePreview(parsed.thumbnail);
+      }
+      alert('임시 저장된 내용을 불러왔습니다.');
+    } else {
+      alert('임시 저장된 데이터가 없습니다.');
+    }
+  };
+
+  if (!isAuthorized) {
+    return (
+      <div className="policy-news-write">
+        <div className="write-header">
+          <h1>정책소식 작성</h1>
+          <p>비밀번호를 입력하세요.</p>
+        </div>
+        <form className="password-verify-form" onSubmit={verifyPassword}>
+          <label htmlFor="verify-password">게시글 비밀번호</label>
+          <input
+            type="password"
+            id="verify-password"
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder="비밀번호를 입력하세요"
+          />
+          {verifyError && <span className="error-message">{verifyError}</span>}
+          <button type="submit" className="btn-submit" disabled={isVerifying}>
+            <i className="fas fa-lock"></i> {isVerifying ? '확인 중...' : '확인'}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  return (
+    <div className="policy-news-write">
+      <div className="write-header" style={{ position: 'relative' }}>
+        {imagePreview && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              overflow: 'hidden',
+              borderRadius: '8px',
+              zIndex: 0,
+            }}
+          >
+            <img
+              src={imagePreview}
+              alt="배경 이미지"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                filter: 'brightness(0.7)',
+              }}
+              onError={(e) => {
+                console.error('Image load failed:', imagePreview);
+                e.target.style.display = 'none';
+              }}
+            />
+          </div>
+        )}
+        <div style={{
+          position: 'relative',
+          background: imagePreview ? 'rgba(0, 0, 0, 0.3)' : 'transparent',
+          padding: '3rem 2rem',
+          borderRadius: '8px',
+          minHeight: imagePreview ? '300px' : 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          zIndex: 1,
+        }}>
+          <h1 style={{ color: imagePreview ? '#fff' : '#1e293b', marginBottom: '1rem' }}>정책소식 작성</h1>
+          <p style={{ color: imagePreview ? '#fff' : '#64748b' }}>비밀번호를 입력하면 게시글을 등록할 수 있습니다.</p>
+        </div>
+      </div>
+
+      <form className="write-form" onSubmit={handleSubmit}>
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="title">
+              제목 <span className="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="게시글 제목을 입력해주세요"
+              className={errors.title ? 'error' : ''}
+            />
+            {errors.title && <span className="error-message">{errors.title}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="category">
+              카테고리 <span className="required">*</span>
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className={errors.category ? 'error' : ''}
+            >
+              {categories.map((category) => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+            {errors.category && <span className="error-message">{errors.category}</span>}
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="excerpt">
+            요약 <span className="required">*</span>
+          </label>
+          <textarea
+            id="excerpt"
+            name="excerpt"
+            value={formData.excerpt}
+            onChange={handleChange}
+            placeholder="게시글 요약을 입력해주세요"
+            rows={3}
+            className={errors.excerpt ? 'error' : ''}
+          />
+          {errors.excerpt && <span className="error-message">{errors.excerpt}</span>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="content">
+            내용 <span className="required">*</span>
+          </label>
+          <div style={{ minHeight: '400px' }}>
+            <textarea
+              value={formData.content}
+              onChange={(e) => {
+                setFormData(prev => ({ ...prev, content: e.target.value }));
+                if (errors.content) {
+                  setErrors(prev => {
+                    const nextErrors = { ...prev };
+                    delete nextErrors.content;
+                    return nextErrors;
+                  });
+                }
+              }}
+              placeholder="내용을 입력해주세요...
+
+# 제목
+## 소제목
+일반 텍스트
+![이미지설명](이미지URL)
+--- (구분선)"
+              style={{
+                width: '100%',
+                height: '400px',
+                padding: '12px',
+                fontSize: '16px',
+                lineHeight: '1.8',
+                border: '1px solid #d0d7de',
+                borderRadius: '6px',
+                resize: 'vertical',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'keep-all'
+              }}
+            />
+          </div>
+          {errors.content && <span className="error-message">{errors.content}</span>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="thumbnail">
+            표지 이미지 <span className="required">*</span>
+          </label>
+          <div className="image-upload-area">
+            <div className="upload-options" style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '10px' }}>
+              <input
+                type="url"
+                id="thumbnail"
+                name="thumbnail"
+                value={formData.thumbnail}
+                onChange={handleImageUrlChange}
+                placeholder="https://example.com/thumbnail.jpg"
+                className={errors.thumbnail ? 'error' : ''}
+                style={{ flex: 1 }}
+              />
+              <div className="upload-divider" style={{ padding: '0 10px', color: '#999' }}>또는</div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                accept="image/*"
+                style={{ display: 'none' }}
+              />
+              <button
+                type="button"
+                className="btn-upload"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploadingImage}
+                style={{ padding: '8px 16px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: isUploadingImage ? 'not-allowed' : 'pointer', opacity: isUploadingImage ? 0.6 : 1 }}
+              >
+                {isUploadingImage ? (
+                  <><i className="fas fa-spinner fa-spin"></i> 업로드 중...</>
+                ) : (
+                  <><i className="fas fa-upload"></i> 파일 선택</>
+                )}
+              </button>
+            </div>
+            {errors.thumbnail && <span className="error-message">{errors.thumbnail}</span>}
+
+            <div className="upload-box">
+              <i className="fas fa-cloud-upload-alt"></i>
+              <p>이미지 URL 입력 또는 파일 업로드 (최대 3MB, 권장 1200x630px)</p>
+            </div>
+
+            {imagePreview && (
+              <div className="image-preview">
+                <img src={imagePreview} alt="미리보기" />
+                <button
+                  type="button"
+                  className="remove-image"
+                  onClick={() => {
+                    setFormData((prev) => ({ ...prev, thumbnail: '' }));
+                    setImagePreview(null);
+                  }}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="tags">태그</label>
+            <input
+              type="text"
+              id="tags"
+              name="tags"
+              value={formData.tags}
+              onChange={handleChange}
+              placeholder="정책, 지원사업, 정부지원"
+            />
+            <p className="help-text">쉼표로 구분해 입력하면 됩니다.</p>
+          </div>
+
+          <div className="form-group checkbox-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                name="isMainNews"
+                checked={formData.isMainNews}
+                onChange={handleChange}
+              />
+              <span>메인 슬라이드에 노출</span>
+            </label>
+            <p className="help-text">선택 시 정책소식 슬라이드 영역에 노출됩니다.</p>
+          </div>
+        </div>
+
+        <div className="form-group password-group">
+          <label htmlFor="post-password">
+            게시글 비밀번호 <span className="required">*</span>
+          </label>
+          <input
+            type="password"
+            id="post-password"
+            name="post-password"
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder="비밀번호를 입력하세요"
+            className={errors.password ? 'error' : ''}
+          />
+          {errors.password && <span className="error-message">{errors.password}</span>}
+        </div>
+
+        <div className="form-actions">
+          <div className="left-actions">
+            <button type="button" className="btn-draft" onClick={handleSaveDraft}>
+              <i className="fas fa-save"></i> 임시 저장
+            </button>
+            <button type="button" className="btn-load" onClick={handleLoadDraft}>
+              <i className="fas fa-folder-open"></i> 불러오기
+            </button>
+          </div>
+
+          <div className="right-actions">
+            <button type="button" className="btn-cancel" onClick={handleCancel}>
+              <i className="fas fa-times"></i> 취소
+            </button>
+            <button type="submit" className="btn-submit" disabled={isSubmitting}>
+              <i className="fas fa-check"></i> {isSubmitting ? '등록 중...' : '등록'}
+            </button>
+          </div>
+        </div>
+      </form>
+
+      {/* 관리자 게시글 목록 */}
+      {isAuthorized && (
+        <div className="admin-posts-section">
+          <h2 className="section-title">
+            <i className="fas fa-list"></i> 등록된 게시글 관리
+          </h2>
+
+          {isLoadingPosts ? (
+            <div className="loading-message">게시글을 불러오는 중...</div>
+          ) : posts.length === 0 ? (
+            <div className="no-posts-message">
+              <i className="fas fa-inbox"></i>
+              <p>등록된 게시글이 없습니다.</p>
+            </div>
+          ) : (
+            <div className="posts-table-wrapper">
+              <table className="posts-table">
+                <thead>
+                  <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>카테고리</th>
+                    <th>조회수</th>
+                    <th>작성일</th>
+                    <th>관리</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {posts.map((post, index) => (
+                    <tr key={post._id}>
+                      <td>{posts.length - index}</td>
+                      <td className="title-cell">
+                        <a href={`/policy-news/${post._id}`} target="_blank" rel="noopener noreferrer">
+                          {post.title}
+                          {post.isPinned && <span className="badge pinned">고정</span>}
+                          {post.isMain && <span className="badge main">메인</span>}
+                        </a>
+                      </td>
+                      <td>{post.category}</td>
+                      <td>{post.views.toLocaleString()}</td>
+                      <td>{new Date(post.createdAt).toLocaleDateString('ko-KR')}</td>
+                      <td className="action-cell">
+                        <button
+                          onClick={() => handleEditPost(post._id)}
+                          className="btn-edit-small"
+                          title="수정"
+                        >
+                          <i className="fas fa-edit"></i>
+                        </button>
+                        <button
+                          onClick={() => handleDeletePost(post._id, post.title)}
+                          className="btn-delete-small"
+                          title="삭제"
+                        >
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PolicyNewsWrite;
+

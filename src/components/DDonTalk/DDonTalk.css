@@ -1,0 +1,404 @@
+/* 똔톡 섹션 스타일 */
+.ddontalk-section {
+  padding: 40px 20px;
+  background: linear-gradient(to bottom, #f8fafa, white);
+  width: 100%;
+}
+
+.ddontalk-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.ddontalk-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.ddontalk-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.ddontalk-header p {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.ddontalk-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.ddontalk-write-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ddontalk-write-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+.write-icon {
+  font-size: 1rem;
+}
+
+.ddontalk-loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 1rem;
+  color: #64748b;
+}
+
+.ddontalk-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.ddontalk-item {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.ddontalk-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-color: #2563eb;
+}
+
+.ddontalk-main {
+  padding: 16px;
+  cursor: pointer;
+}
+
+.ddontalk-main h3 {
+  font-size: 0.95rem;
+  color: #0f172a;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.comment-count {
+  color: #2563eb;
+  font-size: 0.8rem;
+  font-weight: normal;
+}
+
+.ddontalk-content {
+  font-size: 0.875rem;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ddontalk-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #64748b;
+  flex-wrap: wrap;
+}
+
+.author {
+  font-weight: 500;
+  color: #475569;
+}
+
+.date {
+  margin-left: auto;
+}
+
+.like-btn {
+  padding: 4px 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  color: #dc2626;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.like-btn:hover {
+  background: #fee2e2;
+  border-color: #f87171;
+}
+
+.ddontalk-detail {
+  background: #f8fafa;
+  border-top: 1px solid #e2e8f0;
+  padding: 16px;
+}
+
+.comments-section h4 {
+  font-size: 0.875rem;
+  color: #0f172a;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.comment-item {
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  border-left: 3px solid #2563eb;
+}
+
+.comment-item strong {
+  display: block;
+  color: #0f172a;
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.comment-item p {
+  color: #475569;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.comment-date {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.comment-form input,
+.comment-form textarea {
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
+.comment-form input:focus,
+.comment-form textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.comment-form textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.comment-form button {
+  align-self: flex-end;
+  padding: 6px 16px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.comment-form button:hover {
+  background: #1d4ed8;
+}
+
+.close-detail {
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  color: #64748b;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-detail:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.ddontalk-write-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.ddontalk-write-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.ddontalk-write-content h3 {
+  font-size: 1.25rem;
+  color: #0f172a;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.ddontalk-write-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ddontalk-write-content input,
+.ddontalk-write-content textarea {
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: inherit;
+}
+
+.ddontalk-write-content input:focus,
+.ddontalk-write-content textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.ddontalk-write-content textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.char-count {
+  align-self: flex-end;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: -8px;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.form-buttons button {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-buttons button[type="button"] {
+  background: white;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.form-buttons button[type="button"]:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.form-buttons button[type="submit"] {
+  background: #2563eb;
+  color: white;
+  border: none;
+}
+
+.form-buttons button[type="submit"]:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .ddontalk-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .ddontalk-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .ddontalk-main {
+    padding: 14px;
+  }
+
+  .ddontalk-meta {
+    font-size: 0.7rem;
+  }
+
+  .ddontalk-write-content {
+    padding: 20px;
+  }
+
+  .form-buttons {
+    flex-direction: column-reverse;
+  }
+
+  .form-buttons button {
+    width: 100%;
+  }
+}

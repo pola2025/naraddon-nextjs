@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정책소식 HTML 렌더링 테스트</title>
+</head>
+<body>
+    <h1>정책소식 테스트</h1>
+    <script>
+        // 테스트용 HTML 콘텐츠
+        const testContent = `
+            <h2>2024년 청년 창업 지원 정책 안내</h2>
+            <p>정부에서는 청년 창업가들을 위한 다양한 지원 정책을 시행하고 있습니다.</p>
+
+            <h3>주요 지원 내용</h3>
+            <ul>
+                <li><strong>창업자금 지원:</strong> 최대 1억원까지 저금리 대출</li>
+                <li><strong>사무실 지원:</strong> 공유 오피스 무료 제공 (6개월)</li>
+                <li><strong>멘토링:</strong> 전문가 1:1 컨설팅 제공</li>
+            </ul>
+
+            <blockquote>
+                "청년 창업은 대한민국의 미래입니다" - 중소벤처기업부
+            </blockquote>
+
+            <h3>신청 방법</h3>
+            <ol>
+                <li>K-스타트업 홈페이지 접속</li>
+                <li>회원가입 및 로그인</li>
+                <li>지원사업 선택</li>
+                <li>온라인 신청서 작성</li>
+            </ol>
+
+            <table>
+                <tr>
+                    <th>지원 항목</th>
+                    <th>지원 금액</th>
+                    <th>신청 기간</th>
+                </tr>
+                <tr>
+                    <td>창업자금</td>
+                    <td>최대 1억원</td>
+                    <td>2024.01.01 ~ 12.31</td>
+                </tr>
+                <tr>
+                    <td>R&D 자금</td>
+                    <td>최대 5천만원</td>
+                    <td>2024.03.01 ~ 09.30</td>
+                </tr>
+            </table>
+
+            <pre><code>// 예제 코드
+function applyStartup() {
+    console.log("창업 지원 신청");
+    return true;
+}</code></pre>
+
+            <p>더 자세한 정보는 <a href="https://www.k-startup.go.kr">K-스타트업 홈페이지</a>에서 확인하세요.</p>
+        `;
+
+        // localhost:3002로 POST 요청 보내기
+        async function createTestPost() {
+            try {
+                const response = await fetch('http://localhost:3002/api/policy-news', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        password: 'vhffkvhffk82', // CLAUDE.md에서 확인한 비밀번호
+                        title: '2024년 청년 창업 지원 정책 완벽 가이드',
+                        content: testContent,
+                        category: '창업지원',
+                        excerpt: '청년 창업가를 위한 정부 지원 정책을 한눈에! 창업자금, 사무실, 멘토링까지 다양한 혜택을 확인하세요.',
+                        thumbnail: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800',
+                        tags: ['청년창업', '정부지원', '창업자금', 'K-스타트업'],
+                        isMain: true,
+                        isPinned: false,
+                        badge: 'HOT'
+                    })
+                });
+
+                const result = await response.json();
+                console.log('결과:', result);
+
+                if (result.post && result.post._id) {
+                    document.body.innerHTML += `
+                        <h2>✅ 테스트 게시글 생성 성공!</h2>
+                        <p>게시글 ID: ${result.post._id}</p>
+                        <p><a href="http://localhost:3002/policy-news/${result.post._id}" target="_blank">
+                            → 게시글 보러가기
+                        </a></p>
+                    `;
+                } else {
+                    document.body.innerHTML += `<h2>❌ 생성 실패: ${result.message}</h2>`;
+                }
+            } catch (error) {
+                console.error('오류:', error);
+                document.body.innerHTML += `<h2>❌ 오류 발생: ${error.message}</h2>`;
+            }
+        }
+
+        // 페이지 로드 시 실행
+        createTestPost();
+    </script>
+</body>
+</html>

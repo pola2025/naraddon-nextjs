@@ -547,12 +547,12 @@
   line-height: 1.5;
   margin-bottom: 10px;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3; /* 3줄까지 표시 */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   letter-spacing: -0.2px;
-  min-height: 48px;
+  min-height: 72px; /* 3줄에 맞게 높이 조정 */
 }
 
 .news-item-meta {
@@ -837,7 +837,7 @@
 
   .news-item-title {
     font-size: 15px;
-    min-height: 48px;
+    min-height: 68px; /* 3줄에 맞게 높이 조정 */
   }
 }
 

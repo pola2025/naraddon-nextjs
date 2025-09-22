@@ -18,19 +18,22 @@
   --hero-text-color: #0f172a;
   --hero-highlight-color: #2563eb;
   --hero-subtitle-color: #475569;
-  padding-top: 0;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
 }
 
 @media (max-width: 768px) {
   .policy-analysis-page {
-    padding-top: 0;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
     --layout-horizontal-padding: 16px;
     --layout-section-gap: 32px;
   }
 
   /* 히어로 섹션 모바일 최적화 */
   .policy-analysis-page .expert-hero {
-    padding-top: 20px;
+    margin-top: calc(-1 * var(--policy-analysis-header-offset));
+    padding-top: calc(var(--policy-analysis-header-offset) + var(--policy-analysis-hero-top-padding) - 40px);
     padding-bottom: 40px;
   }
 
@@ -70,6 +73,9 @@
   max-width: var(--policy-analysis-hero-max-width);
   padding-left: var(--layout-padding-inline);
   padding-right: var(--layout-padding-inline);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 @media (min-width: 1024px) {

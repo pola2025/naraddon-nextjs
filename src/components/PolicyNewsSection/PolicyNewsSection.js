@@ -460,56 +460,32 @@ const PolicyNewsSection = () => {
             </div>
 
             <div className="news-items-wrapper">
-              <button
-                type="button"
-                className="news-items-control news-items-control--prev"
-                onClick={() => scrollMobileNews('prev')}
-                aria-label="이전 정책 소식 보기"
-                disabled={!canScrollPrev}
-              >
-                <i className="fas fa-caret-left" aria-hidden="true" />
-              </button>
-              <div className="news-items" ref={mobileListRef}>
-                {latestNewsList.map((news) => (
-                  <div key={news.id} className="news-item">
-                    <div onClick={() => handleNewsClick(news.id)} style={{ cursor: 'pointer', flex: 1, display: 'flex' }}>
-                      <div className="news-item-thumbnail">
-                        <img
-                          src={sanitizeImageUrl(news.thumbnail) || '/images/placeholder.png'}
-                          alt={news.title}
-                          style={{ width: '80px', height: '60px', objectFit: 'cover' }}
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = '/images/placeholder.png';
-                          }}
-                        />
+              <div className="news-items news-items-vertical">
+                {latestNewsList.map((news) => {
+                  // 날짜 형식 변환 (예: 2025. 9. 22. -> 25.9.22)
+                  const formatShortDate = (dateText) => {
+                    if (!dateText) return '';
+                    const match = dateText.match(/(\d{4})\.\s*(\d{1,2})\.\s*(\d{1,2})/);
+                    if (match) {
+                      const year = match[1].slice(-2); // 마지막 2자리
+                      const month = match[2];
+                      const day = match[3];
+                      return `${year}.${month}.${day}`;
+                    }
+                    return dateText;
+                  };
+
+                  return (
+                    <div key={news.id} className="news-item news-item-compact">
+                      <div onClick={() => handleNewsClick(news.id)} style={{ cursor: 'pointer', flex: 1, display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <span className="news-item-date-compact news-item-date-desktop">{news.dateText}</span>
+                        <span className="news-item-date-compact news-item-date-mobile">{formatShortDate(news.dateText)}</span>
+                        <span className={`news-item-category-compact news-item-category-desktop news-category-${news.category?.toLowerCase().replace(/\s+/g, '-')}`}>{news.category}</span>
+                        <h4 className="news-item-title-compact">{news.title}</h4>
                         {news.isPinned && (
-                          <div className="pinned-icon">
-                            <i className="fas fa-thumbtack"></i>
-                          </div>
+                          <i className="fas fa-thumbtack news-item-pin-icon" style={{ marginLeft: 'auto', color: '#666', fontSize: '12px' }}></i>
                         )}
                       </div>
-                      <div className="news-item-content">
-                        <div className="news-item-header">
-                          <span className="news-item-category">{news.category}</span>
-                          <span className="news-item-date">{news.dateText}</span>
-                        </div>
-                        <h4 className="news-item-title">{news.title}</h4>
-                        <div className="news-item-meta">
-                          <div className="news-item-stats">
-                            <span>
-                              <i className="far fa-eye"></i> {news.views.toLocaleString()}
-                            </span>
-                            <span>
-                              <i className="far fa-heart"></i> {news.likes}
-                            </span>
-                            <span>
-                              <i className="far fa-comment"></i> {news.comments}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                     {isAdmin && (
                       <div className="news-item-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0 0.5rem' }}>
                         <button
@@ -555,17 +531,9 @@ const PolicyNewsSection = () => {
                       </div>
                     )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
-              <button
-                type="button"
-                className="news-items-control news-items-control--next"
-                onClick={() => scrollMobileNews('next')}
-                aria-label="다음 정책 소식 보기"
-                disabled={!canScrollNext}
-              >
-                <i className="fas fa-caret-right" aria-hidden="true" />
-              </button>
             </div>
           </div>
         </div>

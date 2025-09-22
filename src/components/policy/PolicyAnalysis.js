@@ -196,6 +196,9 @@ const PolicyAnalysis = () => {
   const [isWriteAuthorized, setIsWriteAuthorized] = useState(false);
 
   useEffect(() => {
+    // body에 클래스 추가
+    document.body.classList.add('page-policy-analysis');
+
     if (typeof window !== 'undefined') {
       if (sessionStorage.getItem('policyAnalysisAuthorized') === 'true') {
         setIsWriteAuthorized(true);
@@ -270,6 +273,8 @@ const PolicyAnalysis = () => {
     return () => {
       isMounted = false;
       controller.abort();
+      // body 클래스 제거
+      document.body.classList.remove('page-policy-analysis');
     };
   }, []);
 
@@ -522,15 +527,7 @@ const PolicyAnalysis = () => {
         <PolicyNewsSection />
       </section>
 
-      <div className="section-divider"></div>
-
       <div className="analysis-section-header">
-        <div className="analysis-section-heading">
-          <h2 className="analysis-title">
-            <i className="fas fa-chart-line"></i> 정책분석
-          </h2>
-          <p className="analysis-subtitle">정부지원 분석과 정책 인사이트를 한눈에 확인하세요.</p>
-        </div>
         <button className="analysis-section__write-button" onClick={handleWriteClick} type="button">
           <i className="fas fa-pen"></i>
           <span>정책분석 작성</span>

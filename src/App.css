@@ -202,3 +202,26 @@ main {
     padding-top: 0;
   }
 }
+
+/* 정책분석 페이지 main 패딩 제거 */
+.page-policy-analysis main {
+  padding-top: 0;
+}
+
+@media (max-width: 1024px) {
+  .page-policy-analysis main {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-policy-analysis main {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-policy-analysis main {
+    padding-top: 0;
+  }
+}

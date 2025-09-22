@@ -71,9 +71,10 @@
 .news-content-wrapper {
   display: grid;
   grid-template-columns: 400px 1fr; /* 왼쪽 고정 너비 세로형, 오른쪽 유동 */
-  gap: 40px;
+  gap: 30px;
   width: 100%;
   max-width: 100%;
+  padding-right: 0;
 }
 
 /* 메인 뉴스 슬라이더 (왼쪽) - 세로형 구조 */
@@ -366,12 +367,19 @@
   display: flex;
   flex-direction: column;
   height: 750px; /* 왼쪽 메인 슬라이더와 동일한 높이 */
+  overflow: visible; /* 오버플로우 허용 */
+  padding-right: 0;
+  position: relative;
 }
 
 @media (max-width: 768px) {
   .news-list {
     height: auto;
     margin-top: 20px;
+  }
+
+  .more-btn {
+    margin-right: 0; /* 모바일에서는 margin 제거 */
   }
 }
 
@@ -380,10 +388,15 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  margin-right: 0;
+  padding-top: 5px; /* 상단 여백 추가 */
   padding-bottom: 12px;
+  padding-right: 10px; /* 오른쪽 10px 패딩 */
   border-bottom: 2px solid #f0f0f0;
   flex-shrink: 0; /* 헤더 크기 고정 */
-  height: 50px; /* 헤더 높이 축소 */
+  min-height: 55px; /* 최소 높이로 변경 */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .list-header h3 {
@@ -394,6 +407,7 @@
 
 .more-btn {
   padding: 10px 20px;
+  margin-right: 0; /* margin 제거 */
   background: white;
   color: #667eea;
   border: 2px solid #667eea;
@@ -405,6 +419,8 @@
   align-items: center;
   gap: 6px;
   transition: all 0.3s ease;
+  flex-shrink: 0; /* 버튼 크기 고정 */
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 
 .more-btn:hover {
@@ -416,6 +432,8 @@
 
 .news-items-wrapper {
   position: relative;
+  padding-right: 10px; /* 오른쪽 여백 확보 */
+  box-sizing: border-box;
 }
 
 .news-items-control {
@@ -744,8 +762,9 @@
   }
 
   .news-items-wrapper {
-    padding: 0 28px;
+    padding: 0;
     margin-top: 20px; /* 메인 슬라이더와 간격 추가 */
+    width: 100%;
   }
 
   .news-items {
@@ -1066,6 +1085,251 @@
   background: #0f766e;
   color: #ffffff;
   box-shadow: 0 6px 18px rgba(15, 118, 110, 0.2);
+}
+
+/* 세로 목록 스타일 */
+.news-items-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: visible !important;
+  overflow-x: hidden;
+  max-height: none !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  width: 100%;
+  margin: 0;
+}
+
+/* 간결한 게시판 목록 스타일 */
+.news-item-compact {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-height: auto;
+  box-shadow: none;
+  border-radius: 0;
+  flex: none !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.news-item-compact:hover {
+  background: #f9fafb;
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.news-item-compact:first-child {
+  border-top: 1px solid #e5e7eb;
+}
+
+.news-item-date-compact {
+  flex-shrink: 0;
+  width: 90px;
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.news-item-category-compact {
+  flex-shrink: 0;
+  width: 80px;
+  padding: 3px 8px;
+  background: #f3f4f6;
+  color: #4b5563;
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* 카테고리별 색상 스타일 */
+.news-category-정부지원 {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+}
+
+.news-category-지역정책 {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+}
+
+.news-category-중소기업 {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+}
+
+.news-category-기타 {
+  background: #f3f4f6 !important;
+  color: #4b5563 !important;
+}
+
+.news-category-정부정책 {
+  background: #e0e7ff !important;
+  color: #3730a3 !important;
+}
+
+.news-category-창업지원 {
+  background: #fce7f3 !important;
+  color: #9f1239 !important;
+}
+
+.news-item-title-compact {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  line-height: 1.4;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.news-item-pin-icon {
+  margin-left: auto;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+/* 데스크톱/모바일 날짜 및 카테고리 표시 제어 */
+.news-item-date-mobile {
+  display: none;
+}
+
+.news-item-date-desktop {
+  display: inline-block;
+}
+
+.news-item-category-desktop {
+  display: inline-block;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  /* 세로 목록 래퍼 */
+  .news-items-vertical {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .news-item-compact {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    margin: 0 15px;
+    gap: 10px;
+    width: auto;
+    box-sizing: border-box;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .news-item-compact > div {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+  }
+
+  /* 모바일에서 데스크톱 날짜 숨기고 모바일 날짜 표시 */
+  .news-item-date-desktop {
+    display: none;
+  }
+
+  .news-item-date-mobile {
+    display: block;
+    flex: 0 0 auto;
+    width: 42px;
+    font-size: 11px;
+    color: #9ca3af;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  /* 모바일에서 카테고리 숨기기 */
+  .news-item-category-desktop {
+    display: none;
+  }
+
+  .news-item-title-compact {
+    display: block;
+    font-size: 13px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.4;
+  }
+
+  .news-item-pin-icon {
+    flex: 0 0 auto;
+    margin-left: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* 세로 목록 래퍼 - 전체 너비 사용 */
+  .news-items-vertical {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .news-item-compact {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    margin: 0 12px;
+    gap: 8px;
+    width: auto;
+    box-sizing: border-box;
+  }
+
+  .news-item-compact > div {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .news-item-date-mobile {
+    display: block;
+    flex: 0 0 auto;
+    width: 40px;
+    font-size: 10px;
+    color: #9ca3af;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .news-item-title-compact {
+    display: block;
+    font-size: 12px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.4;
+    padding-right: 5px;
+  }
+
+  .news-item-pin-icon {
+    flex: 0 0 auto;
+    margin-left: 3px;
+    font-size: 10px;
+  }
 }
 
 .policy-news__retry-button:focus-visible {

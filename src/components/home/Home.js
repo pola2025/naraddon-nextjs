@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './Home.css';
-import HeroSection from './components/HeroSection';
+import HeroSection from './components/HeroSection/index';
 import IntroVideo from './components/IntroVideo';
 import TrustSection from '../TrustSection';
 import PolicyThumbnails from '../PolicyThumbnails';

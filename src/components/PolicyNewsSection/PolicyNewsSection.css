@@ -388,7 +388,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-  margin-right: 0;
+  margin-right: 10px;
   padding-top: 5px; /* 상단 여백 추가 */
   padding-bottom: 12px;
   padding-right: 10px; /* 오른쪽 10px 패딩 */
@@ -407,7 +407,8 @@
 
 .more-btn {
   padding: 10px 20px;
-  margin-right: 0; /* margin 제거 */
+  margin-right: 0;
+  margin-left: auto; /* 버튼을 왼쪽으로 밀어서 정렬 */
   background: white;
   color: #667eea;
   border: 2px solid #667eea;

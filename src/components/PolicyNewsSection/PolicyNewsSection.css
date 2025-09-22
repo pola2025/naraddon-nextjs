@@ -407,8 +407,8 @@
 
 .more-btn {
   padding: 10px 20px;
-  margin-right: 0;
-  margin-left: auto; /* 버튼을 왼쪽으로 밀어서 정렬 */
+  margin-right: 10px; /* 오른쪽 끝에서 10px 떨어지도록 */
+  margin-left: auto;
   background: white;
   color: #667eea;
   border: 2px solid #667eea;

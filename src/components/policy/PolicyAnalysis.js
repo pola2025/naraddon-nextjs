@@ -196,8 +196,8 @@ const PolicyAnalysis = () => {
   const [isWriteAuthorized, setIsWriteAuthorized] = useState(false);
 
   useEffect(() => {
-    // body에 클래스 추가
-    document.body.classList.add('page-policy-analysis');
+    // body에 클래스 추가 제거 - 높이 문제 해결
+    // document.body.classList.add('page-policy-analysis');
 
     if (typeof window !== 'undefined') {
       if (sessionStorage.getItem('policyAnalysisAuthorized') === 'true') {
@@ -273,8 +273,8 @@ const PolicyAnalysis = () => {
     return () => {
       isMounted = false;
       controller.abort();
-      // body 클래스 제거
-      document.body.classList.remove('page-policy-analysis');
+      // body 클래스 제거 - 주석처리
+      // document.body.classList.remove('page-policy-analysis');
     };
   }, []);
 
@@ -498,25 +498,37 @@ const PolicyAnalysis = () => {
 
 
   return (
-    <div className="policy-analysis-page">
+    <div className="policy-analysis-container">
       <section className="expert-hero layout-hero relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-sky-100">
         <div className="layout-container">
           <div className="max-w-3xl">
-            <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-sm font-semibold text-blue-600">POLICY ANALYSIS</span>
+            <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-sm font-semibold text-blue-600">
+              POLICY ANALYSIS
+            </span>
             <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-              정책분석
-              <span className="block text-blue-600">데이터 인사이트</span>
+              나라똔의 정확한 정책분석으로
+              <span className="block text-blue-600">사업 성공의 길을 찾으세요</span>
             </h1>
             <p className="mt-6 text-lg leading-7 text-slate-600">
-              최신 정책 동향과 지원사업 데이터를 분석해 사업에 필요한 정보를 제공합니다.
-              <span className="block">신속한 정책 매칭과 실행 전략을 안내합니다.</span>
+              최신 정책 동향과 지원사업 데이터를 분석해 사업에 필요한 정보를 제공합니다
+              <span className="block">신속한 정책 매칭과 실행 전략을 안내합니다</span>
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-6">
-              <Link
-                href="/consultation-request#form-section"
+              <a
+                href="#top-section"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.querySelector('.top-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
                 className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:bg-emerald-600"
               >
-                <i className="fas fa-headset" aria-hidden="true" /> 현장 상담 신청
+                <i className="fas fa-chart-line" aria-hidden="true" /> 정책분석 보기
+              </a>
+              <Link
+                href="/consultation-request#form-section"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-base font-semibold text-emerald-600 shadow-lg ring-1 ring-emerald-100 transition hover:bg-emerald-50"
+              >
+                <i className="fas fa-headset" aria-hidden="true" /> 무료 상담 신청
               </Link>
             </div>
           </div>

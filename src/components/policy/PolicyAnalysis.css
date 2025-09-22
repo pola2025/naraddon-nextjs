@@ -1,8 +1,9 @@
 /* 정책분석 게시판 스타일 */
-.policy-analysis-page {
-  width: 100%;
+.policy-analysis-container {
   min-height: 100vh;
   background: linear-gradient(to bottom, #ffffff, #f8fafc);
+  padding-top: 0;
+  width: 100%;
   --layout-max-width: 1280px;
   --layout-horizontal-padding: clamp(16px, 5vw, 60px);
   --layout-section-gap: clamp(32px, 6vw, 72px);
@@ -11,75 +12,32 @@
   --business-voice-header-offset: 80px;
   --business-voice-hero-top-padding: clamp(16px, 4vw, 32px);
   --business-voice-hero-bottom-padding: clamp(48px, 6vw, 88px);
-  --business-voice-hero-max-width: 1280px;
-  --hero-background: linear-gradient(135deg, #e8f2ff 0%, #ffffff 55%, #f8fdf9 100%);
-  --hero-overlay-radial-primary: rgba(59, 130, 246, 0.2);
-  --hero-overlay-radial-secondary: rgba(45, 212, 191, 0.18);
-  --hero-text-color: #0f172a;
-  --hero-highlight-color: #2563eb;
-  --hero-subtitle-color: #475569;
-  padding-top: 0;
-  margin-top: 0;
 }
 
-@media (max-width: 768px) {
-  .policy-analysis-page {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-    --layout-horizontal-padding: 16px;
-    --layout-section-gap: 32px;
-  }
-
-  /* 히어로 섹션 모바일 최적화 */
-  .policy-analysis-page .expert-hero {
-    margin-top: calc(-1 * var(--business-voice-header-offset));
-    padding-top: calc(var(--business-voice-header-offset) + var(--business-voice-hero-top-padding) - 40px);
-    padding-bottom: 40px;
-  }
-
-  .policy-analysis-page .expert-hero .layout-container {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-}
-
-/* 정책분석 히어로 섹션 */
-.policy-analysis-hero {
-  position: relative;
-  isolation: isolate;
-}
-
-.policy-analysis-page .expert-hero {
+.policy-analysis-container .expert-hero {
   position: relative;
   margin-top: calc(-1 * var(--business-voice-header-offset));
   padding-top: calc(var(--business-voice-header-offset) + var(--business-voice-hero-top-padding) - 40px);
   padding-bottom: var(--business-voice-hero-bottom-padding);
-  background: var(--hero-background);
-  color: var(--hero-text-color);
-  overflow: hidden;
 }
 
-.policy-analysis-page .expert-hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 20% 30%, var(--hero-overlay-radial-primary), transparent 55%),
-    radial-gradient(circle at 80% 20%, var(--hero-overlay-radial-secondary), transparent 60%);
-  pointer-events: none;
+@media (max-width: 768px) {
+  .policy-analysis-container {
+    --layout-horizontal-padding: 16px;
+    --layout-section-gap: 32px;
+  }
+
+  .policy-analysis-container .expert-hero {
+    margin-top: calc(-1 * var(--business-voice-header-offset));
+    padding-top: calc(var(--business-voice-header-offset) + var(--business-voice-hero-top-padding) - 40px);
+    padding-bottom: var(--business-voice-hero-bottom-padding);
+  }
 }
 
-.policy-analysis-page .expert-hero .layout-container {
-  max-width: var(--business-voice-hero-max-width);
-  padding-left: var(--layout-padding-inline);
-  padding-right: var(--layout-padding-inline);
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
-}
+/* 정책분석 히어로 섹션 - 사업자 목소리와 동일한 스타일 사용 */
+/* .expert-hero 스타일은 Tailwind로 처리되므로 별도 CSS 불필요 */
 
 @media (min-width: 1024px) {
-  .policy-analysis-page .expert-hero .layout-container,
   .policy-analysis__news-section,
   .analysis-section-header,
   .search-section,
@@ -1396,24 +1354,7 @@
     -webkit-line-clamp: 2;
   }
 
-  /* 히어로 섹션 모바일 */
-  .policy-analysis-page .expert-hero {
-    margin-top: -40px;
-    padding-top: 40px;
-    padding-bottom: 30px;
-  }
-
-  .expert-hero h1 {
-    font-size: 1.5rem;
-    line-height: 1.3;
-    margin-bottom: 10px;
-  }
-
-  .expert-hero p {
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-    line-height: 1.4;
-  }
+  /* 히어로 섹션 - Tailwind 클래스로 처리 */
 
   /* CTA 섹션 모바일 */
   .policy-analysis__cta-section {

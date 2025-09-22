@@ -180,13 +180,8 @@ export default function TtontokDetailPage() {
             keys.add(nameKey);
           }
 
-          if (name) {
-            [name + ' 심사관', name + '기업심사관', name + ' 인증기업심사관', name + ' 전문가'].forEach((variant) => {
-              const variantKey = normalizeProfessionalKey(variant);
-              if (variantKey) {
-                keys.add(variantKey);
-              }
-            });
+          // variant 키 제거 - 이름만 사용
+          // 역할 접미사는 표시할 때 CSS로 처리됨
           }
 
           keys.forEach((key) => {

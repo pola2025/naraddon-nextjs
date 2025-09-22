@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Password validation
-  const TTONTOK_WRITE_PASSWORD = process.env.TTONTOK_WRITE_PASSWORD || 'vhffkvhffk82';
+  const TTONTOK_WRITE_PASSWORD = process.env.TTONTOK_WRITE_PASSWORD;
   if (!password || password !== TTONTOK_WRITE_PASSWORD) {
     return NextResponse.json(
       { message: '비밀번호가 올바르지 않습니다.' },

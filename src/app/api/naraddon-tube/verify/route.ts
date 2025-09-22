@@ -7,7 +7,7 @@ import { certifiedExaminers } from '@/data/certifiedExaminers';
 export const dynamic = 'force-dynamic';
 
 // 환경변수에서 비밀번호 가져오기
-const ADMIN_PASSWORD = process.env.NARADDON_TUBE_PASSWORD || 'vhffkvhffk82';
+const ADMIN_PASSWORD = process.env.NARADDON_TUBE_PASSWORD;
 
 // 시드 데이터 초기화 함수
 const seedExaminersIfNeeded = async () => {

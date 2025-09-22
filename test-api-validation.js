@@ -1,5 +1,5 @@
 // API 검증 스크립트
-const password = 'vhffkvhffk82';
+const password = process.env.NARADDON_TUBE_PASSWORD;
 
 // 색상 설정
 const colors = {

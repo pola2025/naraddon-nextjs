@@ -48,7 +48,7 @@ interface NewReply {
   likeCount: number;
 }
 
-const ADMIN_PASSWORD = 'vhffkvhffk82';
+const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
 const PREDEFINED_NICKNAMES = {
   examiners: [

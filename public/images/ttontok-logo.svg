@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Green background -->
+  <rect width="200" height="200" fill="#7CB342"/>
+
+  <!-- White Korean text "똔똔" stylized -->
+  <text x="50%" y="50%"
+        font-family="Pretendard, 'Noto Sans KR', sans-serif"
+        font-size="72"
+        font-weight="700"
+        fill="white"
+        text-anchor="middle"
+        dominant-baseline="central">똔똔</text>
+</svg>

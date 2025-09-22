@@ -6,7 +6,7 @@ import ExaminerProfile from '@/models/ExaminerProfile';
 export const dynamic = 'force-dynamic';
 
 // 환경변수에서 비밀번호 가져오기
-const ADMIN_PASSWORD = process.env.NARADDON_TUBE_PASSWORD || 'vhffkvhffk82';
+const ADMIN_PASSWORD = process.env.NARADDON_TUBE_PASSWORD;
 
 // GET - 특정 심사관 조회
 export async function GET(

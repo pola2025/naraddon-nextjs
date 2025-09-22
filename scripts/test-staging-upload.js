@@ -14,7 +14,7 @@ async function testStagingUpload() {
   // 최신 배포 URL 사용
   const STAGING_URL = 'https://homepage-a66zjkc0n-mkt9834-4301s-projects.vercel.app';
   const API_URL = `${STAGING_URL}/api/naraddon-tube/assets/presign`;
-  const PASSWORD = 'vhffkvhffk82';
+  const PASSWORD = process.env.NARADDON_TUBE_PASSWORD;
 
   console.log('=== 스테이징 환경 썸네일 업로드 테스트 ===');
   console.log('Staging URL:', STAGING_URL);

@@ -6,7 +6,7 @@ import TtontokPost, { TtontokCategory } from '@/models/TtontokPost';
 // API Route를 동적으로 설정 (환경변수 문제 해결)
 export const dynamic = 'force-dynamic';
 
-const WRITE_PASSWORD = process.env.TTONTOK_WRITE_PASSWORD || 'vhffkvhffk82';
+const WRITE_PASSWORD = process.env.TTONTOK_WRITE_PASSWORD;
 const DEFAULT_NICKNAME =
   process.env.TTONTOK_DEFAULT_NICKNAME ||
   process.env.NEXT_PUBLIC_TTONTOK_DEFAULT_NICKNAME ||

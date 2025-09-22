@@ -10,8 +10,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import CanAccess from "./CanAccess";
 import styles from "./Header.module.css";
 
-const LOGO_URL = "/images/Logo_old.png";
-const LOGO_FALLBACK_URL = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgdmlld0JveD0iMCAwIDQ0IDQ0IiBmaWxsPSJub25lIj48cmVjdCB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHJ4PSI4IiBmaWxsPSIjNENBRjUwIi8+PHRleHQgeD0iNTAlIiB5PSI1NCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJQcmV0ZW5kYXJkLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IndoaXRlIj5OPC90ZXh0Pjwvc3ZnPg==";
+const LOGO_URL = "/images/ttontok-logo.png";
+const LOGO_FALLBACK_URL = "/images/ttontok-logo.png";
 const BRAND_NAME = "Naraddon";
 const TAGLINE = "No.1 정책자금 플랫폼";
 const LOGIN_LABEL = "로그인";

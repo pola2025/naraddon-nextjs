@@ -1,6 +1,6 @@
 // naraddon-tube API 테스트 스크립트
 const baseUrl = 'http://localhost:3000/api/naraddon-tube';
-const password = 'vhffkvhffk82';
+const password = process.env.NARADDON_TUBE_PASSWORD;
 
 // 색상 설정
 const colors = {

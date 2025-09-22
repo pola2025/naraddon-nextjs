@@ -53,7 +53,7 @@ export default function ExpertServicesAdminPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === process.env.NEXT_PUBLIC_EXPERT_SERVICES_PASSWORD || password === 'vhffkvhffk82') {
+    if (password === process.env.NEXT_PUBLIC_EXPERT_SERVICES_PASSWORD) {
       setIsAuthenticated(true);
       sessionStorage.setItem('expertServicesAuth', 'true');
     } else {
@@ -70,7 +70,7 @@ export default function ExpertServicesAdminPage() {
     const requestData = {
       ...formData,
       specialties: specialtiesArray,
-      password: password || 'vhffkvhffk82',
+      password: password,
     };
 
     try {
@@ -128,7 +128,7 @@ export default function ExpertServicesAdminPage() {
     }
 
     try {
-      const response = await fetch(`/api/experts?id=${id}&password=${password || 'vhffkvhffk82'}`, {
+      const response = await fetch(`/api/experts?id=${id}&password=${password}`, {
         method: 'DELETE',
       });
 

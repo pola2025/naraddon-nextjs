@@ -12,7 +12,7 @@ fs.writeFileSync(testImagePath, testImageBuffer);
 
 async function testThumbnailUpload() {
   const API_URL = 'http://localhost:3000/api/naraddon-tube/assets/presign';
-  const PASSWORD = 'vhffkvhffk82';
+  const PASSWORD = process.env.NARADDON_TUBE_PASSWORD;
 
   console.log('=== 썸네일 업로드 테스트 시작 ===');
   console.log('API URL:', API_URL);

@@ -73,6 +73,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        {/* 파비콘 */}
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
         {/* SEO 최적화 메타 태그 */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />

@@ -407,7 +407,7 @@
 
 .more-btn {
   padding: 10px 20px;
-  margin-right: 20px; /* 오른쪽 끝에서 더 떨어지도록 */
+  margin-right: 40px; /* 오른쪽 끝에서 40px 떨어지도록 */
   margin-left: auto;
   background: white;
   color: #667eea;

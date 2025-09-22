@@ -16,9 +16,14 @@ const nextConfig = {
   // 외부 이미지 도메인 설정
   images: {
     domains: [
-      'pub-b520cb8ed3989e8182bdb020ade36495.r2.dev'
+      'pub-b520cb8ed3989e8182bdb020ade36495.r2.dev',
+      'img.youtube.com',
+      'images.unsplash.com'
     ],
-    unoptimized: true,
+    // unoptimized: true, // 이미지 최적화 활성화
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
   // 실험적 기능
@@ -26,6 +31,10 @@ const nextConfig = {
     workerThreads: false,
     cpus: 1,
   },
+
+  // 성능 최적화
+  swcMinify: true,
+  compress: true,
 
   // public 폴더의 영상 파일에 대한 캐시 설정
   async headers() {

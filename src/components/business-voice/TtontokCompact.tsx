@@ -98,6 +98,11 @@ export default function TtontokCompact() {
     return `${date.getMonth() + 1}/${date.getDate()}`;
   };
 
+  const handleWriteClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    alert('회원가입 후 작성 가능합니다.');
+  };
+
   return (
     <section id="ttontok-section" className="ttontok-compact">
       <div className="ttontok-container">
@@ -234,9 +239,9 @@ export default function TtontokCompact() {
 
         {/* 하단 액션 */}
         <div className="ttontok-actions">
-          <Link href="/business-voice/ttontok/write" className="write-btn">
+          <a href="#" onClick={handleWriteClick} className="write-btn">
             <i className="fas fa-edit" /> 똔톡 작성하기
-          </Link>
+          </a>
         </div>
       </div>
     </section>

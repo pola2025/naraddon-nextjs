@@ -149,6 +149,14 @@ export default function TtontokListBoard() {
     return date.toLocaleDateString('ko-KR');
   };
 
+  const handleWriteClick = () => {
+    alert('회원가입 후 작성 가능합니다.');
+  };
+
+  const handleReplyClick = () => {
+    alert('회원가입 후 댓글 작성이 가능합니다.');
+  };
+
   return (
     <section id="ttontok-section" className="ttontok-list-board">
       <div className="ttontok-container">
@@ -198,7 +206,7 @@ export default function TtontokListBoard() {
                         )}
                       </button>
                     )}
-                    <button className="btn-write-reply">댓글 작성</button>
+                    <button className="btn-write-reply" onClick={handleReplyClick}>댓글 작성</button>
                   </div>
                 </div>
 
@@ -230,7 +238,7 @@ export default function TtontokListBoard() {
         )}
 
         <div className="ttontok-write-section">
-          <button className="write-btn">
+          <button className="write-btn" onClick={handleWriteClick}>
             <i className="fas fa-edit" /> 똔톡 작성하기
           </button>
           <button className="more-btn">더 많은 똔톡 보기</button>

@@ -95,6 +95,11 @@ export default function TtontokBoardNew() {
     });
   };
 
+  const handleWriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    alert('회원가입 후 작성 가능합니다.');
+  };
+
   return (
     <section id="ttontok-section" className="ttontok-board-new">
       <div className="ttontok-container">
@@ -140,9 +145,9 @@ export default function TtontokBoardNew() {
         <div className="ttontok-list-section">
           <div className="list-header">
             <h3 className="section-subtitle">전체 똔톡</h3>
-            <Link href="/ttontok/write" className="write-btn">
+            <button onClick={handleWriteClick} className="write-btn">
               + 글쓰기
-            </Link>
+            </button>
           </div>
 
           {isLoading ? (
@@ -216,9 +221,9 @@ export default function TtontokBoardNew() {
             <p className="write-description">
               사업 운영 중 겪은 고충이나 유용한 정보를 공유해주세요.
             </p>
-            <Link href="/ttontok/write" className="write-main-btn">
+            <button onClick={handleWriteClick} className="write-main-btn">
               똔톡 작성하러 가기
-            </Link>
+            </button>
           </div>
         </div>
       </div>

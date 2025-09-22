@@ -182,7 +182,6 @@ export default function TtontokDetailPage() {
 
           // variant 키 제거 - 이름만 사용
           // 역할 접미사는 표시할 때 CSS로 처리됨
-          }
 
           keys.forEach((key) => {
             if (key && !directory[key]) {

@@ -5,6 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import './page.css';
 
+import { certifiedExaminers } from '@/data/certifiedExaminers';
+import { VERIFIED_EXPERT_PROFILES } from '@/data/expertsShowcase';
+
 interface TtontokPost {
   id: string;
   title: string;
@@ -200,20 +203,40 @@ export default function TtontokDetailPage() {
           fetch('/api/expert-services/experts', { cache: 'force-cache' }),
         ]);
 
-        if (examinersResult.status === 'fulfilled' && examinersResult.value.ok) {
-          const data = await examinersResult.value.json().catch(() => null);
-          const list = Array.isArray(data?.examiners) ? data.examiners : [];
-          ingestRecords(list, 'certified_examiner');
+        if (examinersResult.status === 'fulfilled') {
+          if (examinersResult.value.ok) {
+            const data = await examinersResult.value.json().catch(() => null);
+            const list = Array.isArray(data?.examiners) ? data.examiners : [];
+            ingestRecords(list, 'certified_examiner');
+          } else {
+            console.warn('[ttontok] examiner directory request failed', examinersResult.value.status);
+          }
         }
 
-        if (expertsResult.status === 'fulfilled' && expertsResult.value.ok) {
-          const data = await expertsResult.value.json().catch(() => null);
-          const list = Array.isArray(data?.experts) ? data.experts : [];
-          ingestRecords(list, 'expert');
+        if (expertsResult.status === 'fulfilled') {
+          if (expertsResult.value.ok) {
+            const data = await expertsResult.value.json().catch(() => null);
+            const list = Array.isArray(data?.experts) ? data.experts : [];
+            ingestRecords(list, 'expert');
+          } else {
+            console.warn('[ttontok] expert directory request failed', expertsResult.value.status);
+          }
         }
       } catch (error) {
         console.error('[ttontok] failed to load professional directory', error);
       }
+
+      const fallbackExaminers = certifiedExaminers.map((examiner) => ({
+        name: stripRoleDecorations(examiner.name) || examiner.name,
+        companyName: typeof examiner.companyName === 'string' ? examiner.companyName.trim() : '',
+      }));
+      ingestRecords(fallbackExaminers, 'certified_examiner');
+
+      const fallbackExperts = VERIFIED_EXPERT_PROFILES.map((expert) => ({
+        name: stripRoleDecorations(expert.name) || expert.name,
+        companyName: typeof expert.companyName === 'string' ? expert.companyName.trim() : '',
+      }));
+      ingestRecords(fallbackExperts, 'expert');
 
       if (isActive) {
         setProfessionalDirectory((prev) =>

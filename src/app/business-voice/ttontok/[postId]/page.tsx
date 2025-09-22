@@ -272,6 +272,10 @@ export default function TtontokDetailPage() {
   const handleReplySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 로그인 체크
+    alert('회원가입 후 댓글 작성이 가능합니다.');
+    return;
+
     if (!replyContent.trim() || !replyNickname.trim()) {
       alert('닉네임과 내용을 입력해주세요.');
       return;
@@ -409,25 +413,6 @@ export default function TtontokDetailPage() {
                   className="reply-nickname-input"
                   maxLength={20}
                 />
-                {(replyRole === 'certified_examiner' || replyRole === 'expert') && (
-                  <input
-                    type="text"
-                    placeholder="회사명"
-                    value={replyCompanyName}
-                    onChange={(e) => setReplyCompanyName(e.target.value)}
-                    className="reply-company-input"
-                    maxLength={50}
-                  />
-                )}
-                <select
-                  value={replyRole}
-                  onChange={(e) => setReplyRole(e.target.value)}
-                  className="reply-role-select"
-                >
-                  <option value="general">일반</option>
-                  <option value="expert">전문가</option>
-                  <option value="certified_examiner">검증자</option>
-                </select>
               </div>
             </div>
             <textarea

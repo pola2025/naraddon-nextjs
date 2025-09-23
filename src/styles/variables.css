@@ -12,12 +12,12 @@
   --accent-yellow: #ffc107;
   --accent-yellow-dark: #ffa000;
 
-  /* 배경 컬러 - 따뜻하고 연한 녹색 톤 적용 */
-  --bg-primary: #f8fdf9; /* 매우 연한 녹색 (기본 배경) */
-  --bg-secondary: #f0f9f2; /* 연한 녹색 (보조 배경) */
-  --bg-tertiary: #e8f5e9; /* 좀 더 진한 연한 녹색 */
-  --bg-section: rgba(76, 175, 80, 0.05); /* 섹션 배경 */
-  --bg-warm-green: linear-gradient(135deg, #f8fdf9 0%, #e8f5e9 100%); /* 따뜻한 녹색 그라데이션 */
+  /* 배경 컬러 - 깨끗한 흰색/회색 톤 적용 */
+  --bg-primary: #ffffff; /* 순수한 흰색 (기본 배경) */
+  --bg-secondary: #f8f9fa; /* 매우 연한 회색 (보조 배경) */
+  --bg-tertiary: #f1f3f5; /* 연한 회색 */
+  --bg-section: rgba(248, 249, 250, 0.5); /* 섹션 배경 */
+  --bg-warm-green: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); /* 흰색 그라데이션 */
   --bg-dark: #212121;
 
   /* 텍스트 컬러 */

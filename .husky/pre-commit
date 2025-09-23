@@ -1,0 +1,27 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# 1. 민감한 정보 검사
+echo "🔍 보안 검사 중..."
+if git diff --staged | grep -qE "(api[_-]?key|password|secret|token|mongodb\+srv://|sk-[a-zA-Z0-9]{20,})" -i; then
+  echo "⛔ 보안 위험: 민감한 정보가 감지되었습니다!"
+  echo "하드코딩된 API Key, 비밀번호, 토큰을 환경변수로 변경하세요."
+  exit 1
+fi
+
+# 2. .env 파일 검사
+if git diff --staged --name-only | grep -q "\.env"; then
+  echo "⛔ 보안 위험: .env 파일은 커밋할 수 없습니다!"
+  echo ".env.local 또는 환경변수를 사용하세요."
+  exit 1
+fi
+
+# 3. Lint 검사
+echo "📝 코드 품질 검사 중..."
+npm run lint-staged
+
+# 4. 타입 체크
+echo "🔧 TypeScript 검사 중..."
+npm run type-check
+
+echo "✅ 모든 검사 통과!"

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<admin-implementation-plan>
+  <meta>
+    <title>나라똔 관리자 시스템 구현 계획</title>
+    <created>2025-09-23</created>
+    <version>1.0</version>
+    <priority>HIGH</priority>
+  </meta>
+
+  <current-status>
+    <completed>
+      <item>관리자 대시보드 기본 구조 (/admin/dashboard)</item>
+      <item>개별 섹션 관리자 페이지 존재</item>
+      <item>ProtectedRoute 컴포넌트 구현</item>
+    </completed>
+    <issues>
+      <issue priority="critical">각 섹션별 독립적인 비밀번호 인증 (중복)</issue>
+      <issue priority="high">통합 인증 시스템 부재</issue>
+      <issue priority="medium">일관성 없는 UI/UX</issue>
+      <issue priority="medium">코드 중복</issue>
+    </issues>
+  </current-status>
+
+  <implementation-phases>
+    <!-- Phase 1: 통합 인증 시스템 (최우선) -->
+    <phase number="1" priority="critical" duration="3-days">
+      <title>통합 인증 시스템 구축</title>
+
+      <tasks>
+        <task id="1.1">
+          <name>간단한 세션 기반 인증 구현</name>
+          <description>NextAuth 대신 간단한 쿠키/세션 방식 사용</description>
+          <files>
+            <file action="create">src/lib/auth/admin-auth.ts</file>
+            <file action="create">src/app/admin/login/page.tsx</file>
+            <file action="create">src/middleware.ts</file>
+          </files>
+          <code-example>
+<![CDATA[
+// src/lib/auth/admin-auth.ts
+export const verifyAdmin = (password: string) => {
+  return password === process.env.ADMIN_PASSWORD
+}
+
+export const createSession = () => {
+  const token = crypto.randomUUID()
+  // 24시간 유효
+  cookies().set('admin-session', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 86400
+  })
+}
+
+// src/middleware.ts
+export function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    if (request.nextUrl.pathname === '/admin/login') return
+
+    const session = request.cookies.get('admin-session')
+    if (!session) {
+      return NextResponse.redirect(new URL('/admin/login', request.url))
+    }
+  }
+}
+]]>
+          </code-example>
+        </task>
+
+        <task id="1.2">
+          <name>로그인 페이지 구현</name>
+          <description>단일 로그인 페이지로 모든 관리자 기능 접근</description>
+          <ui-requirements>
+            <requirement>깔끔한 로그인 폼</requirement>
+            <requirement>에러 처리</requirement>
+            <requirement>로딩 상태 표시</requirement>
+          </ui-requirements>
+        </task>
+
+        <task id="1.3">
+          <name>기존 개별 인증 제거</name>
+          <description>각 섹션의 독립 인증 코드를 통합 인증으로 교체</description>
+          <files>
+            <file action="modify">src/app/naraddon-tube/admin/page.tsx</file>
+            <file action="modify">src/app/policy-news/admin/page.tsx</file>
+            <file action="modify">src/app/business-voice/admin/page.tsx</file>
+            <file action="modify">src/app/expert-services/admin/page.tsx</file>
+          </files>
+        </task>
+      </tasks>
+    </phase>
+
+    <!-- Phase 2: 통합 레이아웃 및 네비게이션 -->
+    <phase number="2" priority="high" duration="5-days">
+      <title>관리자 통합 레이아웃</title>
+
+      <tasks>
+        <task id="2.1">
+          <name>관리자 레이아웃 생성</name>
+          <files>
+            <file action="create">src/app/admin/layout.tsx</file>
+            <file action="create">src/components/admin/AdminSidebar.tsx</file>
+            <file action="create">src/components/admin/AdminHeader.tsx</file>
+          </files>
+          <layout-structure>
+<![CDATA[
+<div className="flex h-screen bg-gray-50">
+  <!-- 사이드바 -->
+  <aside className="w-64 bg-white shadow-sm">
+    <AdminSidebar />
+  </aside>
+
+  <!-- 메인 콘텐츠 -->
+  <div className="flex-1 flex flex-col">
+    <AdminHeader />
+    <main className="flex-1 p-6 overflow-auto">
+      {children}
+    </main>
+  </div>
+</div>
+]]>
+          </layout-structure>
+        </task>
+
+        <task id="2.2">
+          <name>네비게이션 메뉴 구성</name>
+          <menu-structure>
+            <menu-item path="/admin/dashboard" icon="dashboard">대시보드</menu-item>
+            <menu-group title="콘텐츠 관리">
+              <menu-item path="/admin/naraddon-tube" icon="video">나라똔튜브</menu-item>
+              <menu-item path="/admin/policy-news" icon="newspaper">정책소식</menu-item>
+              <menu-item path="/admin/business-voice" icon="mic">비즈니스보이스</menu-item>
+              <menu-item path="/admin/expert-services" icon="expert">전문가서비스</menu-item>
+            </menu-group>
+            <menu-item path="/admin/users" icon="users">사용자 관리</menu-item>
+            <menu-item path="/admin/analytics" icon="chart">통계</menu-item>
+            <menu-item path="/admin/settings" icon="settings">설정</menu-item>
+          </menu-structure>
+        </task>
+
+        <task id="2.3">
+          <name>반응형 디자인 적용</name>
+          <description>모바일/태블릿 대응</description>
+        </task>
+      </tasks>
+    </phase>
+
+    <!-- Phase 3: 대시보드 강화 -->
+    <phase number="3" priority="medium" duration="7-days">
+      <title>통합 대시보드 개선</title>
+
+      <tasks>
+        <task id="3.1">
+          <name>실시간 통계 위젯</name>
+          <widgets>
+            <widget id="stats-overview">
+              <title>전체 통계</title>
+              <data>
+                <item>총 사용자 수</item>
+                <item>오늘 방문자</item>
+                <item>신규 콘텐츠</item>
+                <item>대기중 작업</item>
+              </data>
+            </widget>
+            <widget id="content-stats">
+              <title>콘텐츠별 현황</title>
+              <data>
+                <item>나라똔튜브: 영상 수, 조회수</item>
+                <item>정책소식: 게시글 수, 인기글</item>
+                <item>비즈니스보이스: 인터뷰 수</item>
+                <item>전문가서비스: 등록 전문가 수</item>
+              </data>
+            </widget>
+          </widgets>
+        </task>
+
+        <task id="3.2">
+          <name>빠른 작업 패널</name>
+          <quick-actions>
+            <action>새 영상 등록</action>
+            <action>정책소식 작성</action>
+            <action>사용자 검색</action>
+            <action>백업 실행</action>
+          </quick-actions>
+        </task>
+
+        <task id="3.3">
+          <name>활동 로그</name>
+          <description>관리자 작업 이력 추적</description>
+        </task>
+      </tasks>
+    </phase>
+
+    <!-- Phase 4: 공통 컴포넌트 -->
+    <phase number="4" priority="low" duration="5-days">
+      <title>재사용 가능한 컴포넌트</title>
+
+      <components>
+        <component name="DataTable">
+          <description>통합 테이블 컴포넌트 (정렬, 필터, 페이징)</description>
+          <file>src/components/admin/common/DataTable.tsx</file>
+        </component>
+
+        <component name="FormModal">
+          <description>CRUD용 모달 폼</description>
+          <file>src/components/admin/common/FormModal.tsx</file>
+        </component>
+
+        <component name="StatsCard">
+          <description>통계 카드 컴포넌트</description>
+          <file>src/components/admin/common/StatsCard.tsx</file>
+        </component>
+
+        <component name="ActionButtons">
+          <description>수정/삭제 버튼 세트</description>
+          <file>src/components/admin/common/ActionButtons.tsx</file>
+        </component>
+      </components>
+    </phase>
+  </implementation-phases>
+
+  <technical-requirements>
+    <authentication>
+      <method>쿠키 기반 세션</method>
+      <duration>24시간</duration>
+      <storage>httpOnly 쿠키</storage>
+    </authentication>
+
+    <styling>
+      <framework>Tailwind CSS</framework>
+      <consistency>기존 디자인 시스템 유지</consistency>
+    </styling>
+
+    <api>
+      <endpoints>
+        <endpoint method="POST" path="/api/admin/login">로그인</endpoint>
+        <endpoint method="POST" path="/api/admin/logout">로그아웃</endpoint>
+        <endpoint method="GET" path="/api/admin/stats">통계 조회</endpoint>
+      </endpoints>
+    </api>
+  </technical-requirements>
+
+  <environment-variables>
+    <variable name="ADMIN_PASSWORD" required="true">관리자 비밀번호</variable>
+    <variable name="SESSION_SECRET" required="true">세션 암호화 키</variable>
+  </environment-variables>
+
+  <testing-checklist>
+    <test>로그인/로그아웃 기능</test>
+    <test>세션 만료 처리</test>
+    <test>권한 없는 접근 차단</test>
+    <test>모바일 반응형 테스트</test>
+    <test>각 섹션 CRUD 기능</test>
+  </testing-checklist>
+
+  <deployment-notes>
+    <note priority="high">환경변수 설정 필수</note>
+    <note priority="medium">기존 데이터 백업</note>
+    <note priority="low">점진적 롤아웃</note>
+  </deployment-notes>
+
+  <success-criteria>
+    <criterion>단일 로그인으로 모든 관리자 기능 접근</criterion>
+    <criterion>페이지 로딩 2초 이내</criterion>
+    <criterion>모든 CRUD 기능 정상 작동</criterion>
+    <criterion>일관된 UI/UX</criterion>
+    <criterion>모바일 완벽 지원</criterion>
+  </success-criteria>
+</admin-implementation-plan>

@@ -3,28 +3,28 @@
 import React, { useState } from 'react';
 import './NaraddonTube.css';
 
-// 커스텀 이미지 사용
+// 커스?� ?��?지 ?�용
 const thumb1 = '/images/youtube/20250901__image1.jpg';
 const thumb2 = '/images/youtube/20250901_image2.jpg';
 const thumb3 = '/images/youtube/20250901__image3.jpg';
 const thumb4 = '/images/youtube/20250901_image4.jpg';
 
-// 나라똔튜브 실제 데이터 - YouTube 영상 연동
+// ?�라?�튜�??�제 ?�이??- YouTube ?�상 ?�동
 const thumbnailData = [
   {
     id: 1,
-    title: '피해사례 주의보',
+    title: '?�해?��? 주의�?,
     image: thumb1,
     videos: [
       {
         id: 'v1',
-        title: '피해사례 주의보 1',
+        title: '?�해?��? 주의�?1',
         youtubeId: 'ieWLah6HzG0',
         thumbnail: 'https://img.youtube.com/vi/ieWLah6HzG0/mqdefault.jpg',
       },
       {
         id: 'v2',
-        title: '피해사례 주의보 2',
+        title: '?�해?��? 주의�?2',
         youtubeId: 'YLYMd0KUfyA',
         thumbnail: 'https://img.youtube.com/vi/YLYMd0KUfyA/mqdefault.jpg',
       },
@@ -32,18 +32,18 @@ const thumbnailData = [
   },
   {
     id: 2,
-    title: '반드시 나라똔 이용하셔야 합니다',
+    title: '반드???�라???�용?�셔???�니??,
     image: thumb2,
     videos: [
       {
         id: 'v3',
-        title: '나라똔 이용 안내 1',
+        title: '?�라???�용 ?�내 1',
         youtubeId: 'aCuMv1TV6YQ',
         thumbnail: 'https://img.youtube.com/vi/aCuMv1TV6YQ/mqdefault.jpg',
       },
       {
         id: 'v4',
-        title: '나라똔 이용 안내 2',
+        title: '?�라???�용 ?�내 2',
         youtubeId: 'gEyR5cSxHIY',
         thumbnail: 'https://img.youtube.com/vi/gEyR5cSxHIY/mqdefault.jpg',
       },
@@ -51,18 +51,18 @@ const thumbnailData = [
   },
   {
     id: 3,
-    title: '안심보증 100%',
+    title: '?�심보증 100%',
     image: thumb3,
     videos: [
       {
         id: 'v5',
-        title: '안심보증 사례 1',
+        title: '?�심보증 ?��? 1',
         youtubeId: 'Yg-Ww1xCSFA',
         thumbnail: 'https://img.youtube.com/vi/Yg-Ww1xCSFA/mqdefault.jpg',
       },
       {
         id: 'v6',
-        title: '안심보증 사례 2',
+        title: '?�심보증 ?��? 2',
         youtubeId: 'gId4FD7ESSs',
         thumbnail: 'https://img.youtube.com/vi/gId4FD7ESSs/mqdefault.jpg',
       },
@@ -70,18 +70,18 @@ const thumbnailData = [
   },
   {
     id: 4,
-    title: '실제 대표님 인터뷰 꼭 보세요',
+    title: '?�제 ?�?�님 ?�터�?�?보세??,
     image: thumb4,
     videos: [
       {
         id: 'v7',
-        title: '대표님 인터뷰 1',
+        title: '?�?�님 ?�터�?1',
         youtubeId: 'kiJ4XHJ_aXQ',
         thumbnail: 'https://img.youtube.com/vi/kiJ4XHJ_aXQ/mqdefault.jpg',
       },
       {
         id: 'v8',
-        title: '대표님 인터뷰 2',
+        title: '?�?�님 ?�터�?2',
         youtubeId: 'P60GUAk8RCY',
         thumbnail: 'https://img.youtube.com/vi/P60GUAk8RCY/mqdefault.jpg',
       },
@@ -95,78 +95,73 @@ const NaraddonTube = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
 
-  // 썸네일 클릭 시 확장/축소 토글
+  // ?�네???�릭 ???�장/축소 ?��?
   const handleThumbnailClick = (id: number) => {
     if (isTransitioning) return;
     setExpandedThumb(expandedThumb === id ? null : id);
   };
 
-  // 호버 시 부드러운 전환
+  // ?�버 ??부?�러???�환
   const handleMouseEnter = (id: number) => {
-    // 기존 타임아웃 클리어
-    if (hoverTimeout) {
+    // 기존 ?�?�아???�리??    if (hoverTimeout) {
       clearTimeout(hoverTimeout);
       setHoverTimeout(null);
     }
 
-    // 이미 다른 것이 확장되어 있으면 전환 애니메이션
-    if (expandedThumb && expandedThumb !== id) {
+    // ?��? ?�른 것이 ?�장?�어 ?�으�??�환 ?�니메이??    if (expandedThumb && expandedThumb !== id) {
       setIsTransitioning(true);
       setExpandedThumb(null);
 
-      // 짧은 딜레이 후 새로운 것 확장
+      // 짧�? ?�레?????�로??�??�장
       const timeout = setTimeout(() => {
         setExpandedThumb(id);
         setIsTransitioning(false);
       }, 300);
       setHoverTimeout(timeout);
     } else if (!expandedThumb) {
-      // 아무것도 확장되어 있지 않으면 바로 확장
+      // ?�무것도 ?�장?�어 ?��? ?�으�?바로 ?�장
       setExpandedThumb(id);
     }
   };
 
-  // 마우스가 나갈 때 - 영역 감지 개선
+  // 마우?��? ?�갈 ??- ?�역 감�? 개선
   const handleMouseLeave = (e: React.MouseEvent, id: number) => {
-    // 마우스가 카드 영역 내에 있으면 유지
+    // 마우?��? 카드 ?�역 ?�에 ?�으�??��?
     const card = e.currentTarget as HTMLElement;
     const relatedTarget = e.relatedTarget as HTMLElement | null;
 
-    // relatedTarget이 null이거나 Node가 아닌 경우 처리
+    // relatedTarget??null?�거??Node가 ?�닌 경우 처리
     if (relatedTarget && card && card.contains && relatedTarget instanceof Node) {
       if (card.contains(relatedTarget)) {
-        return; // 같은 카드 내에서 이동하면 유지
+        return; // 같�? 카드 ?�에???�동?�면 ?��?
       }
     }
 
-    // 기존 타임아웃 클리어
-    if (hoverTimeout) {
+    // 기존 ?�?�아???�리??    if (hoverTimeout) {
       clearTimeout(hoverTimeout);
       setHoverTimeout(null);
     }
 
-    // 약간의 딜레이를 주어 실수로 벗어났을 때 바로 닫히지 않도록
-    const timeout = setTimeout(() => {
+    // ?�간???�레?��? 주어 ?�수�?벗어?�을 ??바로 ?�히지 ?�도�?    const timeout = setTimeout(() => {
       if (expandedThumb === id) {
         setExpandedThumb(null);
       }
-    }, 300); // 딜레이 증가
+    }, 300); // ?�레??증�?
     setHoverTimeout(timeout);
   };
 
-  // 영상 클릭 시 확대 재생
+  // ?�상 ?�릭 ???��? ?�생
   const handleVideoClick = (videoId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setPlayingVideo(videoId);
   };
 
-  // 모달 닫기
+  // 모달 ?�기
   const handleClose = () => {
     setPlayingVideo(null);
   };
 
-  // 컴포넌트 언마운트 시 타임아웃 클리어
-  React.useEffect(() => {
+  // 컴포?�트 ?�마?�트 ???�?�아???�리??  React.useEffect(() => {
     return () => {
       if (hoverTimeout) {
         clearTimeout(hoverTimeout);
@@ -178,11 +173,11 @@ const NaraddonTube = () => {
     <section className="naraddon-tube-section">
       <div className="naraddon-tube-container">
         <div className="section-header">
-          <h2 className="section-title">나라똔튜브</h2>
+          <h2 className="section-title">?�라?�튜�?/h2>
         </div>
-        <p className="section-subtitle">성공적인 정책자금 활용 사례를 영상으로 만나보세요</p>
+        <p className="section-subtitle">?�공?�인 ?�책?�금 ?�용 ?��?�??�상?�로 만나보세??/p>
 
-        {/* YouTube 스타일 가로 4개 배열 레이아웃 */}
+        {/* YouTube ?��???가�?4�?배열 ?�이?�웃 */}
         <div className="youtube-style-grid">
           {thumbnailData.map((item) => {
             const isExpanded = expandedThumb === item.id;
@@ -194,7 +189,7 @@ const NaraddonTube = () => {
                 onMouseEnter={() => handleMouseEnter(item.id)}
                 onMouseLeave={(e) => handleMouseLeave(e, item.id)}
               >
-                {/* 썸네일 이미지 섹션 - 항상 표시 */}
+                {/* ?�네???��?지 ?�션 - ??�� ?�시 */}
                 <div className="thumbnail-section" onClick={() => handleThumbnailClick(item.id)}>
                   <div className="thumbnail-wrapper">
                     <img
@@ -206,19 +201,19 @@ const NaraddonTube = () => {
                           'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg';
                       }}
                     />
-                    {/* YouTube 마크 제거 - 이미지만 표시 */}
+                    {/* YouTube 마크 ?�거 - ?��?지�??�시 */}
                   </div>
                   <div className="thumbnail-info">
                     <h3 className="thumbnail-title" style={isExpanded ? { color: 'white' } : {}}>
                       {item.title}
                     </h3>
                     <p className="video-count" style={isExpanded ? { color: '#00ffff' } : {}}>
-                      {item.videos.length}개 영상
+                      {item.videos.length}�??�상
                     </p>
                   </div>
                 </div>
 
-                {/* 확장 시 하단에 나타나는 영상 목록 */}
+                {/* ?�장 ???�단???��??�는 ?�상 목록 */}
                 {isExpanded && (
                   <div className="expanded-videos">
                     <div className="videos-grid">
@@ -242,7 +237,7 @@ const NaraddonTube = () => {
                                 <path d="M8 5v14l11-7z" fill="white" />
                               </svg>
                               <span className="watch-now" style={{ color: 'white' }}>
-                                시청하기
+                                ?�청?�기
                               </span>
                             </div>
                           </div>
@@ -259,7 +254,7 @@ const NaraddonTube = () => {
           })}
         </div>
 
-        {/* YouTube 영상 재생 모달 */}
+        {/* YouTube ?�상 ?�생 모달 */}
         {playingVideo && (
           <>
             <div className="video-modal-backdrop" onClick={handleClose} />
@@ -290,3 +285,5 @@ const NaraddonTube = () => {
 };
 
 export default NaraddonTube;
+
+

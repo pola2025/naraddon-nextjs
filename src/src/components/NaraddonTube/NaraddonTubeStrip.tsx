@@ -1,31 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useEmbedOrigin } from '@/hooks/useEmbedOrigin';
 import './NaraddonTubeStrip.css';
 
-// 커스텀 이미지 사용 (기존과 동일)
+// 커스?� ?��?지 ?�용 (기존�??�일)
 const thumb1 = '/images/youtube/20250901__image1.jpg';
 const thumb2 = '/images/youtube/20250901_image2.jpg';
 const thumb3 = '/images/youtube/20250901__image3.jpg';
 const thumb4 = '/images/youtube/20250901_image4.jpg';
 
-// 나라똔튜브 띠배너형 데이터 - 지그재그 배치
+// ?�라?�튜�??�배?�형 ?�이??- 지그재�?배치
 const stripData = [
   {
     id: 1,
-    title: '피해사례 주의보',
+    title: '?�해?��? 주의�?,
     image: thumb1,
-    position: 'left', // 이미지 왼쪽
+    position: 'left', // ?��?지 ?�쪽
     videos: [
       {
         id: 'v1',
-        title: '피해사례 주의보 1',
+        title: '?�해?��? 주의�?1',
         youtubeId: 'ieWLah6HzG0',
         thumbnail: 'https://img.youtube.com/vi/ieWLah6HzG0/mqdefault.jpg',
       },
       {
         id: 'v2',
-        title: '피해사례 주의보 2',
+        title: '?�해?��? 주의�?2',
         youtubeId: 'YLYMd0KUfyA',
         thumbnail: 'https://img.youtube.com/vi/YLYMd0KUfyA/mqdefault.jpg',
       },
@@ -33,19 +34,18 @@ const stripData = [
   },
   {
     id: 2,
-    title: '반드시 나라똔 이용하셔야 합니다',
+    title: '반드???�라???�용?�셔???�니??,
     image: thumb2,
-    position: 'right', // 이미지 오른쪽
-    videos: [
+    position: 'right', // ?��?지 ?�른�?    videos: [
       {
         id: 'v3',
-        title: '나라똔 이용 안내 1',
+        title: '?�라???�용 ?�내 1',
         youtubeId: 'aCuMv1TV6YQ',
         thumbnail: 'https://img.youtube.com/vi/aCuMv1TV6YQ/mqdefault.jpg',
       },
       {
         id: 'v4',
-        title: '나라똔 이용 안내 2',
+        title: '?�라???�용 ?�내 2',
         youtubeId: 'gEyR5cSxHIY',
         thumbnail: 'https://img.youtube.com/vi/gEyR5cSxHIY/mqdefault.jpg',
       },
@@ -53,19 +53,19 @@ const stripData = [
   },
   {
     id: 3,
-    title: '안심보증 100%',
+    title: '?�심보증 100%',
     image: thumb3,
-    position: 'left', // 이미지 왼쪽
+    position: 'left', // ?��?지 ?�쪽
     videos: [
       {
         id: 'v5',
-        title: '안심보증 사례 1',
+        title: '?�심보증 ?��? 1',
         youtubeId: 'Yg-Ww1xCSFA',
         thumbnail: 'https://img.youtube.com/vi/Yg-Ww1xCSFA/mqdefault.jpg',
       },
       {
         id: 'v6',
-        title: '안심보증 사례 2',
+        title: '?�심보증 ?��? 2',
         youtubeId: 'gId4FD7ESSs',
         thumbnail: 'https://img.youtube.com/vi/gId4FD7ESSs/mqdefault.jpg',
       },
@@ -73,19 +73,18 @@ const stripData = [
   },
   {
     id: 4,
-    title: '실제 대표님 인터뷰 꼭 보세요',
+    title: '?�제 ?�?�님 ?�터�?�?보세??,
     image: thumb4,
-    position: 'right', // 이미지 오른쪽
-    videos: [
+    position: 'right', // ?��?지 ?�른�?    videos: [
       {
         id: 'v7',
-        title: '대표님 인터뷰 1',
+        title: '?�?�님 ?�터�?1',
         youtubeId: 'kiJ4XHJ_aXQ',
         thumbnail: 'https://img.youtube.com/vi/kiJ4XHJ_aXQ/mqdefault.jpg',
       },
       {
         id: 'v8',
-        title: '대표님 인터뷰 2',
+        title: '?�?�님 ?�터�?2',
         youtubeId: 'P60GUAk8RCY',
         thumbnail: 'https://img.youtube.com/vi/P60GUAk8RCY/mqdefault.jpg',
       },
@@ -97,12 +96,12 @@ const NaraddonTubeStrip = () => {
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
   const [hoveredStrip, setHoveredStrip] = useState<number | null>(null);
 
-  // 영상 클릭 시 재생
+  // ?�상 ?�릭 ???�생
   const handleVideoClick = (videoId: string) => {
     setPlayingVideo(videoId);
   };
 
-  // 모달 닫기
+  // 모달 ?�기
   const handleClose = () => {
     setPlayingVideo(null);
   };
@@ -111,8 +110,8 @@ const NaraddonTubeStrip = () => {
     <section className="naraddon-tube-strip-section">
       <div className="strip-container">
         <div className="strip-header">
-          <h2 className="strip-title">나라똔튜브 컬렉션</h2>
-          <p className="strip-subtitle">핵심 콘텐츠를 한눈에 만나보세요</p>
+          <h2 className="strip-title">?�라?�튜�?컬렉??/h2>
+          <p className="strip-subtitle">?�심 콘텐츠�? ?�눈??만나보세??/p>
         </div>
 
         <div className="strips-wrapper">
@@ -123,7 +122,7 @@ const NaraddonTubeStrip = () => {
               onMouseEnter={() => setHoveredStrip(item.id)}
               onMouseLeave={() => setHoveredStrip(null)}
             >
-              {/* 이미지 섹션 */}
+              {/* ?��?지 ?�션 */}
               <div className="strip-image-section">
                 <div className="strip-image-wrapper">
                   <img src={item.image} alt={item.title} className="strip-image" />
@@ -133,7 +132,7 @@ const NaraddonTubeStrip = () => {
                 </div>
               </div>
 
-              {/* 영상 섹션 */}
+              {/* ?�상 ?�션 */}
               <div className="strip-videos-section">
                 <div className="strip-videos-grid">
                   {item.videos.map((video) => (
@@ -159,7 +158,7 @@ const NaraddonTubeStrip = () => {
           ))}
         </div>
 
-        {/* YouTube 영상 재생 모달 (기존과 동일) */}
+        {/* YouTube ?�상 ?�생 모달 (기존�??�일) */}
         {playingVideo && (
           <>
             <div className="video-modal-backdrop" onClick={handleClose} />
